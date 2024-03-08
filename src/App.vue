@@ -17,12 +17,12 @@
       <tbody>
         <tr v-for="(currency, index) in reservecurrencies" :key="index">
           <td>{{ getTickerByCurrencyId(currency.currencyid) }}</td>
-          <td>{{ getReserveDaiPrice(currency.reserves) }} DAI</td>
-          <td>{{ getReserveVrscPrice(currency.reserves) }} VRSC</td>
+          <td>{{ new Intl.NumberFormat().format(getReserveDaiPrice(currency.reserves)) }} DAI</td>
+          <td>{{ new Intl.NumberFormat().format(getReserveVrscPrice(currency.reserves)) }} VRSC</td>
           <td>{{ getReserveMkrPrice(currency.reserves) }} MKR</td>
           <td>{{ getReserveEthPrice(currency.reserves) }} ETH</td>
           <td>{{ parseFloat(currency.priceinreserve.toFixed(6)) }}</td>
-          <td>{{ parseFloat(currency.reserves.toFixed(3)) }}</td>
+          <td>{{ new Intl.NumberFormat().format(parseFloat(currency.reserves.toFixed(3))) }}</td>
           <td>{{ currency.weight }}</td>
         </tr>
       </tbody>
