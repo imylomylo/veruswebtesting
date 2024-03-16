@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+ vite_docker:
+   image: node:alpine
+   container_name: vite_baskets
+   entrypoint: npm run host
+   ports:
+     - 5173:5173
+   working_dir: /srv/app
+   volumes:
+     - type: bind
+       source: ./
+       target: /srv/app
+   tty: true
