@@ -27,6 +27,29 @@
         </tr>
       </tbody>
     </v-table>
+    <h2> Pure</h2>
+    <v-table class="custom-font">
+      <thead>
+        <tr>
+          <th>Reserve Currency</th>
+          <th>Reserve / VRSC</th>
+          <th>Reserve / tBTC </th>
+          <th>Pure / Reserve</th>
+          <th>Reserves</th>
+          <th>Weight</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(currency, index) in purereservecurrencies" :key="index">
+          <td>{{ getTickerByCurrencyId(currency.currencyid) }}</td>
+          <td>{{ getPureReserveVrscPrice(currency.reserves) }} VRSC</td>
+          <td>{{ getPureReserveTbtcPrice(currency.reserves) }} tBTC</td>
+          <td>{{ parseFloat(currency.priceinreserve.toFixed(6)) }}</td>
+          <td>{{ parseFloat(currency.reserves.toFixed(3)) }}</td>
+          <td>{{ currency.weight }}</td>
+        </tr>
+      </tbody>
+    </v-table>
     <!-- <div>
       Latest block: {{ latestblock }}
     </div> -->
@@ -51,6 +74,7 @@ export default {
       explorertx: "https://insight.verus.io/tx/",
       latestblock: ref([]),
       reservecurrencies: ref([]),
+      purereservecurrencies: ref([]),
       mempool: ref([]),
       mempool_res: ref([]),
       rawtransaction: ref([]),
@@ -61,7 +85,8 @@ export default {
         { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
         { "currencyid": "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM", "ticker": "DAI.vETH" },
         { "currencyid": "iCkKJuJScy4Z6NSDK7Mt42ZAB2NEnAE1o4", "ticker": "MKR.vETH" },
-        { "currencyid": "i9nwxtKuVYX4MSbeULLiK2ttVi6rUEhh4X", "ticker": "vETH" }
+        { "currencyid": "i9nwxtKuVYX4MSbeULLiK2ttVi6rUEhh4X", "ticker": "vETH" },
+        { "currencyid": "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU", "ticker": "tBTC"}
       ]
 
     };
@@ -114,6 +139,18 @@ export default {
         return dai.reserves
       }
     },
+    getPureTbtcReserves() {
+      const dai = this.purereservecurrencies.find(item => item.currencyid == "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU")
+      if (dai) {
+        return dai.reserves
+      }
+    },
+    getPureVrscReserves() {
+      const dai = this.purereservecurrencies.find(item => item.currencyid == "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV")
+      if (dai) {
+        return dai.reserves
+      }
+    },
     getReserveDaiPrice(reserves) {
       return parseFloat((this.getDaiReserves() / reserves).toFixed(6))
     },
@@ -125,6 +162,12 @@ export default {
     },
     getReserveEthPrice(reserves) {
       return parseFloat((this.getEthReserves() / reserves).toFixed(6))
+    },
+    getPureReserveTbtcPrice(reserves) {
+      return parseFloat((this.getPureTbtcReserves() / reserves).toFixed(6))
+    },
+    getPureReserveVrscPrice(reserves) {
+      return parseFloat((this.getPureVrscReserves() / reserves).toFixed(6))
     },
     getTickerByCurrencyId(currencyId) {
       const currency = this.arr_currencies.find(item => item.currencyid === currencyId);
@@ -220,6 +263,25 @@ export default {
       this.sendRequestRPC(requestData)
         .then((response) => {
           this.reservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+        })
+        .catch((error) => {
+          this.currencies = error
+        })
+    },
+    getpurecurrency() {
+      const requestData = {
+        method: 'post',
+        url: 'https://rpc.vrsc.komodefi.com',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+          method: 'getcurrency',
+          params: ['Pure'],
+          id: 1
+        }
+      };
+      this.sendRequestRPC(requestData)
+        .then((response) => {
+          this.purereservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
         })
         .catch((error) => {
           this.currencies = error
@@ -462,7 +524,8 @@ export default {
   },
   mounted() {
     // this.sendRequest();
-    this.getbridgecurrency();
+    this.getbridgecurrency()
+    this.getpurecurrency()
     this.getrawmempool()
   }
 };
