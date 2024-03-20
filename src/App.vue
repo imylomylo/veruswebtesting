@@ -15,7 +15,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(currency, index) in reservecurrencies" :key="index">
+        <tr v-for="(currency, index) in bridgevethreservecurrencies" :key="index">
           <td>{{ getTickerByCurrencyId(currency.currencyid) }}</td>
           <td>{{ getReserveDaiPrice(currency.reserves) }} DAI</td>
           <td>{{ getReserveVrscPrice(currency.reserves) }} VRSC</td>
@@ -27,7 +27,26 @@
         </tr>
       </tbody>
     </v-table>
-
+    <p>Add liquidity: <input v-model="addLiquidityBridgeVethAmount" placeholder="edit me" />
+      Reserve:
+      <select v-model="addLiquidityBridgeVethReserve">
+        <option disabled value="">Please select one</option>
+        <option v-for="option in bridgevethcurrencies" :value="option.currencyid">
+          {{ option.ticker }}
+        </option>
+      </select>
+    </p>
+    <p>Remove liquidity: <input v-model="removeLiquidityBridgeVethAmount" placeholder="edit me" />
+      Reserve:
+      <select v-model="removeLiquidityBridgeVethReserve">
+        <option disabled value="">Please select one</option>
+        <option v-for="option in bridgevethcurrencies" :value="option.currencyid">
+          {{ option.ticker }}
+        </option>
+      </select>
+    </p>
+    <p> <button @click="evaluateBridgeVeth()">Evaluate</button>
+    </p>
     <h2> Bridge.vARRR</h2>
     <v-table class="custom-font">
       <thead>
@@ -82,11 +101,12 @@
     <!-- <div>
       Latest block: {{ latestblock }}
     </div> -->
-    <br/>
+    <br />
     <h3>VRSC Mempool: Unconfirmed transactions</h3>
     <div v-if="mempool_res.length > 0">
       <ul>
-        <v-list-item v-for="res in mempool_res"><a :href="explorertx + res">{{ res }}</a> | <a target="_blank" :href="explorertx + res">new tab</a></v-list-item>
+        <v-list-item v-for="res in mempool_res"><a :href="explorertx + res">{{ res }}</a> | <a target="_blank"
+            :href="explorertx + res">new tab</a></v-list-item>
       </ul>
     </div>
     <div v-else>
@@ -103,9 +123,13 @@ export default {
     return {
       explorertx: "https://insight.verus.io/tx/",
       latestblock: ref([]),
-      reservecurrencies: ref([]),
+      bridgevethreservecurrencies: ref([]),
       purereservecurrencies: ref([]),
       bridgevarrrreservecurrencies: ref([]),
+      addLiquidityBridgeVethAmount: ref([]),
+      removeLiquidityBridgeVethAmount: ref([]),
+      addLiquidityBridgeVethReserve: ref([]),
+      removeLiquidityBridgeVethReserve: ref([]),
       mempool: ref([]),
       mempool_res: ref([]),
       rawtransaction: ref([]),
@@ -117,15 +141,37 @@ export default {
         { "currencyid": "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM", "ticker": "DAI.vETH" },
         { "currencyid": "iCkKJuJScy4Z6NSDK7Mt42ZAB2NEnAE1o4", "ticker": "MKR.vETH" },
         { "currencyid": "i9nwxtKuVYX4MSbeULLiK2ttVi6rUEhh4X", "ticker": "vETH" },
-        { "currencyid": "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU", "ticker": "tBTC"},
-        { "currencyid": "iExBJfZYK7KREDpuhj6PzZBzqMAKaFg7d2", "ticker": "vARRR"},
-        { "currencyid": "i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "ticker": "Bridge.vETH"}
+        { "currencyid": "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU", "ticker": "tBTC" },
+        { "currencyid": "iExBJfZYK7KREDpuhj6PzZBzqMAKaFg7d2", "ticker": "vARRR" },
+        { "currencyid": "i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "ticker": "Bridge.vETH" }
+      ],
+      bridgevethcurrencies: [
+        { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
+        { "currencyid": "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM", "ticker": "DAI.vETH" },
+        { "currencyid": "iCkKJuJScy4Z6NSDK7Mt42ZAB2NEnAE1o4", "ticker": "MKR.vETH" },
+        { "currencyid": "i9nwxtKuVYX4MSbeULLiK2ttVi6rUEhh4X", "ticker": "vETH" }
+      ],
+      purecurrencies: [
+        { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
+        { "currencyid": "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU", "ticker": "tBTC" }
+      ],
+      bridgevarrcurrencies: [
+        { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
+        { "currencyid": "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU", "ticker": "tBTC" },
+        { "currencyid": "iExBJfZYK7KREDpuhj6PzZBzqMAKaFg7d2", "ticker": "vARRR" },
+        { "currencyid": "i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "ticker": "Bridge.vETH" }
       ]
 
     };
   },
 
   methods: {
+    evaluateBridgeVeth() {
+      console.log(this.bridgevethcurrencies)
+      console.log("evaluate bridge veth" + this.addLiquidityBridgeVethAmount + " add " + this.addLiquidityBridgeVethReserve + this.removeLiquidityBridgeVethAmount + " remove " + this.removeLiquidityBridgeVethReserve)
+      const reserveAdd = this.bridgevethcurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve)
+      this.bridgevethcurrencies.reserveAdd.bestcurrencystate.reserves + this.addLiquidityBridgeVethAmount
+    },
     getLatestBlock() {
       const requestData = {
         method: 'post',
@@ -148,26 +194,32 @@ export default {
         })
 
     },
+    adjustVrscReserves(amount) {
+      const dai = this.bridgevethreservecurrencies.find(item => item.currencyid == "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV")
+      if (dai) {
+        return dai.reserves + amount
+      }
+    },
     getDaiReserves() {
-      const dai = this.reservecurrencies.find(item => item.currencyid == "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM")
+      const dai = this.bridgevethreservecurrencies.find(item => item.currencyid == "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM")
       if (dai) {
         return dai.reserves
       }
     },
     getVrscReserves() {
-      const dai = this.reservecurrencies.find(item => item.currencyid == "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV")
+      const dai = this.bridgevethreservecurrencies.find(item => item.currencyid == "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV")
       if (dai) {
         return dai.reserves
       }
     },
     getMkrReserves() {
-      const dai = this.reservecurrencies.find(item => item.currencyid == "iCkKJuJScy4Z6NSDK7Mt42ZAB2NEnAE1o4")
+      const dai = this.bridgevethreservecurrencies.find(item => item.currencyid == "iCkKJuJScy4Z6NSDK7Mt42ZAB2NEnAE1o4")
       if (dai) {
         return dai.reserves
       }
     },
     getEthReserves() {
-      const dai = this.reservecurrencies.find(item => item.currencyid == "i9nwxtKuVYX4MSbeULLiK2ttVi6rUEhh4X")
+      const dai = this.bridgevethreservecurrencies.find(item => item.currencyid == "i9nwxtKuVYX4MSbeULLiK2ttVi6rUEhh4X")
       if (dai) {
         return dai.reserves
       }
@@ -288,7 +340,7 @@ export default {
       this.sendRequestRPC(requestData)
         .then((response) => {
           console.log(response)
-          this.res =  response.data.result
+          this.res = response.data.result
         })
         .catch((error) => {
           return error
@@ -331,7 +383,8 @@ export default {
       };
       this.sendRequestRPC(requestData)
         .then((response) => {
-          this.reservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+          console.log(response)
+          this.bridgevethreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
         })
         .catch((error) => {
           this.currencies = error
@@ -636,7 +689,7 @@ export default {
   -webkit-text-size-adjust: 100%;
 }
 
-.custom-font{
+.custom-font {
   font-family: sans-serif;
   font-size: 15px;
 }
