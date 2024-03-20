@@ -27,7 +27,7 @@
         </tr>
       </tbody>
     </v-table>
-    <p>Add liquidity: <input v-model="addLiquidityBridgeVethAmount" placeholder="edit me" />
+    <p>Add liquidity estimate: <input v-model="addLiquidityBridgeVethAmount" placeholder="edit me" />
       Reserve:
       <select v-model="addLiquidityBridgeVethReserve">
         <option disabled value="">Please select one</option>
@@ -36,7 +36,7 @@
         </option>
       </select>
     </p>
-    <p>Remove liquidity: <input v-model="removeLiquidityBridgeVethAmount" placeholder="edit me" />
+    <p>Remove liquidity estimate: <input v-model="removeLiquidityBridgeVethAmount" placeholder="edit me" />
       Reserve:
       <select v-model="removeLiquidityBridgeVethReserve">
         <option disabled value="">Please select one</option>
@@ -74,6 +74,27 @@
         </tr>
       </tbody>
     </v-table>
+    <p>Add liquidity estimate: <input v-model="addLiquidityBridgeVarrrAmount" placeholder="edit me" />
+      Reserve:
+      <select v-model="addLiquidityBridgeVarrrReserve">
+        <option disabled value="">Please select one</option>
+        <option v-for="option in bridgevarrrcurrencies" :value="option.currencyid">
+          {{ option.ticker }}
+        </option>
+      </select>
+    </p>
+    <p>Remove liquidity estimate: <input v-model="removeLiquidityBridgeVarrrAmount" placeholder="edit me" />
+      Reserve:
+      <select v-model="removeLiquidityBridgeVarrrReserve">
+        <option disabled value="">Please select one</option>
+        <option v-for="option in bridgevarrrcurrencies" :value="option.currencyid">
+          {{ option.ticker }}
+        </option>
+      </select>
+    </p>
+    <p> <button @click="evaluateBridgeVarrr()">Evaluate</button>
+    </p>
+
 
     <h2> Pure</h2>
     <v-table class="custom-font">
@@ -98,6 +119,26 @@
         </tr>
       </tbody>
     </v-table>
+    <p>Add liquidity estimate: <input v-model="addLiquidityPureAmount" placeholder="edit me" />
+      Reserve:
+      <select v-model="addLiquidityPureReserve">
+        <option disabled value="">Please select one</option>
+        <option v-for="option in purecurrencies" :value="option.currencyid">
+          {{ option.ticker }}
+        </option>
+      </select>
+    </p>
+    <p>Remove liquidity estimate: <input v-model="removeLiquidityPureAmount" placeholder="edit me" />
+      Reserve:
+      <select v-model="removeLiquidityPureReserve">
+        <option disabled value="">Please select one</option>
+        <option v-for="option in purecurrencies" :value="option.currencyid">
+          {{ option.ticker }}
+        </option>
+      </select>
+    </p>
+    <p> <button @click="evaluatePure()">Evaluate</button>
+    </p>
     <!-- <div>
       Latest block: {{ latestblock }}
     </div> -->
@@ -130,6 +171,14 @@ export default {
       removeLiquidityBridgeVethAmount: ref([]),
       addLiquidityBridgeVethReserve: ref([]),
       removeLiquidityBridgeVethReserve: ref([]),
+      addLiquidityBridgeVarrrAmount: ref([]),
+      removeLiquidityBridgeVarrrAmount: ref([]),
+      addLiquidityBridgeVarrrReserve: ref([]),
+      removeLiquidityBridgeVarrrReserve: ref([]),
+      addLiquidityPureAmount: ref([]),
+      removeLiquidityPureAmount: ref([]),
+      addLiquidityPureReserve: ref([]),
+      removeLiquidityPureReserve: ref([]),
       mempool: ref([]),
       mempool_res: ref([]),
       rawtransaction: ref([]),
@@ -155,7 +204,7 @@ export default {
         { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
         { "currencyid": "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU", "ticker": "tBTC" }
       ],
-      bridgevarrcurrencies: [
+      bridgevarrrcurrencies: [
         { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
         { "currencyid": "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU", "ticker": "tBTC" },
         { "currencyid": "iExBJfZYK7KREDpuhj6PzZBzqMAKaFg7d2", "ticker": "vARRR" },
@@ -167,13 +216,40 @@ export default {
 
   methods: {
     evaluateBridgeVeth() {
-      console.log(this.bridgevethcurrencies)
-      console.log("evaluate bridge veth" + this.addLiquidityBridgeVethAmount + " add " + this.addLiquidityBridgeVethReserve + this.removeLiquidityBridgeVethAmount + " remove " + this.removeLiquidityBridgeVethReserve)
-      const reserves = this.bridgevethreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve).reserves //  + this.addLiquidityBridgeVethAmount
-      // console.log(parseFloat(reserves) + parseFloat(this.addLiquidityBridgeVethAmount))
-      const reserveAdd = parseFloat(reserves) + parseFloat(this.addLiquidityBridgeVethAmount)
-      this.bridgevethreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve).reserves = reserveAdd
-      console.log(this.bridgevethreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve).reserves)
+      if (this.addLiquidityBridgeVethAmount > 0) {
+        let reservesAdd = this.bridgevethreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve).reserves
+        let reservesAddedNewAmount = parseFloat(reservesAdd) + parseFloat(this.addLiquidityBridgeVethAmount)
+        this.bridgevethreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve).reserves = reservesAddedNewAmount
+      }
+      if (this.removeLiquidityBridgeVethAmount > 0) {
+        let reservesRemove = this.bridgevethreservecurrencies.find(item => item.currencyid == this.removeLiquidityBridgeVethReserve).reserves
+        let reservesRemovedNewAmount = parseFloat(reservesRemove) - parseFloat(this.removeLiquidityBridgeVethAmount)
+        this.bridgevethreservecurrencies.find(item => item.currencyid == this.removeLiquidityBridgeVethReserve).reserves = reservesRemovedNewAmount
+      }
+    },
+    evaluateBridgeVarrr() {
+      if (this.addLiquidityBridgeVarrrAmount > 0) {
+        let reservesAdd = this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVarrrReserve).reserves
+        let reservesAddedNewAmount = parseFloat(reservesAdd) + parseFloat(this.addLiquidityBridgeVarrrAmount)
+        this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVarrrReserve).reserves = reservesAddedNewAmount
+      }
+      if (this.removeLiquidityBridgeVarrrAmount > 0) {
+        let reservesRemove = this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.removeLiquidityBridgeVarrrReserve).reserves
+        let reservesRemovedNewAmount = parseFloat(reservesRemove) - parseFloat(this.removeLiquidityBridgeVarrrAmount)
+        this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.removeLiquidityBridgeVarrrReserve).reserves = reservesRemovedNewAmount
+      }
+    },
+    evaluatePure() {
+      if (this.addLiquidityPureAmount > 0) {
+        let reservesAdd = this.purereservecurrencies.find(item => item.currencyid == this.addLiquidityPureReserve).reserves
+        let reservesAddedNewAmount = parseFloat(reservesAdd) + parseFloat(this.addLiquidityPureAmount)
+        this.purereservecurrencies.find(item => item.currencyid == this.addLiquidityPureReserve).reserves = reservesAddedNewAmount
+      }
+      if (this.removeLiquidityPureAmount > 0) {
+        let reservesRemove = this.purereservecurrencies.find(item => item.currencyid == this.removeLiquidityPureReserve).reserves
+        let reservesRemovedNewAmount = parseFloat(reservesRemove) - parseFloat(this.removeLiquidityPureAmount)
+        this.purereservecurrencies.find(item => item.currencyid == this.removeLiquidityPureReserve).reserves = reservesRemovedNewAmount
+      }
     },
     getLatestBlock() {
       const requestData = {
