@@ -169,8 +169,11 @@ export default {
     evaluateBridgeVeth() {
       console.log(this.bridgevethcurrencies)
       console.log("evaluate bridge veth" + this.addLiquidityBridgeVethAmount + " add " + this.addLiquidityBridgeVethReserve + this.removeLiquidityBridgeVethAmount + " remove " + this.removeLiquidityBridgeVethReserve)
-      const reserveAdd = this.bridgevethcurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve)
-      this.bridgevethcurrencies.reserveAdd.bestcurrencystate.reserves + this.addLiquidityBridgeVethAmount
+      const reserves = this.bridgevethreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve).reserves //  + this.addLiquidityBridgeVethAmount
+      // console.log(parseFloat(reserves) + parseFloat(this.addLiquidityBridgeVethAmount))
+      const reserveAdd = parseFloat(reserves) + parseFloat(this.addLiquidityBridgeVethAmount)
+      this.bridgevethreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve).reserves = reserveAdd
+      console.log(this.bridgevethreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve).reserves)
     },
     getLatestBlock() {
       const requestData = {
