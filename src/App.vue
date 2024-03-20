@@ -82,13 +82,40 @@ export default {
   },
   methods: {
     evaluateBridgeVeth() {
-      console.log(this.bridgevethcurrencies)
-      console.log("evaluate bridge veth" + this.addLiquidityBridgeVethAmount + " add " + this.addLiquidityBridgeVethReserve + this.removeLiquidityBridgeVethAmount + " remove " + this.removeLiquidityBridgeVethReserve)
-      const reserves = this.bridgevethreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve).reserves //  + this.addLiquidityBridgeVethAmount
-      // console.log(parseFloat(reserves) + parseFloat(this.addLiquidityBridgeVethAmount))
-      const reserveAdd = parseFloat(reserves) + parseFloat(this.addLiquidityBridgeVethAmount)
-      this.bridgevethreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve).reserves = reserveAdd
-      console.log(this.bridgevethreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve).reserves)
+      if (this.addLiquidityBridgeVethAmount > 0) {
+        let reservesAdd = this.bridgevethreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve).reserves
+        let reservesAddedNewAmount = parseFloat(reservesAdd) + parseFloat(this.addLiquidityBridgeVethAmount)
+        this.bridgevethreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve).reserves = reservesAddedNewAmount
+      }
+      if (this.removeLiquidityBridgeVethAmount > 0) {
+        let reservesRemove = this.bridgevethreservecurrencies.find(item => item.currencyid == this.removeLiquidityBridgeVethReserve).reserves
+        let reservesRemovedNewAmount = parseFloat(reservesRemove) - parseFloat(this.removeLiquidityBridgeVethAmount)
+        this.bridgevethreservecurrencies.find(item => item.currencyid == this.removeLiquidityBridgeVethReserve).reserves = reservesRemovedNewAmount
+      }
+    },
+    evaluateBridgeVarrr() {
+      if (this.addLiquidityBridgeVarrrAmount > 0) {
+        let reservesAdd = this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVarrrReserve).reserves
+        let reservesAddedNewAmount = parseFloat(reservesAdd) + parseFloat(this.addLiquidityBridgeVarrrAmount)
+        this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVarrrReserve).reserves = reservesAddedNewAmount
+      }
+      if (this.removeLiquidityBridgeVarrrAmount > 0) {
+        let reservesRemove = this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.removeLiquidityBridgeVarrrReserve).reserves
+        let reservesRemovedNewAmount = parseFloat(reservesRemove) - parseFloat(this.removeLiquidityBridgeVarrrAmount)
+        this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.removeLiquidityBridgeVarrrReserve).reserves = reservesRemovedNewAmount
+      }
+    },
+    evaluatePure() {
+      if (this.addLiquidityPureAmount > 0) {
+        let reservesAdd = this.purereservecurrencies.find(item => item.currencyid == this.addLiquidityPureReserve).reserves
+        let reservesAddedNewAmount = parseFloat(reservesAdd) + parseFloat(this.addLiquidityPureAmount)
+        this.purereservecurrencies.find(item => item.currencyid == this.addLiquidityPureReserve).reserves = reservesAddedNewAmount
+      }
+      if (this.removeLiquidityPureAmount > 0) {
+        let reservesRemove = this.purereservecurrencies.find(item => item.currencyid == this.removeLiquidityPureReserve).reserves
+        let reservesRemovedNewAmount = parseFloat(reservesRemove) - parseFloat(this.removeLiquidityPureAmount)
+        this.purereservecurrencies.find(item => item.currencyid == this.removeLiquidityPureReserve).reserves = reservesRemovedNewAmount
+      }
     },
     getLatestBlock() {
       const requestData = {
