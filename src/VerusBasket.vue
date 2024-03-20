@@ -1,6 +1,6 @@
 <template>
     <h2> LP Basket: {{ fullyQualifiedName }}</h2>
-    <h3> Blocks: 
+    <h3> Blocks:
         <a v-if="explorerLink" :href="explorerLink" target="_blank">{{ bestHeight }}</a>
         <span v-else>{{ bestHeight }}</span> |
         Supply:
@@ -37,6 +37,26 @@
             </tr>
         </tbody>
     </v-table>
+    <p>Add liquidity: <input v-model="addLiquidityAmount" placeholder="edit me" />
+        Reserve:
+        <select v-model="addLiquidityReserve">
+            <option disabled value="">Please select one</option>
+            <option v-for="option in basketsCurrencies" :value="option.currencyid">
+                {{ option.ticker }}
+            </option>
+        </select>
+    </p>
+    <p>Remove liquidity: <input v-model="removeLiquidityAmount" placeholder="edit me" />
+        Reserve:
+        <select v-model="removeLiquidityReserve">
+            <option disabled value="">Please select one</option>
+            <option v-for="option in basketsCurrencies" :value="option.currencyid">
+                {{ option.ticker }}
+            </option>
+        </select>
+    </p>
+    <p> <button @click="evaluateChanges()">Evaluate</button>
+    </p>
 </template>
 <script>
 import { ref, onMounted } from 'vue';
@@ -139,36 +159,36 @@ export default {
 <style scoped>
 :root {
 
-line-height: 1.5;
-font-weight: 400;
+    line-height: 1.5;
+    font-weight: 400;
 
-color-scheme: light dark;
-color: rgba(255, 255, 255, 0.87);
-background-color: #242424;
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
 
-font-synthesis: none;
-text-rendering: optimizeLegibility;
--webkit-font-smoothing: antialiased;
--moz-osx-font-smoothing: grayscale;
--webkit-text-size-adjust: 100%;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
 }
 
 .custom-font {
-font-family: sans-serif;
-font-size: 15px;
+    font-family: sans-serif;
+    font-size: 15px;
 }
 
 body {
-  margin: 550;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+    margin: 550;
+    display: flex;
+    place-items: center;
+    min-width: 320px;
+    min-height: 100vh;
 }
 
 h2 {
-  font-size: 3.2em;
-  line-height: 1.1;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 3.2em;
+    line-height: 1.1;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 </style>

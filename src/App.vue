@@ -1,6 +1,5 @@
 <template>
   <div id="verusvueapp">
-
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="BRIDGEVETH" v-bind:webLink="bridgevethwebsite"
       v-bind:explorerLink="verusexplorer" v-bind:supply="bridgevethsupply" v-bind:bestHeight="bridgevethbestheight"
       v-bind:reserveCurrencies="bridgevethreservecurrencies" />
@@ -82,6 +81,12 @@ export default {
     };
   },
   methods: {
+    evaluateBridgeVeth() {
+      console.log(this.bridgevethcurrencies)
+      console.log("evaluate bridge veth" + this.addLiquidityBridgeVethAmount + " add " + this.addLiquidityBridgeVethReserve + this.removeLiquidityBridgeVethAmount + " remove " + this.removeLiquidityBridgeVethReserve)
+      const reserveAdd = this.bridgevethcurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve)
+      this.bridgevethcurrencies.reserveAdd.bestcurrencystate.reserves + this.addLiquidityBridgeVethAmount
+    },
     getLatestBlock() {
       const requestData = {
         method: 'post',
@@ -112,6 +117,7 @@ export default {
         })
 
     },
+
     sendRequestRPC(requestData) {
       return axios({
         method: requestData.method,
