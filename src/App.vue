@@ -9,7 +9,7 @@
           <th>Reserve / VRSC </th>
           <th>Reserve / MKR </th>
           <th>Reserve / ETH </th>
-          <th>Bridge / Reserve</th>
+          <th>Bridge / Reserve *</th>
           <th>Reserves</th>
           <th>Weight</th>
         </tr>
@@ -21,7 +21,7 @@
           <td>{{ getReserveVrscPrice(currency.reserves) }} VRSC</td>
           <td>{{ getReserveMkrPrice(currency.reserves) }} MKR</td>
           <td>{{ getReserveEthPrice(currency.reserves) }} ETH</td>
-          <td>{{ parseFloat(currency.priceinreserve.toFixed(6)) }}</td>
+          <td>{{ parseFloat(currency.priceinreserve.toFixed(6)) }} *</td>
           <td>{{ parseFloat(currency.reserves.toFixed(3)) }}</td>
           <td>{{ currency.weight }}</td>
         </tr>
@@ -45,7 +45,7 @@
         </option>
       </select>
     </p>
-    <p> <button @click="evaluateBridgeVeth()">Evaluate</button>
+    <p> <button @click="evaluateBridgeVeth()">Evaluate</button>* Evaluation does not calculate price of the LP currency
     </p>
     <h2> Bridge.vARRR</h2>
     <v-table class="custom-font">
@@ -56,7 +56,7 @@
           <th>Reserve / VRSC </th>
           <th>Reserve / Bridge.vETH </th>
           <th>Reserve / tBTC </th>
-          <th>Bridge.vARRR / Reserve</th>
+          <th>Bridge.vARRR / Reserve * </th>
           <th>Reserves</th>
           <th>Weight</th>
         </tr>
@@ -68,7 +68,7 @@
           <td>{{ getBridgeVarrrReserveVrscPrice(currency.reserves) }} VRSC</td>
           <td>{{ getBridgeVarrrReserveBridgeVethPrice(currency.reserves) }} Bridge.vETH</td>
           <td>{{ getBridgeVarrrReserveTbtcVethPrice(currency.reserves) }} tBTC</td>
-          <td>{{ parseFloat(currency.priceinreserve.toFixed(6)) }}</td>
+          <td>{{ parseFloat(currency.priceinreserve.toFixed(6)) }} *</td>
           <td>{{ parseFloat(currency.reserves.toFixed(3)) }}</td>
           <td>{{ currency.weight }}</td>
         </tr>
@@ -92,7 +92,7 @@
         </option>
       </select>
     </p>
-    <p> <button @click="evaluateBridgeVarrr()">Evaluate</button>
+    <p> <button @click="evaluateBridgeVarrr()">Evaluate</button> * Evaluation does not calculate price of the LP currency
     </p>
 
 
@@ -103,7 +103,7 @@
           <th>Reserve Currency</th>
           <th>Reserve / VRSC</th>
           <th>Reserve / tBTC </th>
-          <th>Pure / Reserve</th>
+          <th>Pure / Reserve *</th>
           <th>Reserves</th>
           <th>Weight</th>
         </tr>
@@ -113,7 +113,7 @@
           <td>{{ getTickerByCurrencyId(currency.currencyid) }}</td>
           <td>{{ getPureReserveVrscPrice(currency.reserves) }} VRSC</td>
           <td>{{ getPureReserveTbtcPrice(currency.reserves) }} tBTC</td>
-          <td>{{ parseFloat(currency.priceinreserve.toFixed(6)) }}</td>
+          <td>{{ parseFloat(currency.priceinreserve.toFixed(6)) }} *</td>
           <td>{{ parseFloat(currency.reserves.toFixed(3)) }}</td>
           <td>{{ currency.weight }}</td>
         </tr>
@@ -137,7 +137,7 @@
         </option>
       </select>
     </p>
-    <p> <button @click="evaluatePure()">Evaluate</button>
+    <p> <button @click="evaluatePure()">Evaluate</button>* Evaluation does not calculate price of the LP currency
     </p>
     <!-- <div>
       Latest block: {{ latestblock }}
