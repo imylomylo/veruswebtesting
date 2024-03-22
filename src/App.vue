@@ -64,6 +64,15 @@ export default {
       decodedrawtransaction: ref([]),
       mempool_count: ref(0),
       res: ref([]),
+      operationsBridgeVeth: [],
+      relativeOperationsBridgeVeth: [],
+      operationsBridgeVarrr: [],
+      relativeOperationsBridgeVarrr: [],
+      operationsPure: [],
+      relativeOperationsPure: [],
+      PURE: "PURE",
+      BRIDGEVETH: "Bridge.vETH",
+      BRIDGEVARRR: "Bridge.vARRR",
       arr_currencies: [
         { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
         { "currencyid": "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM", "ticker": "DAI.vETH" },
@@ -81,41 +90,229 @@ export default {
     };
   },
   methods: {
-    evaluateBridgeVeth() {
-      if (this.addLiquidityBridgeVethAmount > 0) {
-        let reservesAdd = this.bridgevethreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve).reserves
-        let reservesAddedNewAmount = parseFloat(reservesAdd) + parseFloat(this.addLiquidityBridgeVethAmount)
-        this.bridgevethreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve).reserves = reservesAddedNewAmount
+    clear(lp) {
+      if( lp === this.PURE ){
+        this.operationsPure = []
+        this.relativeOperationsPure = []
       }
-      if (this.removeLiquidityBridgeVethAmount > 0) {
-        let reservesRemove = this.bridgevethreservecurrencies.find(item => item.currencyid == this.removeLiquidityBridgeVethReserve).reserves
-        let reservesRemovedNewAmount = parseFloat(reservesRemove) - parseFloat(this.removeLiquidityBridgeVethAmount)
-        this.bridgevethreservecurrencies.find(item => item.currencyid == this.removeLiquidityBridgeVethReserve).reserves = reservesRemovedNewAmount
+      else if( lp === this.BRIDGEVETH ){
+        this.operationsBridgeVeth = []
+        this.relativeOperationsBridgeVeth = []
+      }
+      else if( lp === this.BRIDGEVARRR ){
+        this.operationsBridgeVarrr = []
+        this.relativeOperationsBridgeVarrr = []
       }
     },
-    evaluateBridgeVarrr() {
-      if (this.addLiquidityBridgeVarrrAmount > 0) {
-        let reservesAdd = this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVarrrReserve).reserves
-        let reservesAddedNewAmount = parseFloat(reservesAdd) + parseFloat(this.addLiquidityBridgeVarrrAmount)
-        this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVarrrReserve).reserves = reservesAddedNewAmount
+    getCurrencyTicker(lpcurrencies, currency) {
+      return lpcurrencies.find(item => item.currencyid === currency.currencyid).ticker
+    },
+    getCellClassPure(currencyBase, currencyRel) {
+      if (currencyBase.currencyid === currencyRel.currencyid) {
+        return ''
       }
-      if (this.removeLiquidityBridgeVarrrAmount > 0) {
-        let reservesRemove = this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.removeLiquidityBridgeVarrrReserve).reserves
-        let reservesRemovedNewAmount = parseFloat(reservesRemove) - parseFloat(this.removeLiquidityBridgeVarrrAmount)
-        this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.removeLiquidityBridgeVarrrReserve).reserves = reservesRemovedNewAmount
+
+      // the row is the base currency, it devalues when 
+      if (this.operationsPure[currencyBase.currencyid]) {
+        if (this.relativeOperationsPure[currencyRel.currencyid] != '') {
+          return this.relativeOperationsPure[currencyRel.currencyid] === 'add' ? 'light-green' : this.relativeOperationsPure[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+        }
       }
+      // rel currency e.g. dai price of asset
+      if (this.operationsPure[currencyRel.currencyid]) {
+        return this.operationsPure[currencyRel.currencyid] === 'add' ? 'light-green' : this.operationsPure[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+      }
+    },
+    getCellClassBridgeVarrr(currencyBase, currencyRel) {
+      if (currencyBase.currencyid === currencyRel.currencyid) {
+        return ''
+      }
+
+      // the row is the base currency, it devalues when 
+      if (this.operationsBridgeVarrr[currencyBase.currencyid]) {
+        if (this.relativeOperationsBridgeVarrr[currencyRel.currencyid] != '') {
+          return this.relativeOperationsBridgeVarrr[currencyRel.currencyid] === 'add' ? 'light-green' : this.relativeOperationsBridgeVarrr[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+        }
+      }
+      // rel currency e.g. dai price of asset
+      if (this.operationsBridgeVarrr[currencyRel.currencyid]) {
+        return this.operationsBridgeVarrr[currencyRel.currencyid] === 'add' ? 'light-green' : this.operationsBridgeVarrr[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+      }
+    },
+    getCellClassBridgeVeth(currencyBase, currencyRel) {
+      if (currencyBase.currencyid === currencyRel.currencyid) {
+        return ''
+      }
+
+      // the row is the base currency, it devalues when 
+      if (this.operationsBridgeVeth[currencyBase.currencyid]) {
+        if (this.relativeOperationsBridgeVeth[currencyRel.currencyid] != '') {
+          return this.relativeOperationsBridgeVeth[currencyRel.currencyid] === 'add' ? 'light-green' : this.relativeOperationsBridgeVeth[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+        }
+      }
+      // rel currency e.g. dai price of asset
+      if (this.operationsBridgeVeth[currencyRel.currencyid]) {
+        return this.operationsBridgeVeth[currencyRel.currencyid] === 'add' ? 'light-green' : this.operationsBridgeVeth[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+      }
+    },
+    getCellClass(currencyBase, currencyRel) {
+      if (currencyBase.currencyid === currencyRel.currencyid) {
+        return ''
+      }
+
+      // the row is the base currency, it devalues when 
+      if (this.operations[currencyBase.currencyid]) {
+        if (this.relativeOperations[currencyRel.currencyid] != '') {
+          return this.relativeOperations[currencyRel.currencyid] === 'add' ? 'light-green' : this.relativeOperations[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+        }
+      }
+      // rel currency e.g. dai price of asset
+      if (this.operations[currencyRel.currencyid]) {
+        return this.operations[currencyRel.currencyid] === 'add' ? 'light-green' : this.operations[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+      }
+    },
+    getOperation(currencyid) {
+      // console.log(currencyid)
+      // console.log(this.operations)
+      // console.log(this.relativeOperations)
+      if (this.relativeOperations[currencyid] != '') {
+        return this.relativeOperations[currencyid] === 'add' ? 'light-green' : this.relativeOperations[currencyid] === 'remove' ? 'light-red' : ''
+      }
+      else if (this.operations[currencyid] != '') {
+        return this.operations[currencyid] === 'add' ? 'light-green' : this.operations[currencyid] === 'remove' ? 'light-red' : ''
+      }
+    },
+    evaluateChanges(lp, reserveCurrenciesFromBCS, basketsCurrencies, addOrRemove, liquidityReserve, liquidityAmount) {
+      if (addOrRemove.length == 0 || liquidityAmount.length == 0 || liquidityReserve.length == 0) {
+        return
+      }
+      this.clear(lp)
+      let operations = Array()
+      let relativeOperations = Array()
+      if (addOrRemove === "add") {
+        operations[liquidityReserve] = "add"
+        const relativeArray = {};
+        basketsCurrencies.forEach(currency => {
+          if (currency.currencyid !== liquidityReserve) {
+            relativeArray[currency.currencyid] = "remove";
+          }
+        });
+
+        relativeOperations = relativeArray
+        basketsCurrencies.find(item => item.currencyid == liquidityReserve)
+        let reservesAdd = reserveCurrenciesFromBCS.find(item => item.currencyid == liquidityReserve).reserves
+        let reservesNewAmount = parseFloat(reservesAdd) + parseFloat(liquidityAmount)
+        reserveCurrenciesFromBCS.find(item => item.currencyid == liquidityReserve).reserves = reservesNewAmount
+      }
+      else if (addOrRemove === "remove") {
+        operations[liquidityReserve] = "remove"
+        const relativeArray = {};
+        basketsCurrencies.forEach(currency => {
+          if (currency.currencyid !== liquidityReserve) {
+            relativeArray[currency.currencyid] = "add";
+          }
+        });
+
+        relativeOperations = relativeArray
+        basketsCurrencies.find(item => item.currencyid == liquidityReserve)
+        let reservesAdd = reserveCurrenciesFromBCS.find(item => item.currencyid == liquidityReserve).reserves
+        let reservesNewAmount = parseFloat(reservesAdd) - parseFloat(liquidityAmount)
+        reserveCurrenciesFromBCS.find(item => item.currencyid == liquidityReserve).reserves = reservesNewAmount
+      }
+      if( lp === "PURE" ){
+        console.log("it is PURE")
+        this.purereservecurrencies = reserveCurrenciesFromBCS
+        this.operationsPure = operations
+        this.relativeOperationsPure = relativeOperations
+      }
+      else if ( lp === "Bridge.vETH" ){
+        this.bridgevethreservecurrencies = reserveCurrenciesFromBCS
+        this.operationsBridgeVeth = operations
+        this.relativeOperationsBridgeVeth = relativeOperations
+      }
+      else if ( lp === "Bridge.vARRR" ){
+        this.bridgevarrrreservecurrencies = reserveCurrenciesFromBCS
+        this.operationsBridgeVarrr = operations
+        this.relativeOperationsBridgeVarrr = relativeOperations
+      }
+    },
+
+    evaluateBridgeVeth0() {
+      if (this.addOrRemoveLiquidityBridgeVeth.length == 0 || this.liquidityBridgeVethAmount.length == 0 || this.liquidityBridgeVethReserve.length == 0) {
+        return
+      }
+      this.clear()
+      if (this.addOrRemoveLiquidityBridgeVeth === "add") {
+        this.operations[this.liquidityBridgeVethReserve] = "add"
+        const relativeArray = {};
+        this.bridgevethcurrencies.forEach(currency => {
+          if (currency.currencyid !== this.liquidityBridgeVethReserve) {
+            relativeArray[currency.currencyid] = "remove";
+          }
+        });
+
+        this.relativeOperations = relativeArray
+        this.bridgevethcurrencies.find(item => item.currencyid == this.liquidityBridgeVethReserve)
+        let reservesAdd = this.bridgevethreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVethReserve).reserves
+        let reservesNewAmount = parseFloat(reservesAdd) + parseFloat(this.liquidityBridgeVethAmount)
+        this.bridgevethreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVethReserve).reserves = reservesNewAmount
+      }
+      else if (this.addOrRemoveLiquidityBridgeVeth === "remove") {
+        this.operations[this.liquidityBridgeVethReserve] = "remove"
+        const relativeArray = {};
+        this.bridgevethcurrencies.forEach(currency => {
+          if (currency.currencyid !== this.liquidityBridgeVethReserve) {
+            relativeArray[currency.currencyid] = "add";
+          }
+        });
+
+        this.relativeOperations = relativeArray
+        this.bridgevethcurrencies.find(item => item.currencyid == this.liquidityBridgeVethReserve)
+        let reservesAdd = this.bridgevethreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVethReserve).reserves
+        let reservesNewAmount = parseFloat(reservesAdd) - parseFloat(this.liquidityBridgeVethAmount)
+        this.bridgevethreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVethReserve).reserves = reservesNewAmount
+      }
+    },
+    evaluateBridgeVarrr0() {
+      if (this.addOrRemoveLiquidityBridgeVarrr === "add") {
+        this.operations[this.liquidityBridgeVarrrReserve] = "add"
+        const relativeArray = {};
+        this.bridgevarrrcurrencies.forEach(currency => {
+          if (currency.currencyid !== this.liquidityBridgeVarrrReserve) {
+            relativeArray[currency.currencyid] = "remove";
+          }
+        });
+
+        this.relativeOperations = relativeArray
+        this.bridgevarrrcurrencies.find(item => item.currencyid == this.liquidityBridgeVarrrReserve)
+        let reservesAdd = this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVarrrReserve).reserves
+        let reservesNewAmount = parseFloat(reservesAdd) + parseFloat(this.liquidityBridgeVarrrAmount)
+        this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVarrrReserve).reserves = reservesNewAmount
+      }
+      else if (this.addOrRemoveLiquidityBridgeVarrr === "remove") {
+        this.operations[this.liquidityBridgeVarrrReserve] = "remove"
+        const relativeArray = {};
+        this.bridgevarrrcurrencies.forEach(currency => {
+          if (currency.currencyid !== this.liquidityBridgeVarrrReserve) {
+            relativeArray[currency.currencyid] = "add";
+          }
+        });
+
+        this.relativeOperations = relativeArray
+        this.bridgevarrrcurrencies.find(item => item.currencyid == this.liquidityBridgeVarrrReserve)
+        let reservesAdd = this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVarrrReserve).reserves
+        let reservesNewAmount = parseFloat(reservesAdd) - parseFloat(this.liquidityBridgeVarrrAmount)
+        this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVarrrReserve).reserves = reservesNewAmount
+      }
+    },
+    evaluateBridgeVeth() {
+      this.evaluateChanges(this.BRIDGEVETH, this.bridgevethreservecurrencies, this.bridgevethcurrencies, this.addOrRemoveLiquidityBridgeVeth, this.liquidityBridgeVethReserve, this.liquidityBridgeVethAmount)
     },
     evaluatePure() {
-      if (this.addLiquidityPureAmount > 0) {
-        let reservesAdd = this.purereservecurrencies.find(item => item.currencyid == this.addLiquidityPureReserve).reserves
-        let reservesAddedNewAmount = parseFloat(reservesAdd) + parseFloat(this.addLiquidityPureAmount)
-        this.purereservecurrencies.find(item => item.currencyid == this.addLiquidityPureReserve).reserves = reservesAddedNewAmount
-      }
-      if (this.removeLiquidityPureAmount > 0) {
-        let reservesRemove = this.purereservecurrencies.find(item => item.currencyid == this.removeLiquidityPureReserve).reserves
-        let reservesRemovedNewAmount = parseFloat(reservesRemove) - parseFloat(this.removeLiquidityPureAmount)
-        this.purereservecurrencies.find(item => item.currencyid == this.removeLiquidityPureReserve).reserves = reservesRemovedNewAmount
-      }
+      this.evaluateChanges(this.PURE, this.purereservecurrencies, this.purecurrencies, this.addOrRemoveLiquidityPure, this.liquidityPureReserve, this.liquidityPureAmount)
+    },
+    evaluateBridgeVarrr() {
+      this.evaluateChanges(this.BRIDGEVARRR, this.bridgevarrrreservecurrencies, this.bridgevarrrcurrencies, this.addOrRemoveLiquidityBridgeVarrr, this.liquidityBridgeVarrrReserve, this.liquidityBridgeVarrrAmount)
     },
     getLatestBlock() {
       const requestData = {
@@ -147,7 +344,6 @@ export default {
         })
 
     },
-
     sendRequestRPC(requestData) {
       return axios({
         method: requestData.method,
@@ -190,6 +386,7 @@ export default {
       };
       this.sendRequestRPC(requestData)
         .then((response) => {
+          this.responsePureBestCurrencyState = response.data.result.bestcurrencystate
           this.purereservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
           this.purebestheight = response.data.result.bestheight
           this.puresupply = response.data.result.bestcurrencystate.supply
@@ -211,6 +408,7 @@ export default {
       };
       this.sendRequestRPC(requestData)
         .then((response) => {
+          this.responseBridgeVarrrBestCurrencyState = response.data.result.bestcurrencystate
           this.bridgevarrrreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
           this.bridgevarrrbestheight = response.data.result.bestheight
           this.bridgevarrrsupply = response.data.result.bestcurrencystate.supply
@@ -280,6 +478,14 @@ export default {
 .custom-font {
   font-family: sans-serif;
   font-size: 15px;
+}
+
+.light-green {
+  background-color: lightgreen;
+}
+
+.light-red {
+  background-color: lightcoral;
 }
 
 a {
