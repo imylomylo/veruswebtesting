@@ -15,7 +15,7 @@
       </thead>
       <tbody>
         <tr v-for="(currencyBase, rowIndex) in bridgevethreservecurrencies" :key="rowIndex">
-          <td> {{ getCurrencyTicker(bridgevethcurrencies, currencyBase) }} </td>
+          <td :class="getCellClassBridgeVeth(currencyBase, BRIDGEVETH)"> {{ getCurrencyTicker(bridgevethcurrencies, currencyBase) }} </td>
           <td v-for="(currencyRel, colIndex) in bridgevethcurrencies" :key="colIndex"
             :class="getCellClassBridgeVeth(currencyBase, currencyRel)">
             {{ getReservePrice(bridgevethreservecurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
@@ -69,7 +69,7 @@
       </thead>
       <tbody>
         <tr v-for="(currencyBase, rowIndex) in bridgevarrrreservecurrencies" :key="rowIndex">
-          <td> {{ getCurrencyTicker(bridgevarrrcurrencies, currencyBase) }} </td>
+          <td :class="getCellClassBridgeVarrr(currencyBase, BRIDGEVARRR)"> {{ getCurrencyTicker(bridgevarrrcurrencies, currencyBase) }} </td>
           <td v-for="(currencyRel, colIndex) in bridgevarrrcurrencies" :key="colIndex"
             :class="getCellClassBridgeVarrr(currencyBase, currencyRel)">
             {{ getReservePrice(bridgevarrrreservecurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
@@ -126,7 +126,7 @@
       </thead>
       <tbody>
         <tr v-for="(currencyBase, rowIndex) in purereservecurrencies" :key="rowIndex">
-          <td> {{ getCurrencyTicker(purecurrencies, currencyBase) }} </td>
+          <td :class="getCellClassPure(currencyBase, PURE)"> {{ getCurrencyTicker(purecurrencies, currencyBase) }} </td>
           <td v-for="(currencyRel, colIndex) in purecurrencies" :key="colIndex"
             :class="getCellClassPure(currencyBase, currencyRel)">
             {{ getReservePrice(purereservecurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
@@ -273,6 +273,10 @@ export default {
         return ''
       }
 
+      if(currencyRel === this.PURE){
+        return this.operationsPure[currencyBase.currencyid] === 'add' ? 'light-red' : this.operationsPure[currencyBase.currencyid] === 'remove' ? 'light-green' : ''
+      }
+
       // the row is the base currency, it devalues when 
       if (this.operationsPure[currencyBase.currencyid]) {
         if (this.relativeOperationsPure[currencyRel.currencyid] != '') {
@@ -287,6 +291,10 @@ export default {
     getCellClassBridgeVarrr(currencyBase, currencyRel) {
       if (currencyBase.currencyid === currencyRel.currencyid) {
         return ''
+      }
+
+      if(currencyRel === this.BRIDGEVARRR){
+        return this.operationsBridgeVarrr[currencyBase.currencyid] === 'add' ? 'light-red' : this.operationsBridgeVarrr[currencyBase.currencyid] === 'remove' ? 'light-green' : ''
       }
 
       // the row is the base currency, it devalues when 
@@ -305,13 +313,17 @@ export default {
         return ''
       }
 
-      // the row is the base currency, it devalues when 
+      if(currencyRel === this.BRIDGEVETH){
+        return this.operationsBridgeVeth[currencyBase.currencyid] === 'add' ? 'light-red' : this.operationsBridgeVeth[currencyBase.currencyid] === 'remove' ? 'light-green' : ''
+      }
+
+      // the row is the base currency, it devalues when added
       if (this.operationsBridgeVeth[currencyBase.currencyid]) {
         if (this.relativeOperationsBridgeVeth[currencyRel.currencyid] != '') {
           return this.relativeOperationsBridgeVeth[currencyRel.currencyid] === 'add' ? 'light-green' : this.relativeOperationsBridgeVeth[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
         }
       }
-      // rel currency e.g. dai price of asset
+      // rel currency e.g. increases when base is added
       if (this.operationsBridgeVeth[currencyRel.currencyid]) {
         return this.operationsBridgeVeth[currencyRel.currencyid] === 'add' ? 'light-green' : this.operationsBridgeVeth[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
       }
@@ -395,75 +407,6 @@ export default {
         this.bridgevarrrreservecurrencies = reserveCurrenciesFromBCS
         this.operationsBridgeVarrr = operations
         this.relativeOperationsBridgeVarrr = relativeOperations
-      }
-    },
-
-    evaluateBridgeVeth0() {
-      if (this.addOrRemoveLiquidityBridgeVeth.length == 0 || this.liquidityBridgeVethAmount.length == 0 || this.liquidityBridgeVethReserve.length == 0) {
-        return
-      }
-      this.clear()
-      if (this.addOrRemoveLiquidityBridgeVeth === "add") {
-        this.operations[this.liquidityBridgeVethReserve] = "add"
-        const relativeArray = {};
-        this.bridgevethcurrencies.forEach(currency => {
-          if (currency.currencyid !== this.liquidityBridgeVethReserve) {
-            relativeArray[currency.currencyid] = "remove";
-          }
-        });
-
-        this.relativeOperations = relativeArray
-        this.bridgevethcurrencies.find(item => item.currencyid == this.liquidityBridgeVethReserve)
-        let reservesAdd = this.bridgevethreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVethReserve).reserves
-        let reservesNewAmount = parseFloat(reservesAdd) + parseFloat(this.liquidityBridgeVethAmount)
-        this.bridgevethreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVethReserve).reserves = reservesNewAmount
-      }
-      else if (this.addOrRemoveLiquidityBridgeVeth === "remove") {
-        this.operations[this.liquidityBridgeVethReserve] = "remove"
-        const relativeArray = {};
-        this.bridgevethcurrencies.forEach(currency => {
-          if (currency.currencyid !== this.liquidityBridgeVethReserve) {
-            relativeArray[currency.currencyid] = "add";
-          }
-        });
-
-        this.relativeOperations = relativeArray
-        this.bridgevethcurrencies.find(item => item.currencyid == this.liquidityBridgeVethReserve)
-        let reservesAdd = this.bridgevethreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVethReserve).reserves
-        let reservesNewAmount = parseFloat(reservesAdd) - parseFloat(this.liquidityBridgeVethAmount)
-        this.bridgevethreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVethReserve).reserves = reservesNewAmount
-      }
-    },
-    evaluateBridgeVarrr0() {
-      if (this.addOrRemoveLiquidityBridgeVarrr === "add") {
-        this.operations[this.liquidityBridgeVarrrReserve] = "add"
-        const relativeArray = {};
-        this.bridgevarrrcurrencies.forEach(currency => {
-          if (currency.currencyid !== this.liquidityBridgeVarrrReserve) {
-            relativeArray[currency.currencyid] = "remove";
-          }
-        });
-
-        this.relativeOperations = relativeArray
-        this.bridgevarrrcurrencies.find(item => item.currencyid == this.liquidityBridgeVarrrReserve)
-        let reservesAdd = this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVarrrReserve).reserves
-        let reservesNewAmount = parseFloat(reservesAdd) + parseFloat(this.liquidityBridgeVarrrAmount)
-        this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVarrrReserve).reserves = reservesNewAmount
-      }
-      else if (this.addOrRemoveLiquidityBridgeVarrr === "remove") {
-        this.operations[this.liquidityBridgeVarrrReserve] = "remove"
-        const relativeArray = {};
-        this.bridgevarrrcurrencies.forEach(currency => {
-          if (currency.currencyid !== this.liquidityBridgeVarrrReserve) {
-            relativeArray[currency.currencyid] = "add";
-          }
-        });
-
-        this.relativeOperations = relativeArray
-        this.bridgevarrrcurrencies.find(item => item.currencyid == this.liquidityBridgeVarrrReserve)
-        let reservesAdd = this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVarrrReserve).reserves
-        let reservesNewAmount = parseFloat(reservesAdd) - parseFloat(this.liquidityBridgeVarrrAmount)
-        this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVarrrReserve).reserves = reservesNewAmount
       }
     },
     evaluateBridgeVeth() {
