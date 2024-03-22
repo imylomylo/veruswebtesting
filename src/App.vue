@@ -1,144 +1,171 @@
 <template>
   <div id="verusvueapp">
-    <h2> Bridge.vETH</h2>
+    <h2> LP: Bridge.vETH</h2>
     <v-table class="custom-font">
       <thead>
         <tr>
           <th>Reserve Currency</th>
-          <th>Reserve / DAI</th>
-          <th>Reserve / VRSC </th>
-          <th>Reserve / MKR </th>
-          <th>Reserve / ETH </th>
-          <th>Bridge / Reserve *</th>
+          <th v-for="(currency) in bridgevethreservecurrencies">
+            Reserve / {{ getTickerByCurrencyId(currency.currencyid) }}
+          </th>
+          <th>LP / Reserve *</th>
           <th>Reserves</th>
           <th>Weight</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(currency, index) in bridgevethreservecurrencies" :key="index">
-          <td>{{ getTickerByCurrencyId(currency.currencyid) }}</td>
-          <td>{{ getReserveDaiPrice(currency.reserves) }} DAI</td>
-          <td>{{ getReserveVrscPrice(currency.reserves) }} VRSC</td>
-          <td>{{ getReserveMkrPrice(currency.reserves) }} MKR</td>
-          <td>{{ getReserveEthPrice(currency.reserves) }} ETH</td>
-          <td>{{ parseFloat(currency.priceinreserve.toFixed(6)) }} *</td>
-          <td>{{ parseFloat(currency.reserves.toFixed(3)) }}</td>
-          <td>{{ currency.weight }}</td>
+        <tr v-for="(currencyBase, rowIndex) in bridgevethreservecurrencies" :key="rowIndex">
+          <td> {{ getCurrencyTicker(bridgevethcurrencies, currencyBase) }} </td>
+          <td v-for="(currencyRel, colIndex) in bridgevethcurrencies" :key="colIndex"
+            :class="getCellClassBridgeVeth(currencyBase, currencyRel)">
+            {{ getReservePrice(bridgevethreservecurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
+          </td>
+          <td>{{ parseFloat(currencyBase.priceinreserve.toFixed(6)) }} {{ getTickerByCurrencyId(currencyBase.currencyid)
+            }} *</td>
+          <td>{{ parseFloat(currencyBase.reserves.toFixed(3)) }}</td>
+          <td>{{ currencyBase.weight }}</td>
         </tr>
       </tbody>
     </v-table>
-    <p>Add liquidity estimate: <input v-model="addLiquidityBridgeVethAmount" placeholder="edit me" />
+    <p>
+      Add/Remove:
+      <select v-model="addOrRemoveLiquidityBridgeVeth">
+        <option disabled value="">Please select one</option>
+        <option value="add">
+          Add
+        </option>
+        <option value="remove">
+          Remove
+        </option>
+      </select>
       Reserve:
-      <select v-model="addLiquidityBridgeVethReserve">
+      <select v-model="liquidityBridgeVethReserve">
         <option disabled value="">Please select one</option>
         <option v-for="option in bridgevethcurrencies" :value="option.currencyid">
           {{ option.ticker }}
         </option>
       </select>
-    </p>
-    <p>Remove liquidity estimate: <input v-model="removeLiquidityBridgeVethAmount" placeholder="edit me" />
-      Reserve:
-      <select v-model="removeLiquidityBridgeVethReserve">
-        <option disabled value="">Please select one</option>
-        <option v-for="option in bridgevethcurrencies" :value="option.currencyid">
-          {{ option.ticker }}
-        </option>
-      </select>
+      Liquidity Amount: <input v-model="liquidityBridgeVethAmount" placeholder="edit me" />
+
     </p>
     <p> <button @click="evaluateBridgeVeth()">Evaluate</button>* Evaluation does not calculate price of the LP currency
     </p>
-    <h2> Bridge.vARRR</h2>
+    <p> <button @click="clear(BRIDGEVETH)">Clear</button> Only clears green/red - useful for chaining together what-if. For reset,
+      refresh page.
+    </p>
+
+    <h2> LP: Bridge.vARRR</h2>
     <v-table class="custom-font">
       <thead>
         <tr>
           <th>Reserve Currency</th>
-          <th>Reserve / vARRR</th>
-          <th>Reserve / VRSC </th>
-          <th>Reserve / Bridge.vETH </th>
-          <th>Reserve / tBTC </th>
-          <th>Bridge.vARRR / Reserve * </th>
+          <th v-for="(currency) in bridgevarrrreservecurrencies">
+            Reserve / {{ getTickerByCurrencyId(currency.currencyid) }}
+          </th>
+          <th>LP / Reserve *</th>
           <th>Reserves</th>
           <th>Weight</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(currency, index) in bridgevarrrreservecurrencies" :key="index">
-          <td>{{ getTickerByCurrencyId(currency.currencyid) }}</td>
-          <td>{{ getBridgeVarrrReserveVarrrPrice(currency.reserves) }} vARRR</td>
-          <td>{{ getBridgeVarrrReserveVrscPrice(currency.reserves) }} VRSC</td>
-          <td>{{ getBridgeVarrrReserveBridgeVethPrice(currency.reserves) }} Bridge.vETH</td>
-          <td>{{ getBridgeVarrrReserveTbtcVethPrice(currency.reserves) }} tBTC</td>
-          <td>{{ parseFloat(currency.priceinreserve.toFixed(6)) }} *</td>
-          <td>{{ parseFloat(currency.reserves.toFixed(3)) }}</td>
-          <td>{{ currency.weight }}</td>
+        <tr v-for="(currencyBase, rowIndex) in bridgevarrrreservecurrencies" :key="rowIndex">
+          <td> {{ getCurrencyTicker(bridgevarrrcurrencies, currencyBase) }} </td>
+          <td v-for="(currencyRel, colIndex) in bridgevarrrcurrencies" :key="colIndex"
+            :class="getCellClassBridgeVarrr(currencyBase, currencyRel)">
+            {{ getReservePrice(bridgevarrrreservecurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
+          </td>
+          <td>{{ parseFloat(currencyBase.priceinreserve.toFixed(6)) }} {{ getTickerByCurrencyId(currencyBase.currencyid)
+            }} *</td>
+          <td>{{ parseFloat(currencyBase.reserves.toFixed(3)) }}</td>
+          <td>{{ currencyBase.weight }}</td>
         </tr>
       </tbody>
     </v-table>
-    <p>Add liquidity estimate: <input v-model="addLiquidityBridgeVarrrAmount" placeholder="edit me" />
+
+    <p>
+      Add/Remove:
+      <select v-model="addOrRemoveLiquidityBridgeVarrr">
+        <option disabled value="">Please select one</option>
+        <option value="add">
+          Add
+        </option>
+        <option value="remove">
+          Remove
+        </option>
+      </select>
       Reserve:
-      <select v-model="addLiquidityBridgeVarrrReserve">
+      <select v-model="liquidityBridgeVarrrReserve">
         <option disabled value="">Please select one</option>
         <option v-for="option in bridgevarrrcurrencies" :value="option.currencyid">
           {{ option.ticker }}
         </option>
       </select>
+      Liquidity Amount: <input v-model="liquidityBridgeVarrrAmount" placeholder="edit me" />
+
     </p>
-    <p>Remove liquidity estimate: <input v-model="removeLiquidityBridgeVarrrAmount" placeholder="edit me" />
-      Reserve:
-      <select v-model="removeLiquidityBridgeVarrrReserve">
-        <option disabled value="">Please select one</option>
-        <option v-for="option in bridgevarrrcurrencies" :value="option.currencyid">
-          {{ option.ticker }}
-        </option>
-      </select>
+    <p> <button @click="evaluateBridgeVarrr()">Evaluate</button>* Evaluation does not calculate price of the LP currency
     </p>
-    <p> <button @click="evaluateBridgeVarrr()">Evaluate</button> * Evaluation does not calculate price of the LP currency
+    <p> <button @click="clear(BRIDGEVARRR)">Clear</button> Only clears green/red - useful for chaining together what-if. For reset,
+      refresh page.
     </p>
 
 
-    <h2> Pure</h2>
+
+    <h2> LP: Pure</h2>
     <v-table class="custom-font">
       <thead>
         <tr>
           <th>Reserve Currency</th>
-          <th>Reserve / VRSC</th>
-          <th>Reserve / tBTC </th>
-          <th>Pure / Reserve *</th>
+          <th v-for="(currency) in purereservecurrencies">
+            Reserve / {{ getTickerByCurrencyId(currency.currencyid) }}
+          </th>
+          <th>LP / Reserve *</th>
           <th>Reserves</th>
           <th>Weight</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(currency, index) in purereservecurrencies" :key="index">
-          <td>{{ getTickerByCurrencyId(currency.currencyid) }}</td>
-          <td>{{ getPureReserveVrscPrice(currency.reserves) }} VRSC</td>
-          <td>{{ getPureReserveTbtcPrice(currency.reserves) }} tBTC</td>
-          <td>{{ parseFloat(currency.priceinreserve.toFixed(6)) }} *</td>
-          <td>{{ parseFloat(currency.reserves.toFixed(3)) }}</td>
-          <td>{{ currency.weight }}</td>
+        <tr v-for="(currencyBase, rowIndex) in purereservecurrencies" :key="rowIndex">
+          <td> {{ getCurrencyTicker(purecurrencies, currencyBase) }} </td>
+          <td v-for="(currencyRel, colIndex) in purecurrencies" :key="colIndex"
+            :class="getCellClassPure(currencyBase, currencyRel)">
+            {{ getReservePrice(purereservecurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
+          </td>
+          <td>{{ parseFloat(currencyBase.priceinreserve.toFixed(6)) }} {{ getTickerByCurrencyId(currencyBase.currencyid)
+            }} *</td>
+          <td>{{ parseFloat(currencyBase.reserves.toFixed(3)) }}</td>
+          <td>{{ currencyBase.weight }}</td>
         </tr>
       </tbody>
     </v-table>
-    <p>Add liquidity estimate: <input v-model="addLiquidityPureAmount" placeholder="edit me" />
+
+    <p>
+      Add/Remove:
+      <select v-model="addOrRemoveLiquidityPure">
+        <option disabled value="">Please select one</option>
+        <option value="add">
+          Add
+        </option>
+        <option value="remove">
+          Remove
+        </option>
+      </select>
       Reserve:
-      <select v-model="addLiquidityPureReserve">
+      <select v-model="liquidityPureReserve">
         <option disabled value="">Please select one</option>
         <option v-for="option in purecurrencies" :value="option.currencyid">
           {{ option.ticker }}
         </option>
       </select>
-    </p>
-    <p>Remove liquidity estimate: <input v-model="removeLiquidityPureAmount" placeholder="edit me" />
-      Reserve:
-      <select v-model="removeLiquidityPureReserve">
-        <option disabled value="">Please select one</option>
-        <option v-for="option in purecurrencies" :value="option.currencyid">
-          {{ option.ticker }}
-        </option>
-      </select>
+      Liquidity Amount: <input v-model="liquidityPureAmount" placeholder="edit me" />
+
     </p>
     <p> <button @click="evaluatePure()">Evaluate</button>* Evaluation does not calculate price of the LP currency
     </p>
+    <p> <button @click="clear(PURE)">Clear</button> Only clears green/red - useful for chaining together what-if. For reset,
+      refresh page.
+    </p>
+
     <!-- <div>
       Latest block: {{ latestblock }}
     </div> -->
@@ -164,27 +191,36 @@ export default {
     return {
       explorertx: "https://insight.verus.io/tx/",
       latestblock: ref([]),
+      responseBridgeVethBestCurrencyState: ref([]),
+      responseBridgeVarrrBestCurrencyState: ref([]),
+      responsePureBestCurrencyState: ref([]),
       bridgevethreservecurrencies: ref([]),
       purereservecurrencies: ref([]),
       bridgevarrrreservecurrencies: ref([]),
-      addLiquidityBridgeVethAmount: ref([]),
-      removeLiquidityBridgeVethAmount: ref([]),
-      addLiquidityBridgeVethReserve: ref([]),
-      removeLiquidityBridgeVethReserve: ref([]),
-      addLiquidityBridgeVarrrAmount: ref([]),
-      removeLiquidityBridgeVarrrAmount: ref([]),
-      addLiquidityBridgeVarrrReserve: ref([]),
-      removeLiquidityBridgeVarrrReserve: ref([]),
-      addLiquidityPureAmount: ref([]),
-      removeLiquidityPureAmount: ref([]),
-      addLiquidityPureReserve: ref([]),
-      removeLiquidityPureReserve: ref([]),
+      addOrRemoveLiquidityBridgeVeth: ref([]),
+      liquidityBridgeVethAmount: ref([]),
+      liquidityBridgeVethReserve: ref([]),
+      addOrRemoveLiquidityBridgeVarrr: ref([]),
+      liquidityBridgeVarrrAmount: ref([]),
+      liquidityBridgeVarrrReserve: ref([]),
+      addOrRemoveLiquidityPure: ref([]),
+      liquidityPureAmount: ref([]),
+      liquidityPureReserve: ref([]),
       mempool: ref([]),
       mempool_res: ref([]),
       rawtransaction: ref([]),
       decodedrawtransaction: ref([]),
       mempool_count: ref(0),
       res: ref([]),
+      operationsBridgeVeth: [],
+      relativeOperationsBridgeVeth: [],
+      operationsBridgeVarrr: [],
+      relativeOperationsBridgeVarrr: [],
+      operationsPure: [],
+      relativeOperationsPure: [],
+      PURE: "PURE",
+      BRIDGEVETH: "Bridge.vETH",
+      BRIDGEVARRR: "Bridge.vARRR",
       arr_currencies: [
         { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
         { "currencyid": "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM", "ticker": "DAI.vETH" },
@@ -206,50 +242,238 @@ export default {
       ],
       bridgevarrrcurrencies: [
         { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
-        { "currencyid": "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU", "ticker": "tBTC" },
         { "currencyid": "iExBJfZYK7KREDpuhj6PzZBzqMAKaFg7d2", "ticker": "vARRR" },
-        { "currencyid": "i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "ticker": "Bridge.vETH" }
+        { "currencyid": "i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "ticker": "Bridge.vETH" },
+        { "currencyid": "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU", "ticker": "tBTC" }
       ]
 
     };
   },
 
   methods: {
-    evaluateBridgeVeth() {
-      if (this.addLiquidityBridgeVethAmount > 0) {
-        let reservesAdd = this.bridgevethreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve).reserves
-        let reservesAddedNewAmount = parseFloat(reservesAdd) + parseFloat(this.addLiquidityBridgeVethAmount)
-        this.bridgevethreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVethReserve).reserves = reservesAddedNewAmount
+    clear(lp) {
+      if( lp === this.PURE ){
+        this.operationsPure = []
+        this.relativeOperationsPure = []
       }
-      if (this.removeLiquidityBridgeVethAmount > 0) {
-        let reservesRemove = this.bridgevethreservecurrencies.find(item => item.currencyid == this.removeLiquidityBridgeVethReserve).reserves
-        let reservesRemovedNewAmount = parseFloat(reservesRemove) - parseFloat(this.removeLiquidityBridgeVethAmount)
-        this.bridgevethreservecurrencies.find(item => item.currencyid == this.removeLiquidityBridgeVethReserve).reserves = reservesRemovedNewAmount
+      else if( lp === this.BRIDGEVETH ){
+        this.operationsBridgeVeth = []
+        this.relativeOperationsBridgeVeth = []
+      }
+      else if( lp === this.BRIDGEVARRR ){
+        this.operationsBridgeVarrr = []
+        this.relativeOperationsBridgeVarrr = []
       }
     },
-    evaluateBridgeVarrr() {
-      if (this.addLiquidityBridgeVarrrAmount > 0) {
-        let reservesAdd = this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVarrrReserve).reserves
-        let reservesAddedNewAmount = parseFloat(reservesAdd) + parseFloat(this.addLiquidityBridgeVarrrAmount)
-        this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.addLiquidityBridgeVarrrReserve).reserves = reservesAddedNewAmount
+    getCurrencyTicker(lpcurrencies, currency) {
+      return lpcurrencies.find(item => item.currencyid === currency.currencyid).ticker
+    },
+    getCellClassPure(currencyBase, currencyRel) {
+      if (currencyBase.currencyid === currencyRel.currencyid) {
+        return ''
       }
-      if (this.removeLiquidityBridgeVarrrAmount > 0) {
-        let reservesRemove = this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.removeLiquidityBridgeVarrrReserve).reserves
-        let reservesRemovedNewAmount = parseFloat(reservesRemove) - parseFloat(this.removeLiquidityBridgeVarrrAmount)
-        this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.removeLiquidityBridgeVarrrReserve).reserves = reservesRemovedNewAmount
+
+      // the row is the base currency, it devalues when 
+      if (this.operationsPure[currencyBase.currencyid]) {
+        if (this.relativeOperationsPure[currencyRel.currencyid] != '') {
+          return this.relativeOperationsPure[currencyRel.currencyid] === 'add' ? 'light-green' : this.relativeOperationsPure[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+        }
       }
+      // rel currency e.g. dai price of asset
+      if (this.operationsPure[currencyRel.currencyid]) {
+        return this.operationsPure[currencyRel.currencyid] === 'add' ? 'light-green' : this.operationsPure[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+      }
+    },
+    getCellClassBridgeVarrr(currencyBase, currencyRel) {
+      if (currencyBase.currencyid === currencyRel.currencyid) {
+        return ''
+      }
+
+      // the row is the base currency, it devalues when 
+      if (this.operationsBridgeVarrr[currencyBase.currencyid]) {
+        if (this.relativeOperationsBridgeVarrr[currencyRel.currencyid] != '') {
+          return this.relativeOperationsBridgeVarrr[currencyRel.currencyid] === 'add' ? 'light-green' : this.relativeOperationsBridgeVarrr[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+        }
+      }
+      // rel currency e.g. dai price of asset
+      if (this.operationsBridgeVarrr[currencyRel.currencyid]) {
+        return this.operationsBridgeVarrr[currencyRel.currencyid] === 'add' ? 'light-green' : this.operationsBridgeVarrr[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+      }
+    },
+    getCellClassBridgeVeth(currencyBase, currencyRel) {
+      if (currencyBase.currencyid === currencyRel.currencyid) {
+        return ''
+      }
+
+      // the row is the base currency, it devalues when 
+      if (this.operationsBridgeVeth[currencyBase.currencyid]) {
+        if (this.relativeOperationsBridgeVeth[currencyRel.currencyid] != '') {
+          return this.relativeOperationsBridgeVeth[currencyRel.currencyid] === 'add' ? 'light-green' : this.relativeOperationsBridgeVeth[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+        }
+      }
+      // rel currency e.g. dai price of asset
+      if (this.operationsBridgeVeth[currencyRel.currencyid]) {
+        return this.operationsBridgeVeth[currencyRel.currencyid] === 'add' ? 'light-green' : this.operationsBridgeVeth[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+      }
+    },
+    getCellClass(currencyBase, currencyRel) {
+      if (currencyBase.currencyid === currencyRel.currencyid) {
+        return ''
+      }
+
+      // the row is the base currency, it devalues when 
+      if (this.operations[currencyBase.currencyid]) {
+        if (this.relativeOperations[currencyRel.currencyid] != '') {
+          return this.relativeOperations[currencyRel.currencyid] === 'add' ? 'light-green' : this.relativeOperations[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+        }
+      }
+      // rel currency e.g. dai price of asset
+      if (this.operations[currencyRel.currencyid]) {
+        return this.operations[currencyRel.currencyid] === 'add' ? 'light-green' : this.operations[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+      }
+    },
+    getOperation(currencyid) {
+      // console.log(currencyid)
+      // console.log(this.operations)
+      // console.log(this.relativeOperations)
+      if (this.relativeOperations[currencyid] != '') {
+        return this.relativeOperations[currencyid] === 'add' ? 'light-green' : this.relativeOperations[currencyid] === 'remove' ? 'light-red' : ''
+      }
+      else if (this.operations[currencyid] != '') {
+        return this.operations[currencyid] === 'add' ? 'light-green' : this.operations[currencyid] === 'remove' ? 'light-red' : ''
+      }
+    },
+    evaluateChanges(lp, reserveCurrenciesFromBCS, basketsCurrencies, addOrRemove, liquidityReserve, liquidityAmount) {
+      if (addOrRemove.length == 0 || liquidityAmount.length == 0 || liquidityReserve.length == 0) {
+        return
+      }
+      this.clear(lp)
+      let operations = Array()
+      let relativeOperations = Array()
+      if (addOrRemove === "add") {
+        operations[liquidityReserve] = "add"
+        const relativeArray = {};
+        basketsCurrencies.forEach(currency => {
+          if (currency.currencyid !== liquidityReserve) {
+            relativeArray[currency.currencyid] = "remove";
+          }
+        });
+
+        relativeOperations = relativeArray
+        basketsCurrencies.find(item => item.currencyid == liquidityReserve)
+        let reservesAdd = reserveCurrenciesFromBCS.find(item => item.currencyid == liquidityReserve).reserves
+        let reservesNewAmount = parseFloat(reservesAdd) + parseFloat(liquidityAmount)
+        reserveCurrenciesFromBCS.find(item => item.currencyid == liquidityReserve).reserves = reservesNewAmount
+      }
+      else if (addOrRemove === "remove") {
+        operations[liquidityReserve] = "remove"
+        const relativeArray = {};
+        basketsCurrencies.forEach(currency => {
+          if (currency.currencyid !== liquidityReserve) {
+            relativeArray[currency.currencyid] = "add";
+          }
+        });
+
+        relativeOperations = relativeArray
+        basketsCurrencies.find(item => item.currencyid == liquidityReserve)
+        let reservesAdd = reserveCurrenciesFromBCS.find(item => item.currencyid == liquidityReserve).reserves
+        let reservesNewAmount = parseFloat(reservesAdd) - parseFloat(liquidityAmount)
+        reserveCurrenciesFromBCS.find(item => item.currencyid == liquidityReserve).reserves = reservesNewAmount
+      }
+      if( lp === "PURE" ){
+        console.log("it is PURE")
+        this.purereservecurrencies = reserveCurrenciesFromBCS
+        this.operationsPure = operations
+        this.relativeOperationsPure = relativeOperations
+      }
+      else if ( lp === "Bridge.vETH" ){
+        this.bridgevethreservecurrencies = reserveCurrenciesFromBCS
+        this.operationsBridgeVeth = operations
+        this.relativeOperationsBridgeVeth = relativeOperations
+      }
+      else if ( lp === "Bridge.vARRR" ){
+        this.bridgevarrrreservecurrencies = reserveCurrenciesFromBCS
+        this.operationsBridgeVarrr = operations
+        this.relativeOperationsBridgeVarrr = relativeOperations
+      }
+    },
+
+    evaluateBridgeVeth0() {
+      if (this.addOrRemoveLiquidityBridgeVeth.length == 0 || this.liquidityBridgeVethAmount.length == 0 || this.liquidityBridgeVethReserve.length == 0) {
+        return
+      }
+      this.clear()
+      if (this.addOrRemoveLiquidityBridgeVeth === "add") {
+        this.operations[this.liquidityBridgeVethReserve] = "add"
+        const relativeArray = {};
+        this.bridgevethcurrencies.forEach(currency => {
+          if (currency.currencyid !== this.liquidityBridgeVethReserve) {
+            relativeArray[currency.currencyid] = "remove";
+          }
+        });
+
+        this.relativeOperations = relativeArray
+        this.bridgevethcurrencies.find(item => item.currencyid == this.liquidityBridgeVethReserve)
+        let reservesAdd = this.bridgevethreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVethReserve).reserves
+        let reservesNewAmount = parseFloat(reservesAdd) + parseFloat(this.liquidityBridgeVethAmount)
+        this.bridgevethreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVethReserve).reserves = reservesNewAmount
+      }
+      else if (this.addOrRemoveLiquidityBridgeVeth === "remove") {
+        this.operations[this.liquidityBridgeVethReserve] = "remove"
+        const relativeArray = {};
+        this.bridgevethcurrencies.forEach(currency => {
+          if (currency.currencyid !== this.liquidityBridgeVethReserve) {
+            relativeArray[currency.currencyid] = "add";
+          }
+        });
+
+        this.relativeOperations = relativeArray
+        this.bridgevethcurrencies.find(item => item.currencyid == this.liquidityBridgeVethReserve)
+        let reservesAdd = this.bridgevethreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVethReserve).reserves
+        let reservesNewAmount = parseFloat(reservesAdd) - parseFloat(this.liquidityBridgeVethAmount)
+        this.bridgevethreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVethReserve).reserves = reservesNewAmount
+      }
+    },
+    evaluateBridgeVarrr0() {
+      if (this.addOrRemoveLiquidityBridgeVarrr === "add") {
+        this.operations[this.liquidityBridgeVarrrReserve] = "add"
+        const relativeArray = {};
+        this.bridgevarrrcurrencies.forEach(currency => {
+          if (currency.currencyid !== this.liquidityBridgeVarrrReserve) {
+            relativeArray[currency.currencyid] = "remove";
+          }
+        });
+
+        this.relativeOperations = relativeArray
+        this.bridgevarrrcurrencies.find(item => item.currencyid == this.liquidityBridgeVarrrReserve)
+        let reservesAdd = this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVarrrReserve).reserves
+        let reservesNewAmount = parseFloat(reservesAdd) + parseFloat(this.liquidityBridgeVarrrAmount)
+        this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVarrrReserve).reserves = reservesNewAmount
+      }
+      else if (this.addOrRemoveLiquidityBridgeVarrr === "remove") {
+        this.operations[this.liquidityBridgeVarrrReserve] = "remove"
+        const relativeArray = {};
+        this.bridgevarrrcurrencies.forEach(currency => {
+          if (currency.currencyid !== this.liquidityBridgeVarrrReserve) {
+            relativeArray[currency.currencyid] = "add";
+          }
+        });
+
+        this.relativeOperations = relativeArray
+        this.bridgevarrrcurrencies.find(item => item.currencyid == this.liquidityBridgeVarrrReserve)
+        let reservesAdd = this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVarrrReserve).reserves
+        let reservesNewAmount = parseFloat(reservesAdd) - parseFloat(this.liquidityBridgeVarrrAmount)
+        this.bridgevarrrreservecurrencies.find(item => item.currencyid == this.liquidityBridgeVarrrReserve).reserves = reservesNewAmount
+      }
+    },
+    evaluateBridgeVeth() {
+      this.evaluateChanges(this.BRIDGEVETH, this.bridgevethreservecurrencies, this.bridgevethcurrencies, this.addOrRemoveLiquidityBridgeVeth, this.liquidityBridgeVethReserve, this.liquidityBridgeVethAmount)
     },
     evaluatePure() {
-      if (this.addLiquidityPureAmount > 0) {
-        let reservesAdd = this.purereservecurrencies.find(item => item.currencyid == this.addLiquidityPureReserve).reserves
-        let reservesAddedNewAmount = parseFloat(reservesAdd) + parseFloat(this.addLiquidityPureAmount)
-        this.purereservecurrencies.find(item => item.currencyid == this.addLiquidityPureReserve).reserves = reservesAddedNewAmount
-      }
-      if (this.removeLiquidityPureAmount > 0) {
-        let reservesRemove = this.purereservecurrencies.find(item => item.currencyid == this.removeLiquidityPureReserve).reserves
-        let reservesRemovedNewAmount = parseFloat(reservesRemove) - parseFloat(this.removeLiquidityPureAmount)
-        this.purereservecurrencies.find(item => item.currencyid == this.removeLiquidityPureReserve).reserves = reservesRemovedNewAmount
-      }
+      this.evaluateChanges(this.PURE, this.purereservecurrencies, this.purecurrencies, this.addOrRemoveLiquidityPure, this.liquidityPureReserve, this.liquidityPureAmount)
+    },
+    evaluateBridgeVarrr() {
+      this.evaluateChanges(this.BRIDGEVARRR, this.bridgevarrrreservecurrencies, this.bridgevarrrcurrencies, this.addOrRemoveLiquidityBridgeVarrr, this.liquidityBridgeVarrrReserve, this.liquidityBridgeVarrrAmount)
     },
     getLatestBlock() {
       const requestData = {
@@ -338,6 +562,15 @@ export default {
       if (dai) {
         return dai.reserves
       }
+    },
+    getReservePrice(reserveCurrencies, currency, targetCurrency) {
+      // console.log(this.bridgevethreservecurrencies)
+      // console.log(targetCurrency)
+      const currencyReserves = reserveCurrencies.find(item => item.currencyid == currency.currencyid)
+      // console.log(currencyReserves)
+      const targetCurrencyReserves = reserveCurrencies.find(item => item.currencyid == targetCurrency.currencyid)
+      // console.log(targetCurrencyReserves)
+      return parseFloat((targetCurrencyReserves.reserves / currencyReserves.reserves).toFixed(6))
     },
     getReserveDaiPrice(reserves) {
       return parseFloat((this.getDaiReserves() / reserves).toFixed(6))
@@ -463,6 +696,7 @@ export default {
       this.sendRequestRPC(requestData)
         .then((response) => {
           console.log(response)
+          this.responseBridgeVethBestCurrencyState = response.data.result.bestcurrencystate
           this.bridgevethreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
         })
         .catch((error) => {
@@ -482,6 +716,7 @@ export default {
       };
       this.sendRequestRPC(requestData)
         .then((response) => {
+          this.responsePureBestCurrencyState = response.data.result.bestcurrencystate
           this.purereservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
         })
         .catch((error) => {
@@ -501,6 +736,7 @@ export default {
       };
       this.sendRequestRPC(requestData)
         .then((response) => {
+          this.responseBridgeVarrrBestCurrencyState = response.data.result.bestcurrencystate
           this.bridgevarrrreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
         })
         .catch((error) => {
@@ -742,6 +978,10 @@ export default {
     }
 
   },
+  // beforeCreate(){
+  //   this.getbridgecurrency()
+
+  // },
   mounted() {
     // this.sendRequest();
     this.getbridgecurrency()
@@ -771,6 +1011,14 @@ export default {
 .custom-font {
   font-family: sans-serif;
   font-size: 15px;
+}
+
+.light-green {
+  background-color: lightgreen;
+}
+
+.light-red {
+  background-color: lightcoral;
 }
 
 a {
