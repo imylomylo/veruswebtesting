@@ -174,6 +174,54 @@
       refresh page.
     </p>
 
+    <h2> LP: {{SWITCH}} </h2>
+    <h3> Preconvert mode until 30 March 2024</h3>
+    <v-table class="custom-font">
+      <thead>
+        <tr>
+          <th>Reserve Currency</th>
+          <th v-for="(currency) in switchreservecurrencies">
+            Reserve / {{ getTickerByCurrencyId(currency.currencyid) }}
+          </th>
+          <th>LP / Reserve *</th>
+          <th>Reserves</th>
+          <th>Weight</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="(currencyBase, rowIndex) in switchreservecurrencies" :key="rowIndex">
+          <td :class="getCellClassSwitch(currencyBase, SWITCH)"> {{ getCurrencyTicker(switchcurrencies, currencyBase) }} </td>
+          <td v-for="(currencyRel, colIndex) in switchcurrencies" :key="colIndex"
+            :class="getCellClassSwitch(currencyBase, currencyRel)">
+            {{ getReservePrice(switchreservecurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
+          </td>
+          <td>{{ parseFloat(currencyBase.priceinreserve.toFixed(6)) }} {{ getTickerByCurrencyId(currencyBase.currencyid)
+            }} *</td>
+          <td>{{ parseFloat(currencyBase.reserves.toFixed(3)) }}</td>
+          <td>{{ currencyBase.weight }}</td>
+        </tr>
+      </tbody>
+    </v-table>
+
+    <p class="hide-dev">
+      Add:
+      <select v-model="sendSwitchReserve">
+        <option disabled value="">Please select one</option>
+        <option v-for="option in switchcurrencies" :value="option.currencyid">
+          {{ option.ticker }}
+        </option>
+      </select>
+      Liquidity Amount: <input v-model="sendSwitchAmount" placeholder="edit me" />
+
+    </p>
+    <p class="hide-dev"> <button @click="evaluate(SWITCH)">Evaluate</button>* Evaluation does not calculate price of the LP currency
+    </p>
+    <p class="hide-dev"> <button @click="clear(SWITCH)">Clear</button> Only clears green/red - useful for chaining together what-if. For
+      reset,
+      refresh page.
+    </p>
+
+
     <!-- <div>
       Latest block: {{ latestblock }}
     </div> -->
@@ -205,6 +253,7 @@ export default {
       bridgevethreservecurrencies: ref([]),
       purereservecurrencies: ref([]),
       bridgevarrrreservecurrencies: ref([]),
+      switchreservecurrencies: ref([]),
       addOrRemoveLiquidityBridgeVarrr: ref([]),
       liquidityBridgeVarrrAmount: ref([]),
       liquidityBridgeVarrrReserve: ref([]),
@@ -225,13 +274,20 @@ export default {
       relativeOperationsBridgeVarrr: [],
       operationsPure: [],
       relativeOperationsPure: [],
-      PURE: "PURE",
+      PURE: "Pure",
       BRIDGEVETH: "Bridge.vETH",
       BRIDGEVARRR: "Bridge.vARRR",
+      SWITCH: "Switch",
       sendBridgeVethReserve: ([]),
       receiveBridgeVethReserve: ([]),
       sendBridgeVethAmount: ([]),
       receiveMessage: '',
+      sendSwitchReserve: '',
+      sendSwitchAmount: '',
+      switchreservecurrencies: ref([]),
+      responseSwitchBestCurrencyState: ref([]),
+      relativeOperationsSwitch: [],
+      operationsSwitch: [],
       arr_currencies: [
         { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
         { "currencyid": "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM", "ticker": "DAI.vETH" },
@@ -239,7 +295,9 @@ export default {
         { "currencyid": "i9nwxtKuVYX4MSbeULLiK2ttVi6rUEhh4X", "ticker": "vETH" },
         { "currencyid": "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU", "ticker": "tBTC" },
         { "currencyid": "iExBJfZYK7KREDpuhj6PzZBzqMAKaFg7d2", "ticker": "vARRR" },
-        { "currencyid": "i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "ticker": "Bridge.vETH" }
+        { "currencyid": "i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "ticker": "Bridge.vETH" },
+        { "currencyid": "i61cV2uicKSi1rSMQCBNQeSYC3UAi9GVzd", "ticker": "vUSDC.vETH" },
+        { "currencyid": "iC5TQFrFXSYLQGkiZ8FYmZHFJzaRF5CYgE", "ticker": "EURC.vETH" }
       ],
       bridgevethcurrencies: [
         { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
@@ -256,8 +314,13 @@ export default {
         { "currencyid": "iExBJfZYK7KREDpuhj6PzZBzqMAKaFg7d2", "ticker": "vARRR" },
         { "currencyid": "i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "ticker": "Bridge.vETH" },
         { "currencyid": "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU", "ticker": "tBTC" }
+      ],
+      switchcurrencies: [
+        { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
+        { "currencyid": "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM", "ticker": "DAI.vETH" },
+        { "currencyid": "i61cV2uicKSi1rSMQCBNQeSYC3UAi9GVzd", "ticker": "vUSDC.vETH" },
+        { "currencyid": "iC5TQFrFXSYLQGkiZ8FYmZHFJzaRF5CYgE", "ticker": "EURC.vETH" }
       ]
-
     };
   },
 
@@ -271,6 +334,9 @@ export default {
       if (lp === this.PURE) {
         this.operationsPure = []
         this.relativeOperationsPure = []
+      }
+      else if ( lp === this.SWITCH){
+        console.log(this.SWITCH)
       }
       else if (lp === this.BRIDGEVETH) {
         this.operationsBridgeVethSend = []
@@ -286,6 +352,26 @@ export default {
     },
     getCurrencyTicker(lpcurrencies, currency) {
       return lpcurrencies.find(item => item.currencyid === currency.currencyid).ticker
+    },
+    getCellClassSwitch(currencyBase, currencyRel) {
+      if (currencyBase.currencyid === currencyRel.currencyid) {
+        return ''
+      }
+
+      if (currencyRel === this.SWITCH) {
+        return this.operationsSwitch[currencyBase.currencyid] === 'add' ? 'light-red' : this.operationsSwitch[currencyBase.currencyid] === 'remove' ? 'light-green' : ''
+      }
+
+      // the row is the base currency, it devalues when 
+      if (this.operationsSwitch[currencyBase.currencyid]) {
+        if (this.relativeOperationsSwitch[currencyRel.currencyid] != '') {
+          return this.relativeOperationsSwitch[currencyRel.currencyid] === 'add' ? 'light-green' : this.relativeOperationsSwitch[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+        }
+      }
+      // rel currency e.g. dai price of asset
+      if (this.operationsSwitch[currencyRel.currencyid]) {
+        return this.operationsSwitch[currencyRel.currencyid] === 'add' ? 'light-green' : this.operationsSwitch[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+      }
     },
     getCellClassPure(currencyBase, currencyRel) {
       if (currencyBase.currencyid === currencyRel.currencyid) {
@@ -360,33 +446,6 @@ export default {
       }
 
     },
-    getCellClass(currencyBase, currencyRel) {
-      if (currencyBase.currencyid === currencyRel.currencyid) {
-        return ''
-      }
-
-      // the row is the base currency, it devalues when 
-      if (this.operations[currencyBase.currencyid]) {
-        if (this.relativeOperations[currencyRel.currencyid] != '') {
-          return this.relativeOperations[currencyRel.currencyid] === 'add' ? 'light-green' : this.relativeOperations[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
-        }
-      }
-      // rel currency e.g. dai price of asset
-      if (this.operations[currencyRel.currencyid]) {
-        return this.operations[currencyRel.currencyid] === 'add' ? 'light-green' : this.operations[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
-      }
-    },
-    getOperation(currencyid) {
-      // console.log(currencyid)
-      // console.log(this.operations)
-      // console.log(this.relativeOperations)
-      if (this.relativeOperations[currencyid] != '') {
-        return this.relativeOperations[currencyid] === 'add' ? 'light-green' : this.relativeOperations[currencyid] === 'remove' ? 'light-red' : ''
-      }
-      else if (this.operations[currencyid] != '') {
-        return this.operations[currencyid] === 'add' ? 'light-green' : this.operations[currencyid] === 'remove' ? 'light-red' : ''
-      }
-    },
     evaluateChanges(lp, lpsupply, reserveCurrenciesFromBCS, basketsCurrencies, sendCurrency, receiveCurrency, amount) {
       // console.log("send: " + sendCurrency + " receive: " + receiveCurrency + " amount: " + amount)
       if (amount == 0 || sendCurrency.length == 0 || receiveCurrency.length == 0 || sendCurrency === receiveCurrency) {
@@ -457,6 +516,12 @@ export default {
         this.operationsBridgeVarrr = operations
         this.relativeOperationsBridgeVarrr = relativeOperations
       }
+    },
+    evaluate(lp){
+      if( lp === this.SWITCH){
+        console.log(this.SWITCH)
+      }
+
     },
     evaluateChanges0(lp, reserveCurrenciesFromBCS, basketsCurrencies, addOrRemove, liquidityReserve, liquidityAmount, convertto = true) {
       if (addOrRemove.length == 0 || liquidityAmount.length == 0 || liquidityReserve.length == 0) {
@@ -542,72 +607,6 @@ export default {
           this.latestblock = error
         })
 
-    },
-    adjustVrscReserves(amount) {
-      const dai = this.bridgevethreservecurrencies.find(item => item.currencyid == "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV")
-      if (dai) {
-        return dai.reserves + amount
-      }
-    },
-    getDaiReserves() {
-      const dai = this.bridgevethreservecurrencies.find(item => item.currencyid == "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM")
-      if (dai) {
-        return dai.reserves
-      }
-    },
-    getVrscReserves() {
-      const dai = this.bridgevethreservecurrencies.find(item => item.currencyid == "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV")
-      if (dai) {
-        return dai.reserves
-      }
-    },
-    getMkrReserves() {
-      const dai = this.bridgevethreservecurrencies.find(item => item.currencyid == "iCkKJuJScy4Z6NSDK7Mt42ZAB2NEnAE1o4")
-      if (dai) {
-        return dai.reserves
-      }
-    },
-    getEthReserves() {
-      const dai = this.bridgevethreservecurrencies.find(item => item.currencyid == "i9nwxtKuVYX4MSbeULLiK2ttVi6rUEhh4X")
-      if (dai) {
-        return dai.reserves
-      }
-    },
-    getPureTbtcReserves() {
-      const dai = this.purereservecurrencies.find(item => item.currencyid == "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU")
-      if (dai) {
-        return dai.reserves
-      }
-    },
-    getPureVrscReserves() {
-      const dai = this.purereservecurrencies.find(item => item.currencyid == "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV")
-      if (dai) {
-        return dai.reserves
-      }
-    },
-    getBridgeVarrrTbtcReserves() {
-      const dai = this.bridgevarrrreservecurrencies.find(item => item.currencyid == "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU")
-      if (dai) {
-        return dai.reserves
-      }
-    },
-    getBridgeVarrrVrscReserves() {
-      const dai = this.bridgevarrrreservecurrencies.find(item => item.currencyid == "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV")
-      if (dai) {
-        return dai.reserves
-      }
-    },
-    getBridgeVarrrVarrrReserves() {
-      const dai = this.bridgevarrrreservecurrencies.find(item => item.currencyid == "iExBJfZYK7KREDpuhj6PzZBzqMAKaFg7d2")
-      if (dai) {
-        return dai.reserves
-      }
-    },
-    getBridgeVarrrBridgeVethReserves() {
-      const dai = this.bridgevarrrreservecurrencies.find(item => item.currencyid == "i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx")
-      if (dai) {
-        return dai.reserves
-      }
     },
     getReservePrice(reserveCurrencies, currency, targetCurrency) {
       // console.log(this.bridgevethreservecurrencies)
@@ -762,6 +761,26 @@ export default {
         .then((response) => {
           this.responseBridgeVarrrBestCurrencyState = response.data.result.bestcurrencystate
           this.bridgevarrrreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+        })
+        .catch((error) => {
+          this.currencies = error
+        })
+    },
+    getswitchcurrency() {
+      const requestData = {
+        method: 'post',
+        url: 'https://rpc.vrsc.komodefi.com',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+          method: 'getcurrency',
+          params: [this.SWITCH],
+          id: 1
+        }
+      };
+      this.sendRequestRPC(requestData)
+        .then((response) => {
+          this.responseSwitchBestCurrencyState = response.data.result.bestcurrencystate
+          this.switchreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
         })
         .catch((error) => {
           this.currencies = error
@@ -1011,6 +1030,7 @@ export default {
     this.getbridgecurrency()
     this.getpurecurrency()
     this.getbridgevarrrcurrency()
+    this.getswitchcurrency()
     this.getrawmempool()
   }
 };
@@ -1030,6 +1050,10 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+}
+
+.hide-dev {
+  display: none;
 }
 
 .custom-font {
