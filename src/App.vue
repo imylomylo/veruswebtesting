@@ -1,5 +1,10 @@
 <template>
   <div id="verusvueapp">
+    <Suspense>
+      <VerusBasket  v-bind:fullyQualifiedName="BRIDGEVETH" 
+                    v-bind:reserveCurrencies="reservecurrencies" 
+                    />
+    </Suspense>
     <h2> Bridge.vETH</h2>
     <v-table class="custom-font">
       <thead>
@@ -98,9 +103,14 @@
 <script>
 import axios from 'axios';
 import { ref } from 'vue';
+import VerusBasket from './VerusBasket.vue'
 export default {
+  components: {
+    VerusBasket
+  },
   data() {
     return {
+      BRIDGEVETH: 'Bridge.vETH',
       explorertx: "https://insight.verus.io/tx/",
       latestblock: ref([]),
       reservecurrencies: ref([]),
@@ -610,7 +620,7 @@ export default {
     }
 
   },
-  mounted() {
+  async mounted() {
     // this.sendRequest();
     this.getbridgecurrency()
     this.getpurecurrency()
