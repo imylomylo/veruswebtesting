@@ -615,7 +615,9 @@ export default {
       // console.log(currencyReserves)
       const targetCurrencyReserves = reserveCurrencies.find(item => item.currencyid == targetCurrency.currencyid)
       // console.log(targetCurrencyReserves)
-      return parseFloat((targetCurrencyReserves.reserves / currencyReserves.reserves).toFixed(6))
+      // return parseFloat((targetCurrencyReserves.reserves / currencyReserves.reserves).toFixed(6))
+      return parseFloat(((targetCurrencyReserves.reserves * 1/targetCurrencyReserves.weight) / (currencyReserves.reserves * 1/currencyReserves.weight)).toFixed(6))
+
     },
     getTickerByCurrencyId(currencyId) {
       const currency = this.arr_currencies.find(item => item.currencyid === currencyId);
