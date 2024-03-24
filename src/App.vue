@@ -1,111 +1,35 @@
 <template>
   <div id="verusvueapp">
-    <h2> Bridge.vETH</h2>
-    <v-table class="custom-font">
-      <thead>
-        <tr>
-          <th>Reserve Currency</th>
-          <th>Reserve / DAI</th>
-          <th>Reserve / VRSC </th>
-          <th>Reserve / MKR </th>
-          <th>Reserve / ETH </th>
-          <th>Bridge / Reserve</th>
-          <th>Reserves</th>
-          <th>Weight</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(currency, index) in reservecurrencies" :key="index">
-          <td>{{ getTickerByCurrencyId(currency.currencyid) }}</td>
-          <td>{{ getReserveDaiPrice(currency.reserves) }} DAI</td>
-          <td>{{ getReserveVrscPrice(currency.reserves) }} VRSC</td>
-          <td>{{ getReserveMkrPrice(currency.reserves) }} MKR</td>
-          <td>{{ getReserveEthPrice(currency.reserves) }} ETH</td>
-          <td>{{ parseFloat(currency.priceinreserve.toFixed(6)) }}</td>
-          <td>{{ parseFloat(currency.reserves.toFixed(3)) }}</td>
-          <td>{{ currency.weight }}</td>
-        </tr>
-      </tbody>
-    </v-table>
+    <VerusBasket v-bind:fullyQualifiedName="BRIDGEVETH" v-bind:reserveCurrencies="reservecurrencies" />
 
-    <h2> Bridge.vARRR</h2>
-    <v-table class="custom-font">
-      <thead>
-        <tr>
-          <th>Reserve Currency</th>
-          <th>Reserve / vARRR</th>
-          <th>Reserve / VRSC </th>
-          <th>Reserve / Bridge.vETH </th>
-          <th>Reserve / tBTC </th>
-          <th>Bridge.vARRR / Reserve</th>
-          <th>Reserves</th>
-          <th>Weight</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(currency, index) in bridgevarrrreservecurrencies" :key="index">
-          <td>{{ getTickerByCurrencyId(currency.currencyid) }}</td>
-          <td>{{ getBridgeVarrrReserveVarrrPrice(currency.reserves) }} vARRR</td>
-          <td>{{ getBridgeVarrrReserveVrscPrice(currency.reserves) }} VRSC</td>
-          <td>{{ getBridgeVarrrReserveBridgeVethPrice(currency.reserves) }} Bridge.vETH</td>
-          <td>{{ getBridgeVarrrReserveTbtcVethPrice(currency.reserves) }} tBTC</td>
-          <td>{{ parseFloat(currency.priceinreserve.toFixed(6)) }}</td>
-          <td>{{ parseFloat(currency.reserves.toFixed(3)) }}</td>
-          <td>{{ currency.weight }}</td>
-        </tr>
-      </tbody>
-    </v-table>
+    <VerusBasket v-bind:fullyQualifiedName="BRIDGEVARRR" v-bind:reserveCurrencies="bridgevarrrreservecurrencies" />
 
-    <h2> Pure</h2>
-    <v-table class="custom-font">
-      <thead>
-        <tr>
-          <th>Reserve Currency</th>
-          <th>Reserve / VRSC</th>
-          <th>Reserve / tBTC </th>
-          <th>Pure / Reserve</th>
-          <th>Reserves</th>
-          <th>Weight</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="(currency, index) in purereservecurrencies" :key="index">
-          <td>{{ getTickerByCurrencyId(currency.currencyid) }}</td>
-          <td>{{ getPureReserveVrscPrice(currency.reserves) }} VRSC</td>
-          <td>{{ getPureReserveTbtcPrice(currency.reserves) }} tBTC</td>
-          <td>{{ parseFloat(currency.priceinreserve.toFixed(6)) }}</td>
-          <td>{{ parseFloat(currency.reserves.toFixed(3)) }}</td>
-          <td>{{ currency.weight }}</td>
-        </tr>
-      </tbody>
-    </v-table>
-    <!-- <div>
-      Latest block: {{ latestblock }}
-    </div> -->
-    <br/>
-    <h3>VRSC Mempool: Unconfirmed transactions</h3>
-    <div v-if="mempool_res.length > 0">
-      <ul>
-        <v-list-item v-for="res in mempool_res"><a :href="explorertx + res">{{ res }}</a> | <a target="_blank" :href="explorertx + res">new tab</a></v-list-item>
-      </ul>
-    </div>
-    <div v-else>
-      No transactions waiting.
-    </div>
+    <VerusBasket v-bind:fullyQualifiedName="PURE" v-bind:reserveCurrencies="purereservecurrencies" />
+
+    <VerusBasket v-bind:fullyQualifiedName="SWITCH" v-bind:reserveCurrencies="switchreservecurrencies" />
   </div>
 </template>
 
 <script>
 import axios from 'axios';
 import { ref } from 'vue';
+import VerusBasket from './VerusBasket.vue'
 export default {
+  components: {
+    VerusBasket
+  },
   data() {
     return {
+      BRIDGEVETH: 'Bridge.vETH',
+      BRIDGEVARRR: 'Bridge.vARRR',
+      PURE: 'Pure',
+      SWITCH: 'Switch',
       explorertx: "https://insight.verus.io/tx/",
       latestblock: ref([]),
       reservecurrencies: ref([]),
       purereservecurrencies: ref([]),
       bridgevarrrreservecurrencies: ref([]),
+      switchreservecurrencies: ref([]),
       mempool: ref([]),
       mempool_res: ref([]),
       rawtransaction: ref([]),
@@ -117,9 +41,9 @@ export default {
         { "currencyid": "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM", "ticker": "DAI.vETH" },
         { "currencyid": "iCkKJuJScy4Z6NSDK7Mt42ZAB2NEnAE1o4", "ticker": "MKR.vETH" },
         { "currencyid": "i9nwxtKuVYX4MSbeULLiK2ttVi6rUEhh4X", "ticker": "vETH" },
-        { "currencyid": "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU", "ticker": "tBTC"},
-        { "currencyid": "iExBJfZYK7KREDpuhj6PzZBzqMAKaFg7d2", "ticker": "vARRR"},
-        { "currencyid": "i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "ticker": "Bridge.vETH"}
+        { "currencyid": "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU", "ticker": "tBTC" },
+        { "currencyid": "iExBJfZYK7KREDpuhj6PzZBzqMAKaFg7d2", "ticker": "vARRR" },
+        { "currencyid": "i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "ticker": "Bridge.vETH" }
       ]
 
     };
@@ -288,7 +212,7 @@ export default {
       this.sendRequestRPC(requestData)
         .then((response) => {
           console.log(response)
-          this.res =  response.data.result
+          this.res = response.data.result
         })
         .catch((error) => {
           return error
@@ -370,6 +294,25 @@ export default {
       this.sendRequestRPC(requestData)
         .then((response) => {
           this.bridgevarrrreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+        })
+        .catch((error) => {
+          this.currencies = error
+        })
+    },
+    getswitchcurrency() {
+      const requestData = {
+        method: 'post',
+        url: 'https://rpc.vrsc.komodefi.com',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+          method: 'getcurrency',
+          params: ['Switch'],
+          id: 1
+        }
+      };
+      this.sendRequestRPC(requestData)
+        .then((response) => {
+          this.switchreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
         })
         .catch((error) => {
           this.currencies = error
@@ -610,11 +553,12 @@ export default {
     }
 
   },
-  mounted() {
+  async mounted() {
     // this.sendRequest();
     this.getbridgecurrency()
     this.getpurecurrency()
     this.getbridgevarrrcurrency()
+    this.getswitchcurrency()
     this.getrawmempool()
   }
 };
@@ -636,7 +580,7 @@ export default {
   -webkit-text-size-adjust: 100%;
 }
 
-.custom-font{
+.custom-font {
   font-family: sans-serif;
   font-size: 15px;
 }
