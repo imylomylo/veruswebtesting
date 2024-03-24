@@ -25,7 +25,7 @@ export async function sendRequest(daemonMethod, methodParams = [], methodId = 1)
         requestConfigGetInfo.data
     )
         .then((response) => {
-            console.log(response)
+            // console.log(response)
             return response
             // const longestChain = response.data.result.longestchain;
             // this.fetchBlockHash(longestChain);
@@ -38,9 +38,11 @@ export async function sendRequest(daemonMethod, methodParams = [], methodId = 1)
     }
 }
 
-export async function getCurrency(currencyName) {
-    const res = await sendRequest("getcurrency", [currencyName])
+export function getCurrency(currencyName) {
+    const res = sendRequest("getcurrency", [currencyName])
+    console.log(res)
     return res
+    // return res.result.bestcurrencystate.reservecurrencies
 }
 
 export default {
