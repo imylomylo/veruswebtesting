@@ -1,12 +1,16 @@
 <template>
   <div id="verusvueapp">
-    <VerusBasket v-bind:fullyQualifiedName="BRIDGEVETH" v-bind:webLink="bridgevethwebsite" v-bind:explorerLink="verusexplorer" v-bind:supply="bridgevethsupply" v-bind:bestHeight="bridgevethbestheight" v-bind:reserveCurrencies="bridgevethreservecurrencies" />
 
-    <VerusBasket v-bind:fullyQualifiedName="BRIDGEVARRR" v-bind:webLink="bridgevarrrwebsite" v-bind:supply="bridgevarrrsupply" v-bind:bestHeight="bridgevarrrbestheight" v-bind:reserveCurrencies="bridgevarrrreservecurrencies" />
+    <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="BRIDGEVETH" v-bind:webLink="bridgevethwebsite" v-bind:explorerLink="verusexplorer" v-bind:supply="bridgevethsupply" v-bind:bestHeight="bridgevethbestheight" v-bind:reserveCurrencies="bridgevethreservecurrencies" />
+    <p v-else>{{ BRIDGEVETH }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }} blocks to go</span></p>
 
-    <VerusBasket v-bind:fullyQualifiedName="PURE" v-bind:explorerLink="verusexplorer" v-bind:supply="puresupply" v-bind:bestHeight="purebestheight" v-bind:reserveCurrencies="purereservecurrencies" />
+    <VerusBasket v-bind:fullyQualifiedName="BRIDGEVARRR" v-bind:webLink="bridgevarrrwebsite" v-bind:explorerLink="varrrexplorer" v-bind:supply="bridgevarrrsupply" v-bind:bestHeight="bridgevarrrbestheight" v-bind:reserveCurrencies="bridgevarrrreservecurrencies" />
 
-    <VerusBasket v-bind:fullyQualifiedName="SWITCH" v-bind:explorerLink="verusexplorer" v-bind:supply="switchsupply" v-bind:bestHeight="switchbestheight" v-bind:reserveCurrencies="switchreservecurrencies" />
+    <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="PURE" v-bind:explorerLink="verusexplorer" v-bind:supply="puresupply" v-bind:bestHeight="purebestheight" v-bind:reserveCurrencies="purereservecurrencies" />
+    <p v-else>{{ PURE }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }} blocks to go</span></p>
+
+    <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="SWITCH" v-bind:explorerLink="verusexplorer" v-bind:supply="switchsupply" v-bind:bestHeight="switchbestheight" v-bind:reserveCurrencies="switchreservecurrencies" />
+    <p v-else>{{ SWITCH }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }} blocks to go</span></p>
   </div>
 </template>
 
@@ -25,7 +29,10 @@ export default {
       PURE: 'Pure',
       SWITCH: 'Switch',
       explorertx: "https://insight.verus.io/tx/",
-      latestblock: ref([]),
+      veruslatestblock: ref(),
+      veruslongestchain: ref(),
+      verusSyncOK: ref(false),
+      verusBlocksRemaining: ref(0),
       bridgevethreservecurrencies: ref(),
       bridgevethbestheight: ref(),
       bridgevethsupply: ref(),
@@ -38,6 +45,7 @@ export default {
       bridgevarrrbestheight: ref(),
       bridgevarrrsupply: ref(),
       bridgevarrrwebsite: "https://varrr.piratechain.com",
+      varrrexplorer: "https://varrrexplorer.piratechain.com",
       switchreservecurrencies: ref(),
       switchbestheight: ref(),
       switchsupply: ref(),
@@ -59,7 +67,6 @@ export default {
 
     };
   },
-
   methods: {
     getLatestBlock() {
       const requestData = {
@@ -75,11 +82,19 @@ export default {
       this.sendRequestRPC(requestData)
         .then((response) => {
           console.log(response.data.result.blocks)
+          console.log(this.verusSyncOK)
           // return response.data.result.blocks
-          this.latestblock = response.data.result.blocks
+          this.veruslatestblock = response.data.result.blocks
+          this.veruslongestchain = response.data.result.longestchain
+          this.verusBlocksRemaining = this.veruslongestchain - this.veruslatestblock
+          if( this.veruslatestblock == this.veruslongestchain ){
+            this.verusSyncOK = true
+            console.log(this.verusSyncOK)
+
+          }
         })
         .catch((error) => {
-          this.latestblock = error
+          this.veruslatestblock = error
         })
 
     },
@@ -574,6 +589,7 @@ export default {
   },
   async mounted() {
     // this.sendRequest();
+    this.getLatestBlock()
     this.getbridgecurrency()
     this.getpurecurrency()
     this.getbridgevarrrcurrency()
