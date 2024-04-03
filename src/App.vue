@@ -1,12 +1,12 @@
 <template>
   <div id="verusvueapp">
-    <VerusBasket v-bind:fullyQualifiedName="BRIDGEVETH" v-bind:reserveCurrencies="reservecurrencies" />
+    <VerusBasket v-bind:fullyQualifiedName="BRIDGEVETH" v-bind:webLink="bridgevethwebsite" v-bind:explorerLink="verusexplorer" v-bind:supply="bridgevethsupply" v-bind:bestHeight="bridgevethbestheight" v-bind:reserveCurrencies="bridgevethreservecurrencies" />
 
-    <VerusBasket v-bind:fullyQualifiedName="BRIDGEVARRR" v-bind:reserveCurrencies="bridgevarrrreservecurrencies" />
+    <VerusBasket v-bind:fullyQualifiedName="BRIDGEVARRR" v-bind:webLink="bridgevarrrwebsite" v-bind:supply="bridgevarrrsupply" v-bind:bestHeight="bridgevarrrbestheight" v-bind:reserveCurrencies="bridgevarrrreservecurrencies" />
 
-    <VerusBasket v-bind:fullyQualifiedName="PURE" v-bind:reserveCurrencies="purereservecurrencies" />
+    <VerusBasket v-bind:fullyQualifiedName="PURE" v-bind:explorerLink="verusexplorer" v-bind:supply="puresupply" v-bind:bestHeight="purebestheight" v-bind:reserveCurrencies="purereservecurrencies" />
 
-    <VerusBasket v-bind:fullyQualifiedName="SWITCH" v-bind:reserveCurrencies="switchreservecurrencies" />
+    <VerusBasket v-bind:fullyQualifiedName="SWITCH" v-bind:explorerLink="verusexplorer" v-bind:supply="switchsupply" v-bind:bestHeight="switchbestheight" v-bind:reserveCurrencies="switchreservecurrencies" />
   </div>
 </template>
 
@@ -26,10 +26,21 @@ export default {
       SWITCH: 'Switch',
       explorertx: "https://insight.verus.io/tx/",
       latestblock: ref([]),
-      reservecurrencies: ref([]),
-      purereservecurrencies: ref([]),
-      bridgevarrrreservecurrencies: ref([]),
-      switchreservecurrencies: ref([]),
+      bridgevethreservecurrencies: ref(),
+      bridgevethbestheight: ref(),
+      bridgevethsupply: ref(),
+      bridgevethwebsite: "https://verus.io/eth-bridge",
+      verusexplorer: "https://insight.verus.io",
+      purereservecurrencies: ref(),
+      purebestheight: ref(),
+      puresupply: ref(),
+      bridgevarrrreservecurrencies: ref(),
+      bridgevarrrbestheight: ref(),
+      bridgevarrrsupply: ref(),
+      bridgevarrrwebsite: "https://varrr.piratechain.com",
+      switchreservecurrencies: ref(),
+      switchbestheight: ref(),
+      switchsupply: ref(),
       mempool: ref([]),
       mempool_res: ref([]),
       rawtransaction: ref([]),
@@ -73,25 +84,25 @@ export default {
 
     },
     getDaiReserves() {
-      const dai = this.reservecurrencies.find(item => item.currencyid == "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM")
+      const dai = this.bridgevethreservecurrencies.find(item => item.currencyid == "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM")
       if (dai) {
         return dai.reserves
       }
     },
     getVrscReserves() {
-      const dai = this.reservecurrencies.find(item => item.currencyid == "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV")
+      const dai = this.bridgevethreservecurrencies.find(item => item.currencyid == "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV")
       if (dai) {
         return dai.reserves
       }
     },
     getMkrReserves() {
-      const dai = this.reservecurrencies.find(item => item.currencyid == "iCkKJuJScy4Z6NSDK7Mt42ZAB2NEnAE1o4")
+      const dai = this.bridgevethreservecurrencies.find(item => item.currencyid == "iCkKJuJScy4Z6NSDK7Mt42ZAB2NEnAE1o4")
       if (dai) {
         return dai.reserves
       }
     },
     getEthReserves() {
-      const dai = this.reservecurrencies.find(item => item.currencyid == "i9nwxtKuVYX4MSbeULLiK2ttVi6rUEhh4X")
+      const dai = this.bridgevethreservecurrencies.find(item => item.currencyid == "i9nwxtKuVYX4MSbeULLiK2ttVi6rUEhh4X")
       if (dai) {
         return dai.reserves
       }
@@ -255,7 +266,9 @@ export default {
       };
       this.sendRequestRPC(requestData)
         .then((response) => {
-          this.reservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+          this.bridgevethreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+          this.bridgevethbestheight = response.data.result.bestheight
+          this.bridgevethsupply = response.data.result.bestcurrencystate.supply
         })
         .catch((error) => {
           this.currencies = error
@@ -275,6 +288,8 @@ export default {
       this.sendRequestRPC(requestData)
         .then((response) => {
           this.purereservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+          this.purebestheight = response.data.result.bestheight
+          this.puresupply = response.data.result.bestcurrencystate.supply
         })
         .catch((error) => {
           this.currencies = error
@@ -294,6 +309,8 @@ export default {
       this.sendRequestRPC(requestData)
         .then((response) => {
           this.bridgevarrrreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+          this.bridgevarrrbestheight = response.data.result.bestheight
+          this.bridgevarrrsupply = response.data.result.bestcurrencystate.supply
         })
         .catch((error) => {
           this.currencies = error
@@ -313,6 +330,8 @@ export default {
       this.sendRequestRPC(requestData)
         .then((response) => {
           this.switchreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+          this.switchbestheight = response.data.result.bestheight
+          this.switchsupply = response.data.result.bestcurrencystate.supply
         })
         .catch((error) => {
           this.currencies = error

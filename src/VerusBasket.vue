@@ -1,5 +1,12 @@
 <template>
     <h2> LP Basket: {{ fullyQualifiedName }}</h2>
+    <h3> Blocks: 
+        <a v-if="explorerLink" :href="explorerLink" target="_blank">{{ bestHeight }}</a>
+        <span v-else>{{ bestHeight }}</span> |
+        Supply:
+        <a v-if="webLink" :href="webLink" target="_blank">{{ supply }}</a>
+        <span v-else>{{ supply }}</span>
+    </h3>
     <v-table class="custom-font">
         <thead>
             <tr>
@@ -37,7 +44,11 @@ import { ref, onMounted } from 'vue';
 export default {
     props: [
         'fullyQualifiedName',//: String, //'fullyQualifiedName',
-        'reserveCurrencies' //: [Object] //'reserveCurrencies'
+        'reserveCurrencies', //: [Object] //'reserveCurrencies',
+        'supply', // String
+        'bestHeight',
+        'explorerLink',
+        'webLink'
     ],
 
     setup(props) {
