@@ -22,7 +22,7 @@
                     :class="getCellClassBridgeVeth(currencyBase, currencyRel)">
                     {{ getReservePrice(reserveCurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
                 </td>
-                <td>{{ parseFloat(currencyBase.priceinreserve.toFixed(6)) }}
+                <td>{{ parseFloat(currencyBase.priceinreserve.toFixed(8)) }}
                     {{ getTickerByCurrencyId(currencyBase.currencyid) }}
                 </td>
                 <td>{{ parseFloat(currencyBase.reserves.toFixed(3)) }}</td>
@@ -118,7 +118,7 @@ export default {
             const targetCurrencyReserves = reserveCurrencies.find(item => item.currencyid == targetCurrency.currencyid)
             // console.log(targetCurrencyReserves)
             // return parseFloat((targetCurrencyReserves.reserves / currencyReserves.reserves).toFixed(6))
-            return parseFloat(((targetCurrencyReserves.reserves * 1 / targetCurrencyReserves.weight) / (currencyReserves.reserves * 1 / currencyReserves.weight)).toFixed(6))
+            return parseFloat(((targetCurrencyReserves.reserves * 1 / targetCurrencyReserves.weight) / (currencyReserves.reserves * 1 / currencyReserves.weight)).toFixed(8))
         }
 
 
@@ -126,8 +126,38 @@ export default {
 }
 </script>
 <style scoped>
+:root {
+
+line-height: 1.5;
+font-weight: 400;
+
+color-scheme: light dark;
+color: rgba(255, 255, 255, 0.87);
+background-color: #242424;
+
+font-synthesis: none;
+text-rendering: optimizeLegibility;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
+-webkit-text-size-adjust: 100%;
+}
+
 .custom-font {
-    font-family: sans-serif;
-    font-size: 15px;
+font-family: sans-serif;
+font-size: 15px;
+}
+
+body {
+  margin: 550;
+  display: flex;
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+h2 {
+  font-size: 3.2em;
+  line-height: 1.1;
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 </style>

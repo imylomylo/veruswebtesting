@@ -283,7 +283,7 @@ export default {
     getbridgevarrrcurrency() {
       const requestData = {
         method: 'post',
-        url: 'https://rpc.vrsc.komodefi.com',
+        url: 'https://rpc.varrr.komodefi.com',
         headers: { 'Content-Type': 'application/json' },
         data: {
           method: 'getcurrency',
