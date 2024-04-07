@@ -12,7 +12,7 @@
             <tr>
                 <th>Reserve Currency</th>
                 <th v-for="(currency) in reserveCurrencies">
-                    Reserve / <span :class="getCellClassBridgeVeth(currency, fullyQualifiedName)">
+                    Reserve / <span :class="getCellClass(currency, fullyQualifiedName)">
                         {{ getTickerByCurrencyId(currency.currencyid) }} </span>
                 </th>
                 <th>LP / Reserve</th>
@@ -22,11 +22,11 @@
         </thead>
         <tbody>
             <tr v-for="(currencyBase, rowIndex) in reserveCurrencies" :key="rowIndex">
-                <td :class="getCellClassBridgeVeth(currencyBase, fullyQualifiedName)">
+                <td :class="getCellClass(currencyBase, fullyQualifiedName)">
                     {{ getCurrencyTicker(currencyBase) }}
                 </td>
                 <td v-for="(currencyRel, colIndex) in reserveCurrencies" :key="colIndex"
-                    :class="getCellClassBridgeVeth(currencyBase, currencyRel)">
+                    :class="getCellClass(currencyBase, currencyRel)">
                     {{ getReservePrice(reserveCurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
                 </td>
                 <td>{{ parseFloat(currencyBase.priceinreserve.toFixed(8)) }}
@@ -86,7 +86,7 @@ export default {
             // If the currency ID is not found, you can return a default value or handle the situation accordingly.
             return "Currency not found";
         },
-        getCellClassBridgeVeth(currencyBase, currencyRel) {
+        getCellClass(currencyBase, currencyRel) {
             if (this.operationsBasketReceive == 'undefined' || this.operationsBasketSend == 'undefined') {
                 return ''
             }
