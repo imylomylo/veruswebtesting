@@ -2,22 +2,26 @@
   <div id="verusvueapp">
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="BRIDGEVETH" v-bind:webLink="bridgevethwebsite"
       v-bind:explorerLink="verusexplorer" v-bind:supply="bridgevethsupply" v-bind:bestHeight="bridgevethbestheight"
-      v-bind:reserveCurrencies="bridgevethreservecurrencies" />
+      v-bind:reserveCurrencies="bridgevethreservecurrencies"
+      v-bind:currencyDictionary="currencyDictionary" />
     <p v-else>{{ BRIDGEVETH }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }}
         blocks to go</span></p>
 
     <VerusBasket v-bind:fullyQualifiedName="BRIDGEVARRR" v-bind:webLink="bridgevarrrwebsite"
       v-bind:explorerLink="varrrexplorer" v-bind:supply="bridgevarrrsupply" v-bind:bestHeight="bridgevarrrbestheight"
-      v-bind:reserveCurrencies="bridgevarrrreservecurrencies" />
+      v-bind:reserveCurrencies="bridgevarrrreservecurrencies"
+      v-bind:currencyDictionary="currencyDictionary" />
 
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="PURE" v-bind:explorerLink="verusexplorer"
-      v-bind:supply="puresupply" v-bind:bestHeight="purebestheight" v-bind:reserveCurrencies="purereservecurrencies" />
+      v-bind:supply="puresupply" v-bind:bestHeight="purebestheight" v-bind:reserveCurrencies="purereservecurrencies"
+      v-bind:currencyDictionary="currencyDictionary" />
     <p v-else>{{ PURE }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }} blocks
         to go</span></p>
 
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="SWITCH" v-bind:explorerLink="verusexplorer"
       v-bind:supply="switchsupply" v-bind:bestHeight="switchbestheight"
-      v-bind:reserveCurrencies="switchreservecurrencies" />
+      v-bind:reserveCurrencies="switchreservecurrencies"
+      v-bind:currencyDictionary="currencyDictionary" />
     <p v-else>{{ SWITCH }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }}
         blocks to go</span></p>
   </div>
@@ -86,7 +90,7 @@ export default {
       responseSwitchBestCurrencyState: ref([]),
       relativeOperationsSwitch: [],
       operationsSwitch: [],
-      arr_currencies: [
+      currencyDictionary: [
         { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
         { "currencyid": "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM", "ticker": "DAI.vETH" },
         { "currencyid": "iCkKJuJScy4Z6NSDK7Mt42ZAB2NEnAE1o4", "ticker": "MKR.vETH" },
