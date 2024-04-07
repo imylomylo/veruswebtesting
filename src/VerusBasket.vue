@@ -123,7 +123,6 @@ export default {
             return "Currency not found";
         },
         getCellClass(currencyBase, currencyRel) {
-            console.log("getting cell class")
             if (this.operationsBasketReceive == 'undefined' || this.operationsBasketSend == 'undefined') {
                 return ''
             }
@@ -142,11 +141,9 @@ export default {
 
             // the row is the base currency, it devalues when sendCurrency
             if (this.operationsBasketSend[currencyBase.currencyid]) {
-                // console.log("opsend[base]")
                 return this.relativeOperationsBasketSend[currencyRel.currencyid] === 'add' ? 'light-green' : this.relativeOperationsBasketSend[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
             }
             if (this.operationsBasketReceive[currencyBase.currencyid]) {
-                // console.log("opreceive[base]")
                 return this.relativeOperationsBasketReceive[currencyRel.currencyid] === 'add' ? 'light-green' : this.relativeOperationsBasketReceive[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
             }
 
@@ -175,9 +172,6 @@ export default {
             this.relativeOperationsBasketReceive = []
         },
         evaluate() {
-            console.log("Evaluate")
-            // evaluateChanges(lp, lpsupply, reserveCurrenciesFromBCS, basketsCurrencies, sendCurrency, receiveCurrency, amount) {
-            console.log("send: " + this.sendCurrency + " receive: " + this.receiveCurrency + " amount: " + this.amount)
             if (this.amount == 0 || this.amount === undefined || this.receiveCurrency.length == 0 || this.sendCurrency === this.receiveCurrency) {
                 console.log("nothing to evaluate")
                 return
@@ -200,9 +194,6 @@ export default {
                 }
             });
 
-            this.relativeOperationsSend = relativeArraySend
-            this.relativeOperationsReceive = relativeArrayReceive
-            // this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency)
             let reservesAdd = this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).reserves
             let reserveWeight = this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).weight
             let reservesNewAmount = parseFloat(reservesAdd) + parseFloat(this.amount)
@@ -210,9 +201,7 @@ export default {
             this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).reserves = reservesNewAmount
             let newPriceInReserve = (reservesNewAmount * 1 / reserveWeight) / this.supply
             this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).priceinreserve = newPriceInReserve
-            // if (receiveCurrency == this.getCurrencyIdByTicker(lp)) {
-            //   this.evaluateChanges(lp, reserveCurrenciesFromBCS, basketsCurrencies, "remove", liquidityReserve, generatedLP, false) // if convertto is false, then need LP supply 
-            // }
+
             let lpPriceInReserveReceiveCurrency = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).priceinreserve
             let amountReceived = lpPriceInReserveReceiveCurrency * generatedLP
             let reservesRemove = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).reserves
@@ -225,12 +214,11 @@ export default {
             const receiveCurrencyTicker = this.getTickerByCurrencyId(this.receiveCurrency)
             this.receiveMessage = "You receive approx " + parseFloat(amountReceived.toFixed(6)) + " " + receiveCurrencyTicker + "( Summary: " + sendCurrencyTicker + " price goes down & " + receiveCurrencyTicker + " price goes up )"
 
-
-            // this.bridgevethreservecurrencies = reserveCurrenciesFromBCS
+            // save the (relative)operations for css class evaluation
             this.operationsBasketSend = operationsSend
-            this.relativeOperationsBasketSend = relativeOperationsSend
+            this.relativeOperationsBasketSend = relativeArraySend
             this.operationsBasketReceive = operationsReceive
-            this.relativeOperationsBasketReceive = relativeOperationsReceive
+            this.relativeOperationsBasketReceive = relativeArrayReceive
         }
 
 
