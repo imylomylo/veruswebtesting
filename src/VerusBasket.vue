@@ -44,9 +44,9 @@
             <option v-for="option in reserveCurrencies" :value="option.currencyid">
                 {{ getCurrencyTicker(option) }}
             </option>
-            <!-- <option :value="getCurrencyIdByTicker(fullyQualifiedName)">
+            <option :value="fullyQualifiedName">
                 {{ fullyQualifiedName }}
-            </option> -->
+            </option>
         </select>
         Amount: <input v-model="amount" placeholder="edit me" />
         Receive:
@@ -55,9 +55,9 @@
             <option v-for="option in reserveCurrencies" :value="option.currencyid">
                 {{ getCurrencyTicker(option) }}
             </option>
-            <!-- <option :value="getCurrencyIdByTicker(fullyQualifiedName)">
+            <option :value="fullyQualifiedName">
                 {{ fullyQualifiedName }}
-            </option> -->
+            </option>
         </select>
     </p>
     <p> <button @click="evaluate()">Evaluate</button>
@@ -172,9 +172,20 @@ export default {
             this.relativeOperationsBasketReceive = []
         },
         evaluate() {
+            let usingBC = false
             if (this.amount == 0 || this.amount === undefined || this.receiveCurrency.length == 0 || this.sendCurrency === this.receiveCurrency) {
                 console.log("nothing to evaluate")
                 return
+            }
+            // workaround for prop in render
+            if( this.sendCurrency === this.fullyQualifiedName ){
+                this.sendCurrency = this.getCurrencyIdByTicker(this.fullyQualifiedName)
+                usingBC = true
+            }
+            // workaround for prop in render
+            if( this.receiveCurrency === this.fullyQualifiedName ){
+                this.receiveCurrency = this.getCurrencyIdByTicker(this.fullyQualifiedName)
+                usingBC = true
             }
             this.clear()
             let operationsSend = Array()
@@ -194,6 +205,7 @@ export default {
                 }
             });
 
+            // if statement checking send/receive currency not equal to getCurrencyIdByTicker(fullyQualifiedName)
             let reservesAdd = this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).reserves
             let reserveWeight = this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).weight
             let reservesNewAmount = parseFloat(reservesAdd) + parseFloat(this.amount)
