@@ -1,5 +1,11 @@
 <template>
   <div id="verusvueapp">
+    <PriceInTbtc v-if="isExtras()"
+      :pureTbtcReserves="pureTbtcReserves"
+      :priceVrscDai="priceVrscDai"
+      :pricesRelVrsc="pricesRelVrsc"
+    />
+
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="BRIDGEVETH" v-bind:webLink="bridgevethwebsite"
       v-bind:explorerLink="verusexplorer" v-bind:supply="bridgevethsupply" v-bind:bestHeight="bridgevethbestheight"
       v-bind:reserveCurrencies="bridgevethreservecurrencies"
@@ -31,9 +37,13 @@
 import axios from 'axios';
 import { ref } from 'vue';
 import VerusBasket from './VerusBasket.vue'
+import PriceInTbtc from './PriceInTbtc.vue'
+
+
 export default {
   components: {
-    VerusBasket
+    VerusBasket,
+    PriceInTbtc
   },
   data() {
     return {
@@ -106,6 +116,10 @@ export default {
     };
   },
   methods: {
+    isExtras(){
+      console.log(import.meta.env.VITE_EXTRAS)
+      return parseInt(import.meta.env.VITE_EXTRAS)
+    },
     prettySupply(lp) {
       if (lp === this.BRIDGEVETH) {
         return this.responseBridgeVethBestCurrencyState.supply.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")

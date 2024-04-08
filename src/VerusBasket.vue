@@ -37,7 +37,7 @@
             </tr>
         </tbody>
     </v-table>
-    <p>
+    <p v-if="isExtras()">
         Send:
         <select v-model="sendCurrency">
             <option disabled value="">Please select one</option>
@@ -60,10 +60,10 @@
             </option>
         </select>
     </p>
-    <p> <button @click="evaluate()">Evaluate</button>
+    <p v-if="isExtras()"> <button @click="evaluate()">Evaluate</button>
         {{ receiveMessage }}
     </p>
-    <p> <button @click="clear()">Clear</button> Only clears green/red - useful for chaining together what-if.
+    <p v-if="isExtras()"> <button @click="clear()">Clear</button> Only clears green/red - useful for chaining together what-if.
       For reset,
       refresh page.
     </p>
@@ -108,6 +108,9 @@ export default {
         }
     },
     methods: {
+        isExtras(){
+            return parseInt(import.meta.env.VITE_EXTRAS)
+        },
         getCurrencyTicker(currency) {
             return this.currencyDictionary.find(item => item.currencyid === currency.currencyid).ticker
         },
