@@ -1,6 +1,6 @@
 <template>
     <h2> LP Basket: {{ fullyQualifiedName }}</h2>
-    <h3> Blocks: 
+    <h3> Blocks:
         <a v-if="explorerLink" :href="explorerLink" target="_blank">{{ bestHeight }}</a>
         <span v-else>{{ bestHeight }}</span> |
         Supply:
@@ -37,6 +37,36 @@
             </tr>
         </tbody>
     </v-table>
+    <p v-if="isExtras()">
+        Send:
+        <select v-model="sendCurrency">
+            <option disabled value="">Please select one</option>
+            <option v-for="option in reserveCurrencies" :value="option.currencyid">
+                {{ getCurrencyTicker(option) }}
+            </option>
+            <option :value="fullyQualifiedName">
+                {{ fullyQualifiedName }}
+            </option>
+        </select>
+        Amount: <input v-model="amount" placeholder="edit me" />
+        Receive:
+        <select v-model="receiveCurrency">
+            <option disabled value="">Please select one</option>
+            <option v-for="option in reserveCurrencies" :value="option.currencyid">
+                {{ getCurrencyTicker(option) }}
+            </option>
+            <option :value="fullyQualifiedName">
+                {{ fullyQualifiedName }}
+            </option>
+        </select>
+    </p>
+    <p v-if="isExtras()"> <button @click="evaluate()">Evaluate</button>
+        {{ receiveMessage }}
+    </p>
+    <p v-if="isExtras()"> <button @click="clear()">Clear</button> Only clears green/red - useful for chaining together what-if.
+      For reset,
+      refresh page.
+    </p>
 </template>
 <script>
 import { ref, onMounted } from 'vue';
@@ -48,35 +78,44 @@ export default {
         'supply', // String
         'bestHeight',
         'explorerLink',
-        'webLink'
+        'webLink',
+        'currencyDictionary'
     ],
 
     setup(props) {
+        const sendCurrency = ref()
+        const receiveCurrency = ref()
+        const amount = ref()
         const operationsBasketSend = ref([])
         const operationsBasketReceive = ref([])
         const relativeOperationsBasketSend = ref([])
         const relativeOperationsBasketReceive = ref([])
-        return { operationsBasketSend, operationsBasketReceive, relativeOperationsBasketSend, relativeOperationsBasketReceive }
+        const receiveMessage = ref()
+        return {
+            amount,
+            sendCurrency,
+            receiveCurrency,
+            operationsBasketSend,
+            operationsBasketReceive,
+            relativeOperationsBasketSend,
+            relativeOperationsBasketReceive,
+            receiveMessage
+        }
     },
     data() {
         return {
-            something: 'blah',
-            currencyDictionary: [
-                { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
-                { "currencyid": "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM", "ticker": "DAI.vETH" },
-                { "currencyid": "iCkKJuJScy4Z6NSDK7Mt42ZAB2NEnAE1o4", "ticker": "MKR.vETH" },
-                { "currencyid": "i9nwxtKuVYX4MSbeULLiK2ttVi6rUEhh4X", "ticker": "vETH" },
-                { "currencyid": "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU", "ticker": "tBTC" },
-                { "currencyid": "iExBJfZYK7KREDpuhj6PzZBzqMAKaFg7d2", "ticker": "vARRR" },
-                { "currencyid": "i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "ticker": "Bridge.vETH" },
-                { "currencyid": "i61cV2uicKSi1rSMQCBNQeSYC3UAi9GVzd", "ticker": "vUSDC.vETH" },
-                { "currencyid": "iC5TQFrFXSYLQGkiZ8FYmZHFJzaRF5CYgE", "ticker": "EURC.vETH" }
-            ]
+            something: 'blah'
         }
     },
     methods: {
+        isExtras(){
+            return parseInt(import.meta.env.VITE_EXTRAS)
+        },
         getCurrencyTicker(currency) {
             return this.currencyDictionary.find(item => item.currencyid === currency.currencyid).ticker
+        },
+        getCurrencyIdByTicker(ticker) {
+            return this.currencyDictionary.find(item => item.ticker === ticker).currencyid
         },
         getTickerByCurrencyId(currencyId) {
             const currency = this.currencyDictionary.find(item => item.currencyid === currencyId);
@@ -105,11 +144,9 @@ export default {
 
             // the row is the base currency, it devalues when sendCurrency
             if (this.operationsBasketSend[currencyBase.currencyid]) {
-                // console.log("opsend[base]")
                 return this.relativeOperationsBasketSend[currencyRel.currencyid] === 'add' ? 'light-green' : this.relativeOperationsBasketSend[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
             }
             if (this.operationsBasketReceive[currencyBase.currencyid]) {
-                // console.log("opreceive[base]")
                 return this.relativeOperationsBasketReceive[currencyRel.currencyid] === 'add' ? 'light-green' : this.relativeOperationsBasketReceive[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
             }
 
@@ -130,6 +167,73 @@ export default {
             // console.log(targetCurrencyReserves)
             // return parseFloat((targetCurrencyReserves.reserves / currencyReserves.reserves).toFixed(6))
             return parseFloat(((targetCurrencyReserves.reserves * 1 / targetCurrencyReserves.weight) / (currencyReserves.reserves * 1 / currencyReserves.weight)).toFixed(8))
+        },
+        clear() {
+            this.operationsBasketSend = []
+            this.operationsBasketReceive = []
+            this.relativeOperationsBasketSend = []
+            this.relativeOperationsBasketReceive = []
+        },
+        evaluate() {
+            let usingBC = false
+            if (this.amount == 0 || this.amount === undefined || this.receiveCurrency.length == 0 || this.sendCurrency === this.receiveCurrency) {
+                console.log("nothing to evaluate")
+                return
+            }
+            // workaround for prop in render
+            if( this.sendCurrency === this.fullyQualifiedName ){
+                this.sendCurrency = this.getCurrencyIdByTicker(this.fullyQualifiedName)
+                usingBC = true
+            }
+            // workaround for prop in render
+            if( this.receiveCurrency === this.fullyQualifiedName ){
+                this.receiveCurrency = this.getCurrencyIdByTicker(this.fullyQualifiedName)
+                usingBC = true
+            }
+            this.clear()
+            let operationsSend = Array()
+            let relativeOperationsSend = Array()
+            let operationsReceive = Array()
+            let relativeOperationsReceive = Array()
+            operationsSend[this.sendCurrency] = "add"
+            operationsReceive[this.receiveCurrency] = "remove"
+            const relativeArraySend = {}
+            const relativeArrayReceive = {}
+            this.reserveCurrencies.forEach(currency => {
+                if (currency.currencyid != this.sendCurrency) {
+                    relativeArraySend[currency.currencyid] = "remove";
+                }
+                if (currency.currencyid != this.receiveCurrency) {
+                    relativeArrayReceive[currency.currencyid] = "add";
+                }
+            });
+
+            // if statement checking send/receive currency not equal to getCurrencyIdByTicker(fullyQualifiedName)
+            let reservesAdd = this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).reserves
+            let reserveWeight = this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).weight
+            let reservesNewAmount = parseFloat(reservesAdd) + parseFloat(this.amount)
+            let generatedLP = this.amount / (reservesNewAmount * 1 / reserveWeight) * this.supply
+            this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).reserves = reservesNewAmount
+            let newPriceInReserve = (reservesNewAmount * 1 / reserveWeight) / this.supply
+            this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).priceinreserve = newPriceInReserve
+
+            let lpPriceInReserveReceiveCurrency = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).priceinreserve
+            let amountReceived = lpPriceInReserveReceiveCurrency * generatedLP
+            let reservesRemove = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).reserves
+            reserveWeight = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).weight
+            reservesNewAmount = parseFloat(reservesRemove) - parseFloat(amountReceived)
+            this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).reserves = reservesNewAmount
+            newPriceInReserve = (reservesNewAmount * 1 / reserveWeight) / this.supply
+            this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).priceinreserve = newPriceInReserve
+            const sendCurrencyTicker = this.getTickerByCurrencyId(this.sendCurrency)
+            const receiveCurrencyTicker = this.getTickerByCurrencyId(this.receiveCurrency)
+            this.receiveMessage = "You receive approx " + parseFloat(amountReceived.toFixed(6)) + " " + receiveCurrencyTicker + "( Summary: " + sendCurrencyTicker + " price goes down & " + receiveCurrencyTicker + " price goes up )"
+
+            // save the (relative)operations for css class evaluation
+            this.operationsBasketSend = operationsSend
+            this.relativeOperationsBasketSend = relativeArraySend
+            this.operationsBasketReceive = operationsReceive
+            this.relativeOperationsBasketReceive = relativeArrayReceive
         }
 
 
@@ -139,36 +243,50 @@ export default {
 <style scoped>
 :root {
 
-line-height: 1.5;
-font-weight: 400;
+    line-height: 1.5;
+    font-weight: 400;
 
-color-scheme: light dark;
-color: rgba(255, 255, 255, 0.87);
-background-color: #242424;
+    color-scheme: light dark;
+    color: rgba(255, 255, 255, 0.87);
+    background-color: #242424;
 
-font-synthesis: none;
-text-rendering: optimizeLegibility;
--webkit-font-smoothing: antialiased;
--moz-osx-font-smoothing: grayscale;
--webkit-text-size-adjust: 100%;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
 }
 
 .custom-font {
-font-family: sans-serif;
-font-size: 15px;
+    font-family: sans-serif;
+    font-size: 15px;
 }
 
 body {
-  margin: 550;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+    margin: 550;
+    display: flex;
+    place-items: center;
+    min-width: 320px;
+    min-height: 100vh;
 }
 
 h2 {
-  font-size: 3.2em;
-  line-height: 1.1;
-  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-size: 3.2em;
+    line-height: 1.1;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}
+
+.light-green {
+  background-color: lightgreen;
+  /* color: blue; */
+}
+
+.light-red {
+  background-color: lightcoral;
+  /* color: orange; */
+}
+
+.light-grey {
+  background-color: lightgrey;
 }
 </style>
