@@ -1,72 +1,77 @@
 <template>
-    <h2> LP Basket: {{ fullyQualifiedName }}</h2>
-    <h3> Blocks:
-        <a v-if="explorerLink" :href="explorerLink" target="_blank">{{ bestHeight }}</a>
-        <span v-else>{{ bestHeight }}</span> |
-        Supply:
-        <a v-if="webLink" :href="webLink" target="_blank">{{ supply }}</a>
-        <span v-else>{{ supply }}</span>
-    </h3>
-    <v-table class="custom-font">
-        <thead>
-            <tr>
-                <th>Reserve Currency</th>
-                <th v-for="(currency) in reserveCurrencies">
-                    Reserve / <span :class="getCellClass(currency, fullyQualifiedName)">
-                        {{ getTickerByCurrencyId(currency.currencyid) }} </span>
-                </th>
-                <th>LP / Reserve</th>
-                <th>Reserves</th>
-                <th>Weight</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="(currencyBase, rowIndex) in reserveCurrencies" :key="rowIndex">
-                <td :class="getCellClass(currencyBase, fullyQualifiedName)">
-                    {{ getCurrencyTicker(currencyBase) }}
-                </td>
-                <td v-for="(currencyRel, colIndex) in reserveCurrencies" :key="colIndex"
-                    :class="getCellClass(currencyBase, currencyRel)">
-                    {{ getReservePrice(reserveCurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
-                </td>
-                <td>{{ parseFloat(currencyBase.priceinreserve.toFixed(8)) }}
-                    {{ getTickerByCurrencyId(currencyBase.currencyid) }}
-                </td>
-                <td>{{ parseFloat(currencyBase.reserves.toFixed(3)) }}</td>
-                <td>{{ currencyBase.weight }}</td>
-            </tr>
-        </tbody>
-    </v-table>
-    <p v-if="isExtras()">
-        Send:
-        <select v-model="sendCurrency">
-            <option disabled value="">Please select one</option>
-            <option v-for="option in reserveCurrencies" :value="option.currencyid">
-                {{ getCurrencyTicker(option) }}
-            </option>
-            <option :value="fullyQualifiedName">
-                {{ fullyQualifiedName }}
-            </option>
-        </select>
-        Amount: <input v-model="amount" placeholder="edit me" />
-        Receive:
-        <select v-model="receiveCurrency">
-            <option disabled value="">Please select one</option>
-            <option v-for="option in reserveCurrencies" :value="option.currencyid">
-                {{ getCurrencyTicker(option) }}
-            </option>
-            <option :value="fullyQualifiedName">
-                {{ fullyQualifiedName }}
-            </option>
-        </select>
-    </p>
-    <p v-if="isExtras()"> <button @click="evaluate()">Evaluate</button>
-        {{ receiveMessage }}
-    </p>
-    <p v-if="isExtras()"> <button @click="clear()">Clear</button> Only clears green/red - useful for chaining together what-if.
-      For reset,
-      refresh page.
-    </p>
+    <div class="p-2">
+        <h2 class="pb-1"> LP Basket: {{ fullyQualifiedName }}</h2>
+        <h3> Blocks:
+            <a class="link-info" v-if="explorerLink" :href="explorerLink" target="_blank">{{ bestHeight }}</a>
+            <span v-else>{{ bestHeight }}</span> |
+            Supply:
+            <a class="link-info" v-if="webLink" :href="webLink" target="_blank">{{ supply }}</a>
+            <span v-else>{{ supply }}</span>
+        </h3>
+        <div class="p-2 overflow-x-auto">
+            <table class="table table-md">
+                <thead>
+                    <tr>
+                        <th>Reserve Currency</th>
+                        <th v-for="(currency) in reserveCurrencies">
+                            Reserve / <span :class="getCellClass(currency, fullyQualifiedName)">
+                                {{ getTickerByCurrencyId(currency.currencyid) }} </span>
+                        </th>
+                        <th>LP / Reserve</th>
+                        <th>Reserves</th>
+                        <th>Weight</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="(currencyBase, rowIndex) in reserveCurrencies" :key="rowIndex" class="hover">
+                        <td :class="getCellClass(currencyBase, fullyQualifiedName)">
+                            {{ getCurrencyTicker(currencyBase) }}
+                        </td>
+                        <td v-for="(currencyRel, colIndex) in reserveCurrencies" :key="colIndex"
+                            :class="getCellClass(currencyBase, currencyRel)">
+                            {{ getReservePrice(reserveCurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
+                        </td>
+                        <td>{{ parseFloat(currencyBase.priceinreserve.toFixed(8)) }}
+                            {{ getTickerByCurrencyId(currencyBase.currencyid) }}
+                        </td>
+                        <td>{{ parseFloat(currencyBase.reserves.toFixed(3)) }}</td>
+                        <td>{{ currencyBase.weight }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p v-if="isExtras()">
+            Send:
+            <select v-model="sendCurrency">
+                <option disabled value="">Please select one</option>
+                <option v-for="option in reserveCurrencies" :value="option.currencyid">
+                    {{ getCurrencyTicker(option) }}
+                </option>
+                <option :value="fullyQualifiedName">
+                    {{ fullyQualifiedName }}
+                </option>
+            </select>
+            Amount: <input v-model="amount" placeholder="edit me" />
+            Receive:
+            <select v-model="receiveCurrency">
+                <option disabled value="">Please select one</option>
+                <option v-for="option in reserveCurrencies" :value="option.currencyid">
+                    {{ getCurrencyTicker(option) }}
+                </option>
+                <option :value="fullyQualifiedName">
+                    {{ fullyQualifiedName }}
+                </option>
+            </select>
+        </p>
+        <p v-if="isExtras()"> <button @click="evaluate()">Evaluate</button>
+            {{ receiveMessage }}
+        </p>
+        <p v-if="isExtras()"> <button @click="clear()">Clear</button> Only clears green/red - useful for chaining
+            together what-if.
+            For reset,
+            refresh page.
+        </p>
+    </div>
 </template>
 <script>
 import { ref, onMounted } from 'vue';
@@ -108,7 +113,7 @@ export default {
         }
     },
     methods: {
-        isExtras(){
+        isExtras() {
             return parseInt(import.meta.env.VITE_EXTRAS)
         },
         getCurrencyTicker(currency) {
@@ -181,12 +186,12 @@ export default {
                 return
             }
             // workaround for prop in render
-            if( this.sendCurrency === this.fullyQualifiedName ){
+            if (this.sendCurrency === this.fullyQualifiedName) {
                 this.sendCurrency = this.getCurrencyIdByTicker(this.fullyQualifiedName)
                 usingBC = true
             }
             // workaround for prop in render
-            if( this.receiveCurrency === this.fullyQualifiedName ){
+            if (this.receiveCurrency === this.fullyQualifiedName) {
                 this.receiveCurrency = this.getCurrencyIdByTicker(this.fullyQualifiedName)
                 usingBC = true
             }
@@ -241,7 +246,7 @@ export default {
 }
 </script>
 <style scoped>
-:root {
+/* :root {
 
     line-height: 1.5;
     font-weight: 400;
@@ -260,33 +265,33 @@ export default {
 .custom-font {
     font-family: sans-serif;
     font-size: 15px;
-}
+} */
 
-body {
+/* body {
     margin: 550;
     display: flex;
     place-items: center;
     min-width: 320px;
     min-height: 100vh;
-}
+} */
 
-h2 {
+/* h2 {
     font-size: 3.2em;
     line-height: 1.1;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
-}
+} */
 
 .light-green {
-  background-color: lightgreen;
-  /* color: blue; */
+    background-color: lightgreen;
+    /* color: blue; */
 }
 
 .light-red {
-  background-color: lightcoral;
-  /* color: orange; */
+    background-color: lightcoral;
+    /* color: orange; */
 }
 
 .light-grey {
-  background-color: lightgrey;
+    background-color: lightgrey;
 }
 </style>
