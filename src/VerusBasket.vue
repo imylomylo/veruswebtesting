@@ -8,11 +8,15 @@
             <a class="link-info" v-if="webLink" :href="webLink" target="_blank">{{ supply }}</a>
             <span v-else>{{ supply }}</span>
         </h3>
+        <div v-if="pureBasketPriceTbtcVrsc" class="pt-1 pb-1">
+            Show Reserve/tBTC <input type="checkbox" value="showPriceTbtc" @change="togglePriceTbtc()" class="toggle" /> (relative to Pure Basket)
+        </div>
         <div class="p-2 overflow-x-auto">
             <table class="table table-md">
                 <thead>
                     <tr>
                         <th>Reserve Currency</th>
+                        <th v-if="showPriceTbtc">Reserve/tBTC</th>
                         <th v-for="(currency) in reserveCurrencies">
                             Reserve / <span :class="getCellClass(currency, fullyQualifiedName)">
                                 {{ getTickerByCurrencyId(currency.currencyid) }} </span>
@@ -27,6 +31,7 @@
                         <td :class="getCellClass(currencyBase, fullyQualifiedName)">
                             {{ getCurrencyTicker(currencyBase) }}
                         </td>
+                        <td v-if="showPriceTbtc">{{ getPriceReserveTbtc(reserveCurrencies,currencyBase) }}</td>
                         <td v-for="(currencyRel, colIndex) in reserveCurrencies" :key="colIndex"
                             :class="getCellClass(currencyBase, currencyRel)">
                             {{ getReservePrice(reserveCurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
@@ -84,7 +89,8 @@ export default {
         'bestHeight',
         'explorerLink',
         'webLink',
-        'currencyDictionary'
+        'currencyDictionary',
+        'pureBasketPriceTbtcVrsc'
     ],
 
     setup(props) {
@@ -96,6 +102,7 @@ export default {
         const relativeOperationsBasketSend = ref([])
         const relativeOperationsBasketReceive = ref([])
         const receiveMessage = ref()
+        const showPriceTbtc = ref(false)
         return {
             amount,
             sendCurrency,
@@ -104,7 +111,8 @@ export default {
             operationsBasketReceive,
             relativeOperationsBasketSend,
             relativeOperationsBasketReceive,
-            receiveMessage
+            receiveMessage,
+            showPriceTbtc
         }
     },
     data() {
@@ -115,6 +123,15 @@ export default {
     methods: {
         isExtras() {
             return parseInt(import.meta.env.VITE_EXTRAS)
+        },
+        togglePriceTbtc(){
+            this.showPriceTbtc = !this.showPriceTbtc
+        },
+        getPriceReserveTbtc(reserveCurrencies, currency){
+            const vrscCurrencyId = this.getCurrencyIdByTicker("VRSC")
+            const vrscCurrency = reserveCurrencies.find(item => item.currencyid == vrscCurrencyId)
+            const priceInVrsc = this.getReservePrice(reserveCurrencies, currency, vrscCurrency)
+            return parseFloat(priceInVrsc / this.pureBasketPriceTbtcVrsc).toFixed(8)
         },
         getCurrencyTicker(currency) {
             return this.currencyDictionary.find(item => item.currencyid === currency.currencyid).ticker

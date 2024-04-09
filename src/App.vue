@@ -3,12 +3,13 @@
     <div class="p-2">
       Dark/Light <input type="checkbox" value="garden" class="toggle theme-controller" />
     </div>
-    <PriceInTbtc v-if="isExtras()" :pureTbtcReserves="pureTbtcReserves" :priceVrscDai="priceVrscDai"
-      :pricesRelVrsc="pricesRelVrsc" />
+    <!-- <PriceInTbtc v-if="isExtras()" :pureTbtcReserves="pureTbtcReserves" :priceVrscDai="priceVrscDai"
+      :pricesRelVrsc="pricesRelVrsc" /> -->
 
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="BRIDGEVETH" v-bind:webLink="bridgevethwebsite"
       v-bind:explorerLink="verusexplorer" v-bind:supply="bridgevethsupply" v-bind:bestHeight="bridgevethbestheight"
-      v-bind:reserveCurrencies="bridgevethreservecurrencies" v-bind:currencyDictionary="currencyDictionary" />
+      v-bind:reserveCurrencies="bridgevethreservecurrencies" v-bind:currencyDictionary="currencyDictionary"
+      v-bind:pureBasketPriceTbtcVrsc="pureTbtcVrsc"/>
     <p v-else>{{ BRIDGEVETH }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }}
         blocks to go</span></p>
 
@@ -76,34 +77,8 @@ export default {
       switchreservecurrencies: ref(),
       switchbestheight: ref(),
       switchsupply: ref(),
-      mempool: ref([]),
-      mempool_res: ref([]),
-      rawtransaction: ref([]),
-      decodedrawtransaction: ref([]),
-      mempool_count: ref(0),
+      pureTbtcVrsc: ref(),
       res: ref([]),
-      operationsBridgeVethSend: [],
-      relativeOperationsBridgeVethSend: [],
-      operationsBridgeVethReceive: [],
-      relativeOperationsBridgeVethReceive: [],
-      operationsBridgeVarrr: [],
-      relativeOperationsBridgeVarrr: [],
-      operationsPure: [],
-      relativeOperationsPure: [],
-      PURE: "Pure",
-      BRIDGEVETH: "Bridge.vETH",
-      BRIDGEVARRR: "Bridge.vARRR",
-      SWITCH: "Switch",
-      sendBridgeVethReserve: ([]),
-      receiveBridgeVethReserve: ([]),
-      sendBridgeVethAmount: ([]),
-      receiveMessage: '',
-      sendSwitchReserve: '',
-      sendSwitchAmount: '',
-      switchreservecurrencies: ref([]),
-      responseSwitchBestCurrencyState: ref([]),
-      relativeOperationsSwitch: [],
-      operationsSwitch: [],
       currencyDictionary: [
         { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
         { "currencyid": "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM", "ticker": "DAI.vETH" },
@@ -248,6 +223,9 @@ export default {
           this.purereservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
           this.purebestheight = response.data.result.bestheight
           this.puresupply = response.data.result.bestcurrencystate.supply
+          const vrscReserves = this.purereservecurrencies.find(item => item.currencyid == "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV").reserves
+          const tbtcReserves = this.purereservecurrencies.find(item => item.currencyid == "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU").reserves
+          this.pureTbtcVrsc = parseFloat(vrscReserves / tbtcReserves)
         })
         .catch((error) => {
           this.currencies = error
