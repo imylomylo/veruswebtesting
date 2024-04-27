@@ -15,6 +15,14 @@
 
     <div class="divider"></div>
 
+    <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="KAIJU"
+      v-bind:explorerLink="verusexplorer" v-bind:supply="kaijusupply" v-bind:bestHeight="kaijubestheight"
+      v-bind:reserveCurrencies="kaijureservecurrencies" v-bind:currencyDictionary="currencyDictionary"/>
+    <p v-else>{{ KAIJU }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }}
+        blocks to go</span></p>
+
+    <div class="divider"></div>
+
     <VerusBasket v-bind:fullyQualifiedName="BRIDGEVARRR" v-bind:webLink="bridgevarrrwebsite"
       v-bind:explorerLink="varrrexplorer" v-bind:supply="bridgevarrrsupply" v-bind:bestHeight="bridgevarrrbestheight"
       v-bind:reserveCurrencies="bridgevarrrreservecurrencies" v-bind:currencyDictionary="currencyDictionary" />
@@ -56,6 +64,7 @@ export default {
       BRIDGEVARRR: 'Bridge.vARRR',
       PURE: 'Pure',
       SWITCH: 'Switch',
+      KAIJU: 'Kaiju',
       explorertx: "https://insight.verus.io/tx/",
       veruslatestblock: ref(),
       veruslongestchain: ref(),
@@ -77,6 +86,9 @@ export default {
       switchreservecurrencies: ref(),
       switchbestheight: ref(),
       switchsupply: ref(),
+      kaijureservecurrencies: ref(),
+      kaijubestheight: ref(),
+      kaijusupply: ref(),
       pureTbtcVrsc: ref(),
       res: ref([]),
       currencyDictionary: [
@@ -90,7 +102,9 @@ export default {
         { "currencyid": "i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "ticker": "Switch" },
         { "currencyid": "i61cV2uicKSi1rSMQCBNQeSYC3UAi9GVzd", "ticker": "vUSDC.vETH" },
         { "currencyid": "iC5TQFrFXSYLQGkiZ8FYmZHFJzaRF5CYgE", "ticker": "EURC.vETH" },
-        { "currencyid": "iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY", "ticker": "Pure" }
+        { "currencyid": "iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY", "ticker": "Pure" },
+        { "currencyid": "i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb", "ticker": "Kaiju"},
+        { "currencyid": "i9oCSqKALwJtcv49xUKS2U2i79h1kX6NEY", "ticker": "vUSDT.vETH"},
       ]
     };
   },
@@ -274,6 +288,27 @@ export default {
           this.currencies = error
         })
     },
+    getKaijuCurrency() {
+      const requestData = {
+        method: 'post',
+        url: 'https://rpc.vrsc.komodefi.com',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+          method: 'getcurrency',
+          params: ['Kaiju'],
+          id: 1
+        }
+      };
+      this.sendRequestRPC(requestData)
+        .then((response) => {
+          this.kaijureservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+          this.kaijubestheight = response.data.result.bestheight
+          this.kaijusupply = response.data.result.bestcurrencystate.supply
+        })
+        .catch((error) => {
+          this.currencies = error
+        })
+    },
     sendAxiosRequest(method, url, headers, data) {
       return axios({
         method: method,
@@ -291,6 +326,7 @@ export default {
     this.getPureCurrency()
     this.getBridgeVarrrCurrency()
     this.getSwitchCurrency()
+    this.getKaijuCurrency()
   }
 };
 </script>
