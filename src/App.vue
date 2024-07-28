@@ -15,17 +15,23 @@
 
     <div class="divider"></div>
 
-    <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="KAIJU"
-      v-bind:explorerLink="verusexplorer" v-bind:supply="kaijusupply" v-bind:bestHeight="kaijubestheight"
-      v-bind:reserveCurrencies="kaijureservecurrencies" v-bind:currencyDictionary="currencyDictionary"/>
-    <p v-else>{{ KAIJU }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }}
-        blocks to go</span></p>
+    <VerusBasket v-bind:fullyQualifiedName="BRIDGEVDEX"
+      v-bind:supply="bridgevdexsupply" v-bind:bestHeight="bridgevdexbestheight"
+      v-bind:reserveCurrencies="bridgevdexreservecurrencies" v-bind:currencyDictionary="currencyDictionary" />
 
     <div class="divider"></div>
 
     <VerusBasket v-bind:fullyQualifiedName="BRIDGEVARRR" v-bind:webLink="bridgevarrrwebsite"
       v-bind:explorerLink="varrrexplorer" v-bind:supply="bridgevarrrsupply" v-bind:bestHeight="bridgevarrrbestheight"
       v-bind:reserveCurrencies="bridgevarrrreservecurrencies" v-bind:currencyDictionary="currencyDictionary" />
+
+    <div class="divider"></div>
+
+    <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="KAIJU"
+      v-bind:explorerLink="verusexplorer" v-bind:supply="kaijusupply" v-bind:bestHeight="kaijubestheight"
+      v-bind:reserveCurrencies="kaijureservecurrencies" v-bind:currencyDictionary="currencyDictionary"/>
+    <p v-else>{{ KAIJU }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }}
+        blocks to go</span></p>
 
     <div class="divider"></div>
 
@@ -62,6 +68,7 @@ export default {
     return {
       BRIDGEVETH: 'Bridge.vETH',
       BRIDGEVARRR: 'Bridge.vARRR',
+      BRIDGEVDEX: 'Bridge.vDEX (pre-launch)',
       PURE: 'Pure',
       SWITCH: 'Switch',
       KAIJU: 'Kaiju',
@@ -89,6 +96,9 @@ export default {
       kaijureservecurrencies: ref(),
       kaijubestheight: ref(),
       kaijusupply: ref(),
+      bridgevdexreservecurrencies: ref(),
+      bridgevdexbestheight: ref(),
+      bridgevdexsupply: ref(),
       pureTbtcVrsc: ref(),
       res: ref([]),
       currencyDictionary: [
@@ -105,6 +115,8 @@ export default {
         { "currencyid": "iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY", "ticker": "Pure" },
         { "currencyid": "i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb", "ticker": "Kaiju"},
         { "currencyid": "i9oCSqKALwJtcv49xUKS2U2i79h1kX6NEY", "ticker": "vUSDT.vETH"},
+        { "currencyid": "i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9", "ticker": "Bridge.vDEX"},
+        { "currencyid": "iHog9UCTrn95qpUBFCZ7kKz7qWdMA8MQ6N", "ticker": "vDEX"},
       ]
     };
   },
@@ -309,6 +321,27 @@ export default {
           this.currencies = error
         })
     },
+    getBridgeVdexCurrency() {
+      const requestData = {
+        method: 'post',
+        url: 'https://rpc.vrsc.komodefi.com',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+          method: 'getcurrency',
+          params: ['Bridge.vDEX'],
+          id: 1
+        }
+      };
+      this.sendRequestRPC(requestData)
+        .then((response) => {
+          this.bridgevdexreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+          this.bridgevdexbestheight = response.data.result.bestheight
+          this.bridgevdexsupply = response.data.result.bestcurrencystate.supply
+        })
+        .catch((error) => {
+          this.currencies = error
+        })
+    },
     sendAxiosRequest(method, url, headers, data) {
       return axios({
         method: method,
@@ -327,6 +360,7 @@ export default {
     this.getBridgeVarrrCurrency()
     this.getSwitchCurrency()
     this.getKaijuCurrency()
+    this.getBridgeVdexCurrency()
   }
 };
 </script>
