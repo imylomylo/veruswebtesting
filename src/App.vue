@@ -68,7 +68,7 @@ export default {
     return {
       BRIDGEVETH: 'Bridge.vETH',
       BRIDGEVARRR: 'Bridge.vARRR',
-      BRIDGEVDEX: 'Bridge.vDEX (pre-launch)',
+      BRIDGEVDEX: 'Bridge.vDEX',
       PURE: 'Pure',
       SWITCH: 'Switch',
       KAIJU: 'Kaiju',
@@ -324,7 +324,7 @@ export default {
     getBridgeVdexCurrency() {
       const requestData = {
         method: 'post',
-        url: 'https://rpc.vrsc.komodefi.com',
+        url: 'https://rpc.vdex.komodefi.com',
         headers: { 'Content-Type': 'application/json' },
         data: {
           method: 'getcurrency',
