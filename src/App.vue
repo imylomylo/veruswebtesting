@@ -3,6 +3,9 @@
     <div class="p-2">
       Dark/Light <input type="checkbox" value="garden" class="toggle theme-controller" />
     </div>
+    <div class="p-2">Binance prices: BTCUSD: {{ parseFloat(binance_btcusd).toFixed(2) }} , ETHUSD: {{ parseFloat(binance_ethusd).toFixed(2) }} , MKRUSD: {{ parseFloat(binance_mkrusd).toFixed(2) }} , ETHBTC: {{ parseFloat(binance_ethbtc).toFixed(6) }} , MKRBTC: {{ parseFloat(binance_mkrbtc).toFixed(6) }}</div>
+    <div class="p-2">Donations: <a class="link link-info" target="_blank" href="https://insight.verus.io/address/verus%20coin%20foundation@">Verus Coin Foundation@</a></div>
+    <div class="p-2">Coming soon: 1. Newsletter ; 2. More ...</div>
     <!-- <PriceInTbtc v-if="isExtras()" :pureTbtcReserves="pureTbtcReserves" :priceVrscDai="priceVrscDai"
       :pricesRelVrsc="pricesRelVrsc" /> -->
 
@@ -27,14 +30,6 @@
 
     <div class="divider"></div>
 
-    <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="KAIJU"
-      v-bind:explorerLink="verusexplorer" v-bind:supply="kaijusupply" v-bind:bestHeight="kaijubestheight"
-      v-bind:reserveCurrencies="kaijureservecurrencies" v-bind:currencyDictionary="currencyDictionary"/>
-    <p v-else>{{ KAIJU }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }}
-        blocks to go</span></p>
-
-    <div class="divider"></div>
-
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="PURE" v-bind:explorerLink="verusexplorer"
       v-bind:supply="puresupply" v-bind:bestHeight="purebestheight" v-bind:reserveCurrencies="purereservecurrencies"
       v-bind:currencyDictionary="currencyDictionary" />
@@ -43,6 +38,21 @@
 
     <div class="divider"></div>
 
+    <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="KAIJU"
+      v-bind:explorerLink="verusexplorer" v-bind:supply="kaijusupply" v-bind:bestHeight="kaijubestheight"
+      v-bind:reserveCurrencies="kaijureservecurrencies" v-bind:currencyDictionary="currencyDictionary"/>
+    <p v-else>{{ KAIJU }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }}
+        blocks to go</span></p>
+
+    <div class="divider"></div>
+
+    <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="NATI" v-bind:explorerLink="verusexplorer"
+      v-bind:supply="natisupply" v-bind:bestHeight="natibestheight" v-bind:reserveCurrencies="natireservecurrencies"
+      v-bind:currencyDictionary="currencyDictionary" />
+    <p v-else>{{ NATI }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }} blocks
+        to go</span></p>
+
+    <div class="divider"></div>
 
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="SWITCH" v-bind:explorerLink="verusexplorer"
       v-bind:supply="switchsupply" v-bind:bestHeight="switchbestheight"
@@ -72,6 +82,7 @@ export default {
       PURE: 'Pure',
       SWITCH: 'Switch',
       KAIJU: 'Kaiju',
+      NATI: 'NATI (pre-conversion)',
       explorertx: "https://insight.verus.io/tx/",
       veruslatestblock: ref(),
       veruslongestchain: ref(),
@@ -99,8 +110,16 @@ export default {
       bridgevdexreservecurrencies: ref(),
       bridgevdexbestheight: ref(),
       bridgevdexsupply: ref(),
+      natireservecurrencies: ref(),
+      natibestheight: ref(),
+      natisupply: ref(),
       pureTbtcVrsc: ref(),
       res: ref([]),
+      binance_btcusd: ref(),
+      binance_ethusd: ref(),
+      binance_mkrusd: ref(),
+      binance_ethbtc: ref(),
+      binance_mkrbtc: ref(),
       currencyDictionary: [
         { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
         { "currencyid": "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM", "ticker": "DAI.vETH" },
@@ -117,6 +136,8 @@ export default {
         { "currencyid": "i9oCSqKALwJtcv49xUKS2U2i79h1kX6NEY", "ticker": "vUSDT.vETH"},
         { "currencyid": "i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9", "ticker": "Bridge.vDEX"},
         { "currencyid": "iHog9UCTrn95qpUBFCZ7kKz7qWdMA8MQ6N", "ticker": "vDEX"},
+        { "currencyid": "iRt7tpLewArQnRddBVFARGKJStK6w5pDmC", "ticker": "NATI"},
+        { "currencyid": "iL62spNN42Vqdxh8H5nrfNe8d6Amsnfkdx", "ticker": "NATI.vETH"}
       ]
     };
   },
@@ -342,6 +363,44 @@ export default {
           this.currencies = error
         })
     },
+    getNatiCurrency() {
+      const requestData = {
+        method: 'post',
+        url: 'https://rpc.vrsc.komodefi.com',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+          method: 'getcurrency',
+          params: ['NATI'],
+          id: 1
+        }
+      };
+      this.sendRequestRPC(requestData)
+        .then((response) => {
+          this.natireservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+          this.natibestheight = response.data.result.bestheight
+          this.natisupply = response.data.result.bestcurrencystate.supply
+        })
+        .catch((error) => {
+          this.currencies = error
+        })
+    },
+    getBinancePrices() {
+      axios.get("https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT").then(res =>
+       this.binance_btcusd = res.data.price
+      )
+      axios.get("https://api.binance.com/api/v3/ticker/price?symbol=ETHUSDT").then(res =>
+       this.binance_ethusd = res.data.price
+      )
+      axios.get("https://api.binance.com/api/v3/ticker/price?symbol=MKRUSDT").then(res =>
+       this.binance_mkrusd = res.data.price
+      )
+      axios.get("https://api.binance.com/api/v3/ticker/price?symbol=ETHBTC").then(res =>
+       this.binance_ethbtc = res.data.price
+      )
+      axios.get("https://api.binance.com/api/v3/ticker/price?symbol=MKRBTC").then(res =>
+       this.binance_mkrbtc = res.data.price
+      )
+    },
     sendAxiosRequest(method, url, headers, data) {
       return axios({
         method: method,
@@ -361,6 +420,8 @@ export default {
     this.getSwitchCurrency()
     this.getKaijuCurrency()
     this.getBridgeVdexCurrency()
+    this.getNatiCurrency()
+    this.getBinancePrices()
   }
 };
 </script>
