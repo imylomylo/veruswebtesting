@@ -6,10 +6,15 @@
             <span v-else>{{ bestHeight }}</span> |
             Supply:
             <a class="link-info" v-if="webLink" :href="webLink" target="_blank">{{ supply }}</a>
-            <span v-else>{{ supply }}</span>
+            <span v-else>{{ supply }}</span> | 
+            <a class="link-info" v-if="chartLink" :href="chartLink" target="_blank">Chart</a>
+            <span v-else>Chart not available</span> |
+            <a class="link-info" v-if="recentTransfersLink" :href="recentTransfersLink" target="_blank">Recent Conversions</a>
+            <span v-else>Recent conversions not available</span>
         </h3>
         <div v-if="pureBasketPriceTbtcVrsc" class="pt-1 pb-1">
-            Show Reserve/tBTC <input type="checkbox" value="showPriceTbtc" @change="togglePriceTbtc()" class="toggle" /> (relative to Pure Basket)
+            Show Reserve/tBTC <input type="checkbox" value="showPriceTbtc" @change="togglePriceTbtc()" class="toggle" />
+            (relative to Pure Basket)
         </div>
         <div class="p-2 overflow-x-auto">
             <table class="table table-md">
@@ -31,7 +36,7 @@
                         <td :class="getCellClass(currencyBase, fullyQualifiedName)">
                             {{ getCurrencyTicker(currencyBase) }}
                         </td>
-                        <td v-if="showPriceTbtc">{{ getPriceReserveTbtc(reserveCurrencies,currencyBase) }}</td>
+                        <td v-if="showPriceTbtc">{{ getPriceReserveTbtc(reserveCurrencies, currencyBase) }}</td>
                         <td v-for="(currencyRel, colIndex) in reserveCurrencies" :key="colIndex"
                             :class="getCellClass(currencyBase, currencyRel)">
                             {{ getReservePrice(reserveCurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
@@ -45,37 +50,46 @@
                 </tbody>
             </table>
         </div>
-        <p v-if="isExtras()">
-            Send:
-            <select v-model="sendCurrency">
-                <option disabled value="">Please select one</option>
-                <option v-for="option in reserveCurrencies" :value="option.currencyid">
-                    {{ getCurrencyTicker(option) }}
-                </option>
-                <option :value="fullyQualifiedName">
+        <div class="collapse collapse-plus">
+            <input type="radio" name="whatif" />
+            <div class="collapse-title text-xl font-medium text-info">What-if ?</div>
+            <div class="collapse-content">
+                <p v-if="isExtras()" class="bg-primary-content p-2">
+                    Send:
+                    <select class="select select-error" v-model="sendCurrency">
+                        <option disabled value="">Please select one</option>
+                        <option v-for="option in reserveCurrencies" :value="option.currencyid">
+                            {{ getCurrencyTicker(option) }}
+                        </option>
+                        <!-- <option :value="fullyQualifiedName">
                     {{ fullyQualifiedName }}
-                </option>
-            </select>
-            Amount: <input v-model="amount" placeholder="edit me" />
-            Receive:
-            <select v-model="receiveCurrency">
-                <option disabled value="">Please select one</option>
-                <option v-for="option in reserveCurrencies" :value="option.currencyid">
-                    {{ getCurrencyTicker(option) }}
-                </option>
-                <option :value="fullyQualifiedName">
+                </option> -->
+                    </select>
+                    Amount: <input class="input input-neutral input-bordered" v-model="amount" placeholder="" />
+                    Receive:
+                    <select class="select select-success" v-model="receiveCurrency">
+                        <option disabled value="">Please select one</option>
+                        <option v-for="option in reserveCurrencies" :value="option.currencyid">
+                            {{ getCurrencyTicker(option) }}
+                        </option>
+                        <!-- <option :value="fullyQualifiedName">
                     {{ fullyQualifiedName }}
-                </option>
-            </select>
-        </p>
-        <p v-if="isExtras()"> <button @click="evaluate()">Evaluate</button>
-            {{ receiveMessage }}
-        </p>
-        <p v-if="isExtras()"> <button @click="clear()">Clear</button> Only clears green/red - useful for chaining
-            together what-if.
-            For reset,
-            refresh page.
-        </p>
+                </option> -->
+                    </select>
+                </p>
+                <p class="bg-primary-content p-2 text-warning" v-if="isExtras()"> <button
+                        class="btn btn-outline btn-info" @click="evaluate()">Evaluate</button>
+                    {{ receiveMessage }}
+                </p>
+                <p class="bg-primary-content p-2 text-primary" v-if="isExtras()"> <button
+                        class="btn btn-outline btn-primary" @click="clear()">Continue</button> Only clears green/red -
+                    useful for chaining
+                    together evaluations in a what-if scenario...
+                    For reset,
+                    refresh page.
+                </p>
+            </div>
+        </div>
     </div>
 </template>
 <script>
@@ -86,6 +100,8 @@ export default {
         'fullyQualifiedName',//: String, //'fullyQualifiedName',
         'reserveCurrencies', //: [Object] //'reserveCurrencies',
         'supply', // String
+        'chartLink',
+        'recentTransfersLink',
         'bestHeight',
         'explorerLink',
         'webLink',
@@ -124,10 +140,10 @@ export default {
         isExtras() {
             return parseInt(import.meta.env.VITE_EXTRAS)
         },
-        togglePriceTbtc(){
+        togglePriceTbtc() {
             this.showPriceTbtc = !this.showPriceTbtc
         },
-        getPriceReserveTbtc(reserveCurrencies, currency){
+        getPriceReserveTbtc(reserveCurrencies, currency) {
             const vrscCurrencyId = this.getCurrencyIdByTicker("VRSC")
             const vrscCurrency = reserveCurrencies.find(item => item.currencyid == vrscCurrencyId)
             const priceInVrsc = this.getReservePrice(reserveCurrencies, currency, vrscCurrency)
@@ -161,23 +177,23 @@ export default {
                 // receiving currency will always be 'remove'
                 // untested with lp currency as receive
                 // return this.operationsBridgeVethSend[currencyBase.currencyid] === 'add' ? 'light-red' : this.operationsBridgeVethSend[currencyBase.currencyid] === 'remove' ? 'light-green' : this.operationsBridgeVethReceive[currencyBase.currencyid] === 'remove' ? 'light-green' : ''
-                return this.operationsBasketSend[currencyBase.currencyid] === 'add' ? 'light-red' : this.operationsBasketReceive[currencyBase.currencyid] === 'remove' ? 'light-green' : ''
+                return this.operationsBasketSend[currencyBase.currencyid] === 'add' ? 'text-red-300' : this.operationsBasketReceive[currencyBase.currencyid] === 'remove' ? 'text-green-300' : ''
             }
 
             // the row is the base currency, it devalues when sendCurrency
             if (this.operationsBasketSend[currencyBase.currencyid]) {
-                return this.relativeOperationsBasketSend[currencyRel.currencyid] === 'add' ? 'light-green' : this.relativeOperationsBasketSend[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+                return this.relativeOperationsBasketSend[currencyRel.currencyid] === 'add' ? 'text-green-300' : this.relativeOperationsBasketSend[currencyRel.currencyid] === 'remove' ? 'text-red-300' : ''
             }
             if (this.operationsBasketReceive[currencyBase.currencyid]) {
-                return this.relativeOperationsBasketReceive[currencyRel.currencyid] === 'add' ? 'light-green' : this.relativeOperationsBasketReceive[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+                return this.relativeOperationsBasketReceive[currencyRel.currencyid] === 'add' ? 'text-green-300' : this.relativeOperationsBasketReceive[currencyRel.currencyid] === 'remove' ? 'text-red-300' : ''
             }
 
             // rel is sendCurrency, operation of adding to basket, means it is green when in rel column
             if (this.operationsBasketSend[currencyRel.currencyid]) {
-                return this.operationsBasketSend[currencyRel.currencyid] === 'add' ? 'light-green' : ''//this.operationsBridgeVethSend[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+                return this.operationsBasketSend[currencyRel.currencyid] === 'add' ? 'text-green-300' : ''//this.operationsBridgeVethSend[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
             }
             if (this.operationsBasketReceive[currencyRel.currencyid]) {
-                return this.operationsBasketReceive[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+                return this.operationsBasketReceive[currencyRel.currencyid] === 'remove' ? 'text-red-300' : ''
             }
         },
         getReservePrice(reserveCurrencies, currency, targetCurrency) {

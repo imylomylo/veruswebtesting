@@ -10,6 +10,7 @@
       :pricesRelVrsc="pricesRelVrsc" /> -->
 
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="BRIDGEVETH" v-bind:webLink="bridgevethwebsite"
+      v-bind:chartLink="bridgevethchart" v-bind:recentTransfersLink="bridgevethrecenttransfers"
       v-bind:explorerLink="verusexplorer" v-bind:supply="bridgevethsupply" v-bind:bestHeight="bridgevethbestheight"
       v-bind:reserveCurrencies="bridgevethreservecurrencies" v-bind:currencyDictionary="currencyDictionary"
       v-bind:pureBasketPriceTbtcVrsc="pureTbtcVrsc"/>
@@ -19,18 +20,21 @@
     <div class="divider"></div>
 
     <VerusBasket v-bind:fullyQualifiedName="BRIDGEVDEX"
+      v-bind:chartLink="bridgevdexchart" v-bind:recentTransfersLink="bridgevdexrecenttransfers"
       v-bind:supply="bridgevdexsupply" v-bind:bestHeight="bridgevdexbestheight"
       v-bind:reserveCurrencies="bridgevdexreservecurrencies" v-bind:currencyDictionary="currencyDictionary" />
 
     <div class="divider"></div>
 
     <VerusBasket v-bind:fullyQualifiedName="BRIDGEVARRR" v-bind:webLink="bridgevarrrwebsite"
+      v-bind:chartLink="bridgevarrrchart" v-bind:recentTransfersLink="bridgevarrrrecenttransfers"
       v-bind:explorerLink="varrrexplorer" v-bind:supply="bridgevarrrsupply" v-bind:bestHeight="bridgevarrrbestheight"
       v-bind:reserveCurrencies="bridgevarrrreservecurrencies" v-bind:currencyDictionary="currencyDictionary" />
 
     <div class="divider"></div>
 
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="PURE" v-bind:explorerLink="verusexplorer"
+      v-bind:chartLink="purechart" v-bind:recentTransfersLink="purerecenttransfers"
       v-bind:supply="puresupply" v-bind:bestHeight="purebestheight" v-bind:reserveCurrencies="purereservecurrencies"
       v-bind:currencyDictionary="currencyDictionary" />
     <p v-else>{{ PURE }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }} blocks
@@ -39,6 +43,7 @@
     <div class="divider"></div>
 
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="KAIJU"
+      v-bind:chartLink="kaijuchart" v-bind:recentTransfersLink="kaijurecenttransfers"
       v-bind:explorerLink="verusexplorer" v-bind:supply="kaijusupply" v-bind:bestHeight="kaijubestheight"
       v-bind:reserveCurrencies="kaijureservecurrencies" v-bind:currencyDictionary="currencyDictionary"/>
     <p v-else>{{ KAIJU }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }}
@@ -47,6 +52,7 @@
     <div class="divider"></div>
 
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="NATI" v-bind:explorerLink="verusexplorer"
+      v-bind:chartLink="natichart" v-bind:recentTransfersLink="natirecenttransfers"
       v-bind:supply="natisupply" v-bind:bestHeight="natibestheight" v-bind:reserveCurrencies="natireservecurrencies"
       v-bind:currencyDictionary="currencyDictionary" />
     <p v-else>{{ NATI }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }} blocks
@@ -55,6 +61,7 @@
     <div class="divider"></div>
 
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="SWITCH" v-bind:explorerLink="verusexplorer"
+      v-bind:chartLink="switchchart" v-bind:recentTransfersLink="switchrecenttransfers"
       v-bind:supply="switchsupply" v-bind:bestHeight="switchbestheight"
       v-bind:reserveCurrencies="switchreservecurrencies" v-bind:currencyDictionary="currencyDictionary" />
     <p v-else>{{ SWITCH }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }}
@@ -92,27 +99,41 @@ export default {
       bridgevethbestheight: ref(),
       bridgevethsupply: ref(),
       bridgevethwebsite: "https://verus.io/eth-bridge",
+      bridgevethchart: "https://bridgeveth.basket.verus.trading/view/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx",
+      bridgevethrecenttransfers: "https://bridgeveth.basket.verus.trading/transfers/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx",
       verusexplorer: "https://insight.verus.io",
       purereservecurrencies: ref(),
       purebestheight: ref(),
       puresupply: ref(),
+      purechart: "https://pure.basket.verus.trading/view/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY",
+      purerecenttransfers: "https://pure.basket.verus.trading/transfers/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY",
       bridgevarrrreservecurrencies: ref(),
       bridgevarrrbestheight: ref(),
       bridgevarrrsupply: ref(),
       bridgevarrrwebsite: "https://varrr.piratechain.com",
+      bridgevarrrchart: "https://bridgevarrr.basket.verus.trading/view/iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB",
+      bridgevarrrrecenttransfers: "https://bridgevarrr.basket.verus.trading/transfers/iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB",
       varrrexplorer: "https://varrrexplorer.piratechain.com",
       switchreservecurrencies: ref(),
       switchbestheight: ref(),
       switchsupply: ref(),
+      switchchart: "https://switch.basket.verus.trading/view/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc",
+      switchrecenttransfers: "https://switch.basket.verus.trading/transfers/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc",
       kaijureservecurrencies: ref(),
       kaijubestheight: ref(),
       kaijusupply: ref(),
+      kaijuchart: "https://kaiju.basket.verus.trading/view/i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb",
+      kaijurecenttransfers: "https://kaiju.basket.verus.trading/transfers/i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb",
       bridgevdexreservecurrencies: ref(),
       bridgevdexbestheight: ref(),
       bridgevdexsupply: ref(),
+      bridgevdexchart: "https://bridgevdex.basket.verus.trading/view/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9",
+      bridgevdexrecenttransfers: "https://bridgevdex.basket.verus.trading/transfers/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9",
       natireservecurrencies: ref(),
       natibestheight: ref(),
       natisupply: ref(),
+      natichart: "https://nati.basket.verus.trading/view/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC",
+      natirecenttransfers: "https://nati.basket.verus.trading/transfers/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC",
       pureTbtcVrsc: ref(),
       res: ref([]),
       binance_btcusd: ref(),
@@ -137,7 +158,8 @@ export default {
         { "currencyid": "i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9", "ticker": "Bridge.vDEX"},
         { "currencyid": "iHog9UCTrn95qpUBFCZ7kKz7qWdMA8MQ6N", "ticker": "vDEX"},
         { "currencyid": "iRt7tpLewArQnRddBVFARGKJStK6w5pDmC", "ticker": "NATI"},
-        { "currencyid": "iL62spNN42Vqdxh8H5nrfNe8d6Amsnfkdx", "ticker": "NATI.vETH"}
+        { "currencyid": "iL62spNN42Vqdxh8H5nrfNe8d6Amsnfkdx", "ticker": "NATI.vETH"},
+        { "currencyid": "iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB", "ticker": "Bridge.vARRR"}
       ]
     };
   },
