@@ -1,6 +1,11 @@
 <template>
     <div class="p-2">
         <h2 class="pb-1"> LP Basket: {{ fullyQualifiedName }}</h2>
+        <div v-if="marketNote">
+            <p class="pt-2 pb-2">
+                {{  marketNote }}
+            </p>
+        </div>
         <h3> Blocks:
             <a class="link-info" v-if="explorerLink" :href="explorerLink" target="_blank">{{ bestHeight }}</a>
             <span v-else>{{ bestHeight }}</span> |
@@ -102,6 +107,7 @@ export default {
         'supply', // String
         'chartLink',
         'recentTransfersLink',
+        'marketNote',
         'bestHeight',
         'explorerLink',
         'webLink',

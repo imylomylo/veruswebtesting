@@ -52,7 +52,7 @@
     <div class="divider"></div>
 
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="NATI" v-bind:explorerLink="verusexplorer"
-      v-bind:chartLink="natichart" v-bind:recentTransfersLink="natirecenttransfers"
+      v-bind:chartLink="natichart" v-bind:recentTransfersLink="natirecenttransfers" v-bind:marketNote="natimarketnote"
       v-bind:supply="natisupply" v-bind:bestHeight="natibestheight" v-bind:reserveCurrencies="natireservecurrencies"
       v-bind:currencyDictionary="currencyDictionary" />
     <p v-else>{{ NATI }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }} blocks
@@ -89,7 +89,7 @@ export default {
       PURE: 'Pure',
       SWITCH: 'Switch',
       KAIJU: 'Kaiju',
-      NATI: 'NATI (pre-conversion)',
+      NATI: 'NATI',
       explorertx: "https://insight.verus.io/tx/",
       veruslatestblock: ref(),
       veruslongestchain: ref(),
@@ -134,6 +134,7 @@ export default {
       natisupply: ref(),
       natichart: "https://nati.basket.verus.trading/view/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC",
       natirecenttransfers: "https://nati.basket.verus.trading/transfers/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC",
+      natimarketnote: "NATI.vETH = 10k IlluminatiCoin on Eth",
       pureTbtcVrsc: ref(),
       res: ref([]),
       binance_btcusd: ref(),
