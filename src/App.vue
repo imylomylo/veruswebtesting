@@ -4,7 +4,7 @@
       Dark/Light <input type="checkbox" value="garden" class="toggle theme-controller" />
     </div>
     <div class="p-2">Binance prices: BTCUSD: {{ parseFloat(binance_btcusd).toFixed(2) }} , ETHUSD: {{ parseFloat(binance_ethusd).toFixed(2) }} , MKRUSD: {{ parseFloat(binance_mkrusd).toFixed(2) }} , ETHBTC: {{ parseFloat(binance_ethbtc).toFixed(6) }} , MKRBTC: {{ parseFloat(binance_mkrbtc).toFixed(6) }}</div>
-    <div class="p-2">Donations: <a class="link link-info" target="_blank" href="https://insight.verus.io/address/verus%20coin%20foundation@">Verus Coin Foundation@</a></div>
+    <div class="p-2">Donations: <a class="link link-info" target="_blank" href="https://insight.verus.io/address/ADDRESSBOOK@">ADDRESSBOOK@</a> and <a class="link link-info" target="_blank" href="https://insight.verus.io/address/verus%20coin%20foundation@">Verus Coin Foundation@</a></div>
     <div class="p-2">Coming soon: 1. Newsletter ; 2. More ...</div>
     <!-- <PriceInTbtc v-if="isExtras()" :pureTbtcReserves="pureTbtcReserves" :priceVrscDai="priceVrscDai"
       :pricesRelVrsc="pricesRelVrsc" /> -->
