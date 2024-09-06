@@ -99,41 +99,84 @@ export default {
       bridgevethbestheight: ref(),
       bridgevethsupply: ref(),
       bridgevethwebsite: "https://verus.io/eth-bridge",
-      bridgevethchart: "https://bridgeveth.basket.verus.trading/view/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx",
-      bridgevethrecenttransfers: "https://bridgeveth.basket.verus.trading/transfers/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx",
+      bridgevethchart: [
+        {"link": "https://bridgeveth.eu1.verus.trading/view/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "EU1"},
+        {"link": "https://bridgeveth.us1.verus.trading/view/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "US1"}
+      ],
+      bridgevethrecenttransfers: [
+        {"link": "https://bridgeveth.eu1.verus.trading/transfers/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "EU1"},
+        {"link": "https://bridgeveth.us1.verus.trading/transfers/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "US1"}
+      ],
       verusexplorer: "https://insight.verus.io",
       purereservecurrencies: ref(),
       purebestheight: ref(),
       puresupply: ref(),
-      purechart: "https://pure.basket.verus.trading/view/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY",
-      purerecenttransfers: "https://pure.basket.verus.trading/transfers/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY",
+      purechart: [
+        {"link": "https://pure.eu1.verus.trading/view/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY", "title": "EU1"},
+        {"link": "https://pure.us1.verus.trading/view/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY", "title": "US1"}
+      ],
+
+      purerecenttransfers: [
+        {"link": "https://pure.eu1.verus.trading/transfers/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY", "title": "EU1"},
+        {"link": "https://pure.us1.verus.trading/transfers/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY", "title": "US1"}
+      ],
       bridgevarrrreservecurrencies: ref(),
       bridgevarrrbestheight: ref(),
       bridgevarrrsupply: ref(),
       bridgevarrrwebsite: "https://varrr.piratechain.com",
-      bridgevarrrchart: "https://bridgevarrr.basket.verus.trading/view/iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB",
-      bridgevarrrrecenttransfers: "https://bridgevarrr.basket.verus.trading/transfers/iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB",
+      bridgevarrrchart: [
+        {"link": "https://bridgevarrr.eu1.verus.trading/view/iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB", "title": "EU1"},
+        {"link": "https://bridgevarrr.us1.verus.trading/view/iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB", "title": "US1"}
+      ],
+      bridgevarrrrecenttransfers: [
+        {"link": "https://bridgevarrr.eu1.verus.trading/transfers/iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB", "title": "EU1"},
+        {"link": "https://bridgevarrr.us1.verus.trading/transfers/iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB", "title": "US1"}
+      ],
       varrrexplorer: "https://varrrexplorer.piratechain.com",
       switchreservecurrencies: ref(),
       switchbestheight: ref(),
       switchsupply: ref(),
-      switchchart: "https://switch.basket.verus.trading/view/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc",
-      switchrecenttransfers: "https://switch.basket.verus.trading/transfers/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc",
+      switchchart: [
+        {"link": "https://switch.eu1.verus.trading/view/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "title": "EU1"},
+        {"link": "https://switch.us1.verus.trading/view/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "title": "US1"}
+      ],
+      switchrecenttransfers: [
+        {"link": "https://switch.eu1.verus.trading/transfers/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "title": "EU1"},
+        {"link": "https://switch.us1.verus.trading/transfers/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "title": "US1"}
+      ],
       kaijureservecurrencies: ref(),
       kaijubestheight: ref(),
       kaijusupply: ref(),
-      kaijuchart: "https://kaiju.basket.verus.trading/view/i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb",
-      kaijurecenttransfers: "https://kaiju.basket.verus.trading/transfers/i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb",
+      kaijuchart: [
+        {"link": "https://kaiju.eu1.verus.trading/view/i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb", "title": "EU1"},
+        {"link": "https://kaiju.us1.verus.trading/view/i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb", "title": "US1"}
+      ],
+      kaijurecenttransfers: [
+        {"link": "https://kaiju.eu1.verus.trading/transfers/i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb", "title": "EU1"},
+        {"link": "https://kaiju.us1.verus.trading/transfers/i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb", "title": "US1"}
+      ],
       bridgevdexreservecurrencies: ref(),
       bridgevdexbestheight: ref(),
       bridgevdexsupply: ref(),
-      bridgevdexchart: "https://bridgevdex.basket.verus.trading/view/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9",
-      bridgevdexrecenttransfers: "https://bridgevdex.basket.verus.trading/transfers/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9",
+      bridgevdexchart: [
+        {"link": "https://bridgevdex.eu1.verus.trading/view/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9", "title": "EU1"},
+        {"link": "https://bridgevdex.us1.verus.trading/view/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9", "title": "US1"}
+      ],
+      bridgevdexrecenttransfers: [
+        {"link": "https://bridgevdex.eu1.verus.trading/transfers/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9", "title": "EU1"},
+        {"link": "https://bridgevdex.us1.verus.trading/transfers/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9", "title": "US1"}
+      ],
       natireservecurrencies: ref(),
       natibestheight: ref(),
       natisupply: ref(),
-      natichart: "https://nati.basket.verus.trading/view/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC",
-      natirecenttransfers: "https://nati.basket.verus.trading/transfers/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC",
+      natichart: [
+        {"link": "https://nati.eu1.verus.trading/view/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC", "title": "EU1"},
+        {"link": "https://nati.us1.verus.trading/view/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC", "title": "US1"}
+      ],
+      natirecenttransfers: [
+        {"link": "https://nati.eu1.verus.trading/transfers/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC", "title": "EU1"},
+        {"link": "https://nati.us1.verus.trading/transfers/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC", "title": "US1"}
+      ],
       natimarketnote: "NATI.vETH = 10k IlluminatiCoin on Eth",
       pureTbtcVrsc: ref(),
       res: ref([]),

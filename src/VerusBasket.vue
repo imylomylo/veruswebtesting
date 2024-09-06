@@ -6,17 +6,30 @@
                 {{  marketNote }}
             </p>
         </div>
-        <h3> Blocks:
+        <div class="text-xl"> Blocks:
             <a class="link-info" v-if="explorerLink" :href="explorerLink" target="_blank">{{ bestHeight }}</a>
             <span v-else>{{ bestHeight }}</span> |
             Supply:
             <a class="link-info" v-if="webLink" :href="webLink" target="_blank">{{ supply }}</a>
             <span v-else>{{ supply }}</span> | 
-            <a class="link-info" v-if="chartLink" :href="chartLink" target="_blank">Chart</a>
+
+
+            <span v-if="chartLink.length != 0">Chart mirrors: 
+                <template v-for="mirror in chartLink" >
+                    <a class="link-info" :href="mirror.link" target="_blank">{{ mirror.title }}</a>
+                </template>
+            </span>
             <span v-else>Chart not available</span> |
-            <a class="link-info" v-if="recentTransfersLink" :href="recentTransfersLink" target="_blank">Recent Conversions</a>
+            
+
+            <span v-if="recentTransfersLink.length != 0">Recent transfers mirrors: 
+                <template v-for="mirror in recentTransfersLink">
+                    <a class="link-info" v-if="mirror.link" :href="mirror.link" target="_blank">{{ mirror.title }}</a>
+                </template>
+            </span>
             <span v-else>Recent conversions not available</span>
-        </h3>
+
+        </div>
         <div v-if="pureBasketPriceTbtcVrsc" class="pt-1 pb-1">
             Show Reserve/tBTC <input type="checkbox" value="showPriceTbtc" @change="togglePriceTbtc()" class="toggle" />
             (relative to Pure Basket)
@@ -125,6 +138,7 @@ export default {
         const relativeOperationsBasketReceive = ref([])
         const receiveMessage = ref()
         const showPriceTbtc = ref(false)
+        const chartLink = ref([])
         return {
             amount,
             sendCurrency,
