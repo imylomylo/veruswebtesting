@@ -16,7 +16,7 @@
 
             <span v-if="chartLink.length != 0">Chart mirrors: 
                 <template v-for="mirror in chartLink" >
-                    <a class="link-info" :href="mirror.link" target="_blank">{{ mirror.title }}</a>
+                    <div class="badge badge-lg badge-ghost"><a class="link-info" :href="mirror.link" target="_blank">{{ mirror.title }}</a></div>
                 </template>
             </span>
             <span v-else>Chart not available</span> |
@@ -24,7 +24,7 @@
 
             <span v-if="recentTransfersLink.length != 0">Recent transfers mirrors: 
                 <template v-for="mirror in recentTransfersLink">
-                    <a class="link-info" v-if="mirror.link" :href="mirror.link" target="_blank">{{ mirror.title }}</a>
+                    <div class="badge badge-lg badge-ghost"><a class="link-info" v-if="mirror.link" :href="mirror.link" target="_blank">{{ mirror.title }}</a></div>
                 </template>
             </span>
             <span v-else>Recent conversions not available</span>
