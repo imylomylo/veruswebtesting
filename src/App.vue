@@ -4,7 +4,7 @@
       Dark/Light <input type="checkbox" value="garden" class="toggle theme-controller" />
     </div>
     <div class="p-2">Binance prices: BTCUSD: {{ parseFloat(binance_btcusd).toFixed(2) }} , ETHUSD: {{ parseFloat(binance_ethusd).toFixed(2) }} , MKRUSD: {{ parseFloat(binance_mkrusd).toFixed(2) }} , ETHBTC: {{ parseFloat(binance_ethbtc).toFixed(6) }} , MKRBTC: {{ parseFloat(binance_mkrbtc).toFixed(6) }}</div>
-    <div class="p-2">Donations: <a class="link link-info" target="_blank" href="https://insight.verus.io/address/ADDRESSBOOK@">ADDRESSBOOK@</a> and <a class="link link-info" target="_blank" href="https://insight.verus.io/address/verus%20coin%20foundation@">Verus Coin Foundation@</a></div>
+    <div class="p-2">Donations: <a class="link link-info" target="_blank" href="https://insight.verus.io/address/VERUSTRADING@">VERUSTRADING@</a> and <a class="link link-info" target="_blank" href="https://insight.verus.io/address/verus%20coin%20foundation@">Verus Coin Foundation@</a></div>
     <div class="p-2">Coming soon: 1. Newsletter ; 2. More ...</div>
     <!-- <PriceInTbtc v-if="isExtras()" :pureTbtcReserves="pureTbtcReserves" :priceVrscDai="priceVrscDai"
       :pricesRelVrsc="pricesRelVrsc" /> -->
@@ -66,7 +66,17 @@
       v-bind:reserveCurrencies="switchreservecurrencies" v-bind:currencyDictionary="currencyDictionary" />
     <p v-else>{{ SWITCH }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }}
         blocks to go</span></p>
-  </div>
+
+    <div class="divider"></div>
+
+    <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="CYBERMONEY" v-bind:explorerLink="verusexplorer"
+      v-bind:chartLink="cybermoneychart" v-bind:recentTransfersLink="cybermoneyrecenttransfers" v-bind:marketNote="cybermoneymarketnote"
+      v-bind:supply="cybermoneysupply" v-bind:bestHeight="cybermoneybestheight" v-bind:reserveCurrencies="cybermoneyreservecurrencies"
+      v-bind:currencyDictionary="currencyDictionary" />
+    <p v-else>{{ CYBERMONEY }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }} blocks
+        to go</span></p>
+
+</div>
 </template>
 
 <script>
@@ -90,6 +100,7 @@ export default {
       SWITCH: 'Switch',
       KAIJU: 'Kaiju',
       NATI: 'NATI',
+      CYBERMONEY: "Cybermoney",
       explorertx: "https://insight.verus.io/tx/",
       veruslatestblock: ref(),
       veruslongestchain: ref(),
@@ -178,6 +189,18 @@ export default {
         {"link": "https://nati.us1.verus.trading/transfers/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC", "title": "US1"}
       ],
       natimarketnote: "NATI.vETH = 10k IlluminatiCoin on Eth",
+      cybermoneyreservecurrencies: ref(),
+      cybermoneybestheight: ref(),
+      cybermoneysupply: ref(),
+      cybermoneychart: [
+        {"link": "https://cybermoney.eu1.verus.trading/view/i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "title": "EU1"},
+        {"link": "https://cybermoney.us1.verus.trading/view/i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "title": "US1"}
+      ],
+      cybermoneyrecenttransfers: [
+        {"link": "https://cybermoney.eu1.verus.trading/transfers/i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "title": "EU1"},
+        {"link": "https://cybermoney.us1.verus.trading/transfers/i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "title": "US1"}
+      ],
+      cybermoneymarketnote: "**WARNING** Cybermoney contains junk token named bitcoins, not real bitcoins, however, this is still useful for cheap VerusIDs like verustrading.bitcoins@",
       pureTbtcVrsc: ref(),
       res: ref([]),
       binance_btcusd: ref(),
@@ -203,7 +226,9 @@ export default {
         { "currencyid": "iHog9UCTrn95qpUBFCZ7kKz7qWdMA8MQ6N", "ticker": "vDEX"},
         { "currencyid": "iRt7tpLewArQnRddBVFARGKJStK6w5pDmC", "ticker": "NATI"},
         { "currencyid": "iL62spNN42Vqdxh8H5nrfNe8d6Amsnfkdx", "ticker": "NATI.vETH"},
-        { "currencyid": "iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB", "ticker": "Bridge.vARRR"}
+        { "currencyid": "iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB", "ticker": "Bridge.vARRR"},
+        { "currencyid": "i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "ticker": "cybermoney"},
+        { "currencyid": "i7ekXxHYzXW7uAfu5BtWZhd1MjXcWU5Rn3", "ticker": "bitcoins"}
       ]
     };
   },
@@ -450,6 +475,27 @@ export default {
           this.currencies = error
         })
     },
+    getCybermoneyCurrency() {
+      const requestData = {
+        method: 'post',
+        url: 'https://rpc.vrsc.komodefi.com',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+          method: 'getcurrency',
+          params: ['cybermoney'],
+          id: 1
+        }
+      };
+      this.sendRequestRPC(requestData)
+        .then((response) => {
+          this.cybermoneyreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+          this.cybermoneybestheight = response.data.result.bestheight
+          this.cybermoneysupply = response.data.result.bestcurrencystate.supply
+        })
+        .catch((error) => {
+          this.currencies = error
+        })
+    },
     getBinancePrices() {
       axios.get("https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT").then(res =>
        this.binance_btcusd = res.data.price
@@ -487,6 +533,7 @@ export default {
     this.getKaijuCurrency()
     this.getBridgeVdexCurrency()
     this.getNatiCurrency()
+    this.getCybermoneyCurrency()
     this.getBinancePrices()
   }
 };
