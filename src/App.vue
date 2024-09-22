@@ -204,8 +204,14 @@ export default {
       natiowlreservecurrencies: ref(),
       natiowlbestheight: ref(),
       natiowlsupply: ref(),
-      natiowlchart: [],
-      natiowlrecenttransfers: [],
+      natiowlchart: [
+        {"link": "https://natiowl.eu1.verus.trading/view/iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw", "title": "EU1"}, 
+        {"link": "https://natiowl.us1.verus.trading/view/iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw", "title": "US1"}
+      ],
+      natiowlrecenttransfers: [
+        {"link": "https://natiowl.eu1.verus.trading/transfers/iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw", "title": "EU1"}, 
+        {"link": "https://natiowl.us1.verus.trading/transfers/iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw", "title": "US1"}
+      ],
       cybermoneyreservecurrencies: ref(),
       cybermoneybestheight: ref(),
       cybermoneysupply: ref(),
