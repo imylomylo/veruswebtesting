@@ -43,6 +43,15 @@
 
     <div class="divider"></div>
 
+    <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="NATIOWL" v-bind:explorerLink="verusexplorer"
+      v-bind:chartLink="natiowlchart" v-bind:recentTransfersLink="natiowlrecenttransfers" v-bind:marketNote="natimarketnote"
+      v-bind:supply="natiowlsupply" v-bind:bestHeight="natiowlbestheight" v-bind:reserveCurrencies="natiowlreservecurrencies"
+      v-bind:currencyDictionary="currencyDictionary" />
+    <p v-else>{{ NATIOWL }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }} blocks
+        to go</span></p>
+
+    <div class="divider"></div>
+
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="KAIJU"
       v-bind:chartLink="kaijuchart" v-bind:recentTransfersLink="kaijurecenttransfers"
       v-bind:explorerLink="verusexplorer" v-bind:supply="kaijusupply" v-bind:bestHeight="kaijubestheight"
@@ -101,6 +110,7 @@ export default {
       SWITCH: 'Switch',
       KAIJU: 'Kaiju',
       NATI: 'NATI',
+      NATIOWL: 'NATI.Owl',
       CYBERMONEY: "Cybermoney",
       explorertx: "https://insight.verus.io/tx/",
       veruslatestblock: ref(),
@@ -191,6 +201,11 @@ export default {
         {"link": "https://nati.us1.verus.trading/transfers/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC", "title": "US1"}
       ],
       natimarketnote: "NATI.vETH = 10k IlluminatiCoin on Eth",
+      natiowlreservecurrencies: ref(),
+      natiowlbestheight: ref(),
+      natiowlsupply: ref(),
+      natiowlchart: [],
+      natiowlrecenttransfers: [],
       cybermoneyreservecurrencies: ref(),
       cybermoneybestheight: ref(),
       cybermoneysupply: ref(),
@@ -478,6 +493,27 @@ export default {
           this.currencies = error
         })
     },
+    getNatiOwlCurrency() {
+      const requestData = {
+        method: 'post',
+        url: 'https://rpc.vrsc.komodefi.com',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+          method: 'getcurrency',
+          params: ['iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw'],
+          id: 1
+        }
+      };
+      this.sendRequestRPC(requestData)
+        .then((response) => {
+          this.natiowlreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+          this.natiowlbestheight = response.data.result.bestheight
+          this.natiowlsupply = response.data.result.bestcurrencystate.supply
+        })
+        .catch((error) => {
+          this.currencies = error
+        })
+    },
     getCybermoneyCurrency() {
       const requestData = {
         method: 'post',
@@ -536,6 +572,7 @@ export default {
     this.getKaijuCurrency()
     this.getBridgeVdexCurrency()
     this.getNatiCurrency()
+    this.getNatiOwlCurrency()
     this.getCybermoneyCurrency()
     this.getBinancePrices()
   }
