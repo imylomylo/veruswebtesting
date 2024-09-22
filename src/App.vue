@@ -20,6 +20,7 @@
     <div class="divider"></div>
 
     <VerusBasket v-bind:fullyQualifiedName="BRIDGEVDEX"
+      v-bind:explorerLink="bridgevdexexplorer"
       v-bind:chartLink="bridgevdexchart" v-bind:recentTransfersLink="bridgevdexrecenttransfers"
       v-bind:supply="bridgevdexsupply" v-bind:bestHeight="bridgevdexbestheight"
       v-bind:reserveCurrencies="bridgevdexreservecurrencies" v-bind:currencyDictionary="currencyDictionary" />
@@ -177,6 +178,7 @@ export default {
         {"link": "https://bridgevdex.eu1.verus.trading/transfers/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9", "title": "EU1"},
         {"link": "https://bridgevdex.us1.verus.trading/transfers/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9", "title": "US1"}
       ],
+      bridgevdexexplorer: "https://explorer.vdex.to",
       natireservecurrencies: ref(),
       natibestheight: ref(),
       natisupply: ref(),
@@ -228,7 +230,8 @@ export default {
         { "currencyid": "iL62spNN42Vqdxh8H5nrfNe8d6Amsnfkdx", "ticker": "NATI.vETH"},
         { "currencyid": "iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB", "ticker": "Bridge.vARRR"},
         { "currencyid": "i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "ticker": "cybermoney"},
-        { "currencyid": "i7ekXxHYzXW7uAfu5BtWZhd1MjXcWU5Rn3", "ticker": "bitcoins"}
+        { "currencyid": "i7ekXxHYzXW7uAfu5BtWZhd1MjXcWU5Rn3", "ticker": "bitcoins"},
+        { "currencyid": "iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw", "ticker": "NATI owl"}
       ]
     };
   },
