@@ -200,7 +200,7 @@ export default {
       ],
       bridgevdexexplorer: "https://explorer.vdex.to",
       supervrscreservecurrencies: ref(),
-      supervrscheight: ref(),
+      supervrscbestheight: ref(),
       supervrscsupply: ref(),
       supervrscchart: [],
       supervrscrecenttransfers: [],      
@@ -530,7 +530,7 @@ export default {
       this.sendRequestRPC(requestData)
         .then((response) => {
           this.supervrscreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
-          this.supervrscbestheight = response.data.result.bestheight
+          this.supervrscbestbestheight = response.data.result.bestheight
           this.supervrscsupply = response.data.result.bestcurrencystate.supply
         })
         .catch((error) => {

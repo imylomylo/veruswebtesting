@@ -3,28 +3,30 @@
         <h2 class="pb-1"> LP Basket: {{ fullyQualifiedName }}</h2>
         <div v-if="marketNote">
             <p class="pt-2 pb-2">
-                {{  marketNote }}
+                {{ marketNote }}
             </p>
         </div>
         <div class="text-xl"> Blocks:
             <a class="link-info" v-if="explorerLink" :href="explorerLink" target="_blank">{{ bestHeight }}</a>
             <span v-else>{{ bestHeight }}</span> |
             Supply:
-            <a class="link-info" v-if="webLink" :href="webLink" target="_blank">{{ supply }}</a>
-            <span v-else>{{ supply }}</span> | 
+            <a class="link-info" v-if="webLink" :href="webLink" target="_blank">{{ newSupply ? newSupply : supply }}</a>
+            <span v-else>{{ supply }}</span> |
 
 
-            <span v-if="chartLink.length != 0">Chart mirrors: 
-                <template v-for="mirror in chartLink" >
-                    <div class="badge badge-lg badge-ghost"><a class="link-info" :href="mirror.link" target="_blank">{{ mirror.title }}</a></div>
+            <span v-if="chartLink.length != 0">Chart mirrors:
+                <template v-for="mirror in chartLink">
+                    <div class="badge badge-lg badge-ghost"><a class="link-info" :href="mirror.link" target="_blank">{{
+                        mirror.title }}</a></div>
                 </template>
             </span>
             <span v-else>Chart not available</span> |
-            
 
-            <span v-if="recentTransfersLink.length != 0">Recent transfers mirrors: 
+
+            <span v-if="recentTransfersLink.length != 0">Recent transfers mirrors:
                 <template v-for="mirror in recentTransfersLink">
-                    <div class="badge badge-lg badge-ghost"><a class="link-info" v-if="mirror.link" :href="mirror.link" target="_blank">{{ mirror.title }}</a></div>
+                    <div class="badge badge-lg badge-ghost"><a class="link-info" v-if="mirror.link" :href="mirror.link"
+                            target="_blank">{{ mirror.title }}</a></div>
                 </template>
             </span>
             <span v-else>Recent conversions not available</span>
@@ -59,7 +61,10 @@
                             :class="getCellClass(currencyBase, currencyRel)">
                             {{ getReservePrice(reserveCurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
                         </td>
-                        <td>{{ parseFloat(currencyBase.priceinreserve.toFixed(8)) }}
+                        <td> 
+                        <!-- :class="getCellClass(currencyBase, currencyRel)"> -->
+                            {{ newSupply ? parseFloat(currencyBase.reserves/newSupply * 1 / currencyBase.weight).toFixed(8) : parseFloat(currencyBase.priceinreserve.toFixed(8)) }}
+
                             {{ getTickerByCurrencyId(currencyBase.currencyid) }}
                         </td>
                         <td>{{ parseFloat(currencyBase.reserves.toFixed(3)) }}</td>
@@ -79,9 +84,9 @@
                         <option v-for="option in reserveCurrencies" :value="option.currencyid">
                             {{ getCurrencyTicker(option) }}
                         </option>
-                        <!-- <option :value="fullyQualifiedName">
-                    {{ fullyQualifiedName }}
-                </option> -->
+                        <option :value="fullyQualifiedName">
+                            {{ fullyQualifiedName }}
+                        </option>
                     </select>
                     Amount: <input class="input input-neutral input-bordered" v-model="amount" placeholder="" />
                     Receive:
@@ -90,9 +95,9 @@
                         <option v-for="option in reserveCurrencies" :value="option.currencyid">
                             {{ getCurrencyTicker(option) }}
                         </option>
-                        <!-- <option :value="fullyQualifiedName">
-                    {{ fullyQualifiedName }}
-                </option> -->
+                        <option :value="fullyQualifiedName">
+                            {{ fullyQualifiedName }}
+                        </option>
                     </select>
                 </p>
                 <p class="bg-primary-content p-2 text-warning" v-if="isExtras()"> <button
@@ -139,6 +144,8 @@ export default {
         const receiveMessage = ref()
         const showPriceTbtc = ref(false)
         const chartLink = ref([])
+        const newSupply = ref(0)
+        const newPriceInReserve = ref(0)
         return {
             amount,
             sendCurrency,
@@ -148,7 +155,9 @@ export default {
             relativeOperationsBasketSend,
             relativeOperationsBasketReceive,
             receiveMessage,
-            showPriceTbtc
+            showPriceTbtc,
+            newSupply,
+            newPriceInReserve
         }
     },
     data() {
@@ -192,7 +201,7 @@ export default {
             }
             // rel is bridge for the table cell with the ticker.
             // when using this with actual bridge receiving...need some logic change
-            if (currencyRel === this.fullyQualifiedName) {
+            if (currencyRel === this.fullyQualifiedName) { // TESTING HERE 20241015
                 // sending currency will always be 'add'
                 // receiving currency will always be 'remove'
                 // untested with lp currency as receive
@@ -234,6 +243,9 @@ export default {
         },
         evaluate() {
             let usingBC = false
+            let generatedLP = 0
+            let amountReceived = 0
+            let receiveCurrencyTicker = 0
             if (this.amount == 0 || this.amount === undefined || this.receiveCurrency.length == 0 || this.sendCurrency === this.receiveCurrency) {
                 console.log("nothing to evaluate")
                 return
@@ -267,24 +279,41 @@ export default {
             });
 
             // if statement checking send/receive currency not equal to getCurrencyIdByTicker(fullyQualifiedName)
-            let reservesAdd = this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).reserves
-            let reserveWeight = this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).weight
-            let reservesNewAmount = parseFloat(reservesAdd) + parseFloat(this.amount)
-            let generatedLP = this.amount / (reservesNewAmount * 1 / reserveWeight) * this.supply
-            this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).reserves = reservesNewAmount
-            let newPriceInReserve = (reservesNewAmount * 1 / reserveWeight) / this.supply
-            this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).priceinreserve = newPriceInReserve
+            if (this.sendCurrency != this.getCurrencyIdByTicker(this.fullyQualifiedName)) {
+                let reservesAdd = this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).reserves
+                let reserveWeight = this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).weight
+                let reservesNewAmount = parseFloat(reservesAdd) + parseFloat(this.amount)
+                generatedLP = this.amount / (reservesNewAmount * 1 / reserveWeight) * this.supply
+                // console.log(generatedLP)
+                this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).reserves = reservesNewAmount
+                let newPriceInReserve = (reservesNewAmount * 1 / reserveWeight) / this.supply
+                this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).priceinreserve = newPriceInReserve
+            }
 
-            let lpPriceInReserveReceiveCurrency = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).priceinreserve
-            let amountReceived = lpPriceInReserveReceiveCurrency * generatedLP
-            let reservesRemove = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).reserves
-            reserveWeight = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).weight
-            reservesNewAmount = parseFloat(reservesRemove) - parseFloat(amountReceived)
-            this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).reserves = reservesNewAmount
-            newPriceInReserve = (reservesNewAmount * 1 / reserveWeight) / this.supply
-            this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).priceinreserve = newPriceInReserve
+            if (this.receiveCurrency != this.getCurrencyIdByTicker(this.fullyQualifiedName)) {
+                let lpPriceInReserveReceiveCurrency = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).priceinreserve
+                amountReceived = lpPriceInReserveReceiveCurrency * generatedLP
+                let reservesRemove = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).reserves
+                let reserveWeight = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).weight
+                let reservesNewAmount = parseFloat(reservesRemove) - parseFloat(amountReceived)
+                this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).reserves = reservesNewAmount
+                let newPriceInReserve = (reservesNewAmount * 1 / reserveWeight) / this.supply
+                this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).priceinreserve = newPriceInReserve
+            }
+            else {
+                amountReceived = generatedLP
+                // console.log(amountReceived)
+                this.newSupply ? this.newSupply += generatedLP : this.newSupply = this.supply + generatedLP
+                // console.log(this.newSupply)
+                // console.log(this.reserveCurrencies)
+                for( const i in this.reserveCurrencies){
+                    // console.log(i)
+                    this.reserveCurrencies[i].priceinreserve = this.newSupply / this.reserveCurrencies[i].reserves
+                }
+                receiveCurrencyTicker = this.fullyQualifiedName
+            }
             const sendCurrencyTicker = this.getTickerByCurrencyId(this.sendCurrency)
-            const receiveCurrencyTicker = this.getTickerByCurrencyId(this.receiveCurrency)
+            receiveCurrencyTicker = this.getTickerByCurrencyId(this.receiveCurrency)
             this.receiveMessage = "You receive approx " + parseFloat(amountReceived.toFixed(6)) + " " + receiveCurrencyTicker + "( Summary: " + sendCurrencyTicker + " price goes down & " + receiveCurrencyTicker + " price goes up )"
 
             // save the (relative)operations for css class evaluation
