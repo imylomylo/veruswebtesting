@@ -43,11 +43,29 @@
 
     <div class="divider"></div>
 
+    <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="SUPERVRSC"
+      v-bind:chartLink="supervrscchart" v-bind:recentTransfersLink="supervrscrecenttransfers"
+      v-bind:explorerLink="verusexplorer" v-bind:supply="supervrscsupply" v-bind:bestHeight="supervrscbestheight"
+      v-bind:reserveCurrencies="supervrscreservecurrencies" v-bind:currencyDictionary="currencyDictionary"/>
+    <p v-else>{{ SUPERVRSC }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }}
+        blocks to go</span></p>
+
+    <div class="divider"></div>
+
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="NATIOWL" v-bind:explorerLink="verusexplorer"
       v-bind:chartLink="natiowlchart" v-bind:recentTransfersLink="natiowlrecenttransfers" v-bind:marketNote="natimarketnote"
       v-bind:supply="natiowlsupply" v-bind:bestHeight="natiowlbestheight" v-bind:reserveCurrencies="natiowlreservecurrencies"
       v-bind:currencyDictionary="currencyDictionary" />
     <p v-else>{{ NATIOWL }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }} blocks
+        to go</span></p>
+
+    <div class="divider"></div>
+
+    <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="NATI" v-bind:explorerLink="verusexplorer"
+      v-bind:chartLink="natichart" v-bind:recentTransfersLink="natirecenttransfers" v-bind:marketNote="natimarketnote"
+      v-bind:supply="natisupply" v-bind:bestHeight="natibestheight" v-bind:reserveCurrencies="natireservecurrencies"
+      v-bind:currencyDictionary="currencyDictionary" />
+    <p v-else>{{ NATI }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }} blocks
         to go</span></p>
 
     <div class="divider"></div>
@@ -58,15 +76,6 @@
       v-bind:reserveCurrencies="kaijureservecurrencies" v-bind:currencyDictionary="currencyDictionary"/>
     <p v-else>{{ KAIJU }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }}
         blocks to go</span></p>
-
-    <div class="divider"></div>
-
-    <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="NATI" v-bind:explorerLink="verusexplorer"
-      v-bind:chartLink="natichart" v-bind:recentTransfersLink="natirecenttransfers" v-bind:marketNote="natimarketnote"
-      v-bind:supply="natisupply" v-bind:bestHeight="natibestheight" v-bind:reserveCurrencies="natireservecurrencies"
-      v-bind:currencyDictionary="currencyDictionary" />
-    <p v-else>{{ NATI }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }} blocks
-        to go</span></p>
 
     <div class="divider"></div>
 
@@ -111,6 +120,7 @@ export default {
       KAIJU: 'Kaiju',
       NATI: 'NATI',
       NATIOWL: 'NATI.Owl',
+      SUPERVRSC: 'SUPERVRSC',
       CYBERMONEY: "Cybermoney",
       explorertx: "https://insight.verus.io/tx/",
       veruslatestblock: ref(),
@@ -189,6 +199,11 @@ export default {
         {"link": "https://bridgevdex.us1.verus.trading/transfers/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9", "title": "US1"}
       ],
       bridgevdexexplorer: "https://explorer.vdex.to",
+      supervrscreservecurrencies: ref(),
+      supervrscheight: ref(),
+      supervrscsupply: ref(),
+      supervrscchart: [],
+      supervrscrecenttransfers: [],      
       natireservecurrencies: ref(),
       natibestheight: ref(),
       natisupply: ref(),
@@ -501,6 +516,27 @@ export default {
           this.currencies = error
         })
     },
+    getSuperVrscCurrency() {
+      const requestData = {
+        method: 'post',
+        url: 'https://rpc.vrsc.komodefi.com',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+          method: 'getcurrency',
+          params: ['SUPERVRSC'],
+          id: 1
+        }
+      };
+      this.sendRequestRPC(requestData)
+        .then((response) => {
+          this.supervrscreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+          this.supervrscbestheight = response.data.result.bestheight
+          this.supervrscsupply = response.data.result.bestcurrencystate.supply
+        })
+        .catch((error) => {
+          this.currencies = error
+        })
+    },
     getNatiOwlCurrency() {
       const requestData = {
         method: 'post',
@@ -581,6 +617,7 @@ export default {
     this.getBridgeVdexCurrency()
     this.getNatiCurrency()
     this.getNatiOwlCurrency()
+    this.getSuperVrscCurrency()
     this.getCybermoneyCurrency()
     this.getBinancePrices()
   }
