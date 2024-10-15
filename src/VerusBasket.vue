@@ -11,7 +11,7 @@
             <span v-else>{{ bestHeight }}</span> |
             Supply:
             <a class="link-info" v-if="webLink" :href="webLink" target="_blank">{{ newSupply ? newSupply : supply }}</a>
-            <span v-else>{{ supply }}</span> |
+            <span v-else>{{ newSupply ? newSupply : supply }}</span> |
 
 
             <span v-if="chartLink.length != 0">Chart mirrors:
@@ -61,8 +61,8 @@
                             :class="getCellClass(currencyBase, currencyRel)">
                             {{ getReservePrice(reserveCurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
                         </td>
-                        <td> 
-                        <!-- :class="getCellClass(currencyBase, currencyRel)"> -->
+                        <td>
+                        <!-- :class="getCellClass(currencyBase, fullyQualifiedName)"> -->
                             {{ newSupply ? parseFloat(currencyBase.reserves/newSupply * 1 / currencyBase.weight).toFixed(8) : parseFloat(currencyBase.priceinreserve.toFixed(8)) }}
 
                             {{ getTickerByCurrencyId(currencyBase.currencyid) }}
@@ -201,13 +201,14 @@ export default {
             }
             // rel is bridge for the table cell with the ticker.
             // when using this with actual bridge receiving...need some logic change
-            if (currencyRel === this.fullyQualifiedName) { // TESTING HERE 20241015
+            if (currencyRel === this.fullyQualifiedName || currencyBase === this.fullyQualifiedName) { // TESTING HERE 20241015
                 // sending currency will always be 'add'
                 // receiving currency will always be 'remove'
                 // untested with lp currency as receive
                 // return this.operationsBridgeVethSend[currencyBase.currencyid] === 'add' ? 'light-red' : this.operationsBridgeVethSend[currencyBase.currencyid] === 'remove' ? 'light-green' : this.operationsBridgeVethReceive[currencyBase.currencyid] === 'remove' ? 'light-green' : ''
                 return this.operationsBasketSend[currencyBase.currencyid] === 'add' ? 'text-red-300' : this.operationsBasketReceive[currencyBase.currencyid] === 'remove' ? 'text-green-300' : ''
             }
+
 
             // the row is the base currency, it devalues when sendCurrency
             if (this.operationsBasketSend[currencyBase.currencyid]) {
@@ -242,10 +243,18 @@ export default {
             this.relativeOperationsBasketReceive = []
         },
         evaluate() {
+            this.clear()
+            let operationsSend = Array()
+            let relativeOperationsSend = Array()
+            let operationsReceive = Array()
+            let relativeOperationsReceive = Array()
+            const relativeArraySend = {}
+            const relativeArrayReceive = {}
             let usingBC = false
             let generatedLP = 0
             let amountReceived = 0
             let receiveCurrencyTicker = 0
+            let sendCurrencyTicker = 0 
             if (this.amount == 0 || this.amount === undefined || this.receiveCurrency.length == 0 || this.sendCurrency === this.receiveCurrency) {
                 console.log("nothing to evaluate")
                 return
@@ -254,21 +263,17 @@ export default {
             if (this.sendCurrency === this.fullyQualifiedName) {
                 this.sendCurrency = this.getCurrencyIdByTicker(this.fullyQualifiedName)
                 usingBC = true
+                relativeArrayReceive[this.sendCurrency] = "add"
             }
             // workaround for prop in render
             if (this.receiveCurrency === this.fullyQualifiedName) {
                 this.receiveCurrency = this.getCurrencyIdByTicker(this.fullyQualifiedName)
                 usingBC = true
+                relativeArraySend[this.receiveCurrency] = "remove"
             }
-            this.clear()
-            let operationsSend = Array()
-            let relativeOperationsSend = Array()
-            let operationsReceive = Array()
-            let relativeOperationsReceive = Array()
+
             operationsSend[this.sendCurrency] = "add"
             operationsReceive[this.receiveCurrency] = "remove"
-            const relativeArraySend = {}
-            const relativeArrayReceive = {}
             this.reserveCurrencies.forEach(currency => {
                 if (currency.currencyid != this.sendCurrency) {
                     relativeArraySend[currency.currencyid] = "remove";
@@ -289,16 +294,46 @@ export default {
                 let newPriceInReserve = (reservesNewAmount * 1 / reserveWeight) / this.supply
                 this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).priceinreserve = newPriceInReserve
             }
+            else {
+                generatedLP = this.amount
+                console.log(generatedLP)
+                this.newSupply ? this.newSupply -= generatedLP : this.newSupply = this.supply - generatedLP
+                console.log(this.newSupply)
+                for ( const i in this.reserveCurrencies){
+                    console.log("Before:" + this.reserveCurrencies[i].priceinreserve)
+                    this.reserveCurrencies[i].priceinreserve = this.reserveCurrencies[i].reserves * 1 / this.reserveCurrencies[i].weight / this.newSupply
+                    console.log("After:" + this.reserveCurrencies[i].priceinreserve)
+                }
+                sendCurrencyTicker = this.fullyQualifiedName
+            }
 
             if (this.receiveCurrency != this.getCurrencyIdByTicker(this.fullyQualifiedName)) {
+                console.log(this.receiveCurrency)
+                console.log(this.reserveCurrencies)
                 let lpPriceInReserveReceiveCurrency = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).priceinreserve
-                amountReceived = lpPriceInReserveReceiveCurrency * generatedLP
-                let reservesRemove = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).reserves
-                let reserveWeight = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).weight
-                let reservesNewAmount = parseFloat(reservesRemove) - parseFloat(amountReceived)
-                this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).reserves = reservesNewAmount
-                let newPriceInReserve = (reservesNewAmount * 1 / reserveWeight) / this.supply
-                this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).priceinreserve = newPriceInReserve
+                // let lpPriceInReserveReceiveCurrency = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).reserves
+
+                console.log(lpPriceInReserveReceiveCurrency)
+                if( this.sendCurrency == this.fullyQualifiedName){
+                    amountReceived = lpPriceInReserveReceiveCurrency * generatedLP
+                    print(amountReceived)
+                    let reservesRemove = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).reserves
+                    let reserveWeight = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).weight
+                    let reservesNewAmount = parseFloat(reservesRemove) - parseFloat(amountReceived)
+                    this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).reserves = reservesNewAmount
+                    let newPriceInReserve = (reservesNewAmount * 1 / reserveWeight) / this.newSupply
+                    this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).priceinreserve = newPriceInReserve
+                }
+                else{
+                    amountReceived = lpPriceInReserveReceiveCurrency * generatedLP
+                    let reservesRemove = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).reserves
+                    let reserveWeight = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).weight
+                    let reservesNewAmount = parseFloat(reservesRemove) - parseFloat(amountReceived)
+                    this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).reserves = reservesNewAmount
+                    let newPriceInReserve = (reservesNewAmount * 1 / reserveWeight) / this.supply
+                    this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).priceinreserve = newPriceInReserve
+                }
+
             }
             else {
                 amountReceived = generatedLP
@@ -312,9 +347,13 @@ export default {
                 }
                 receiveCurrencyTicker = this.fullyQualifiedName
             }
-            const sendCurrencyTicker = this.getTickerByCurrencyId(this.sendCurrency)
-            receiveCurrencyTicker = this.getTickerByCurrencyId(this.receiveCurrency)
-            this.receiveMessage = "You receive approx " + parseFloat(amountReceived.toFixed(6)) + " " + receiveCurrencyTicker + "( Summary: " + sendCurrencyTicker + " price goes down & " + receiveCurrencyTicker + " price goes up )"
+            if ( sendCurrencyTicker == 0 ){
+                sendCurrencyTicker =this.getTickerByCurrencyId(this.sendCurrency)
+            }
+            if ( receiveCurrencyTicker == 0){
+                receiveCurrencyTicker = this.getTickerByCurrencyId(this.receiveCurrency)
+            }
+            this.receiveMessage = "You receive approx " + parseFloat(amountReceived.toFixed(6)) + " " + receiveCurrencyTicker + "(Tip: " + sendCurrencyTicker + " weakens  when converted/sold into the basket)"
 
             // save the (relative)operations for css class evaluation
             this.operationsBasketSend = operationsSend
