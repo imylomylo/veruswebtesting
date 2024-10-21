@@ -3,6 +3,10 @@ import { createWebHistory, createRouter } from 'vue-router'
 import VerusBasketView from './VerusBasketView.vue'
 import Home from './Home.vue'
 
+const rpc_verusd = 'https://rpc.vrsc.komodefi.com'
+const rpc_verusdvarrr = 'https://rpc.varrr.komodefi.com'
+const rpc_verusdvdex = 'https://rpc.vdex.komodefi.com'
+
 const currencyDictionary = [
     { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
     { "currencyid": "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM", "ticker": "DAI.vETH" },
@@ -31,10 +35,12 @@ const currencyDictionary = [
 
 const routes = [
   { path: '/', component: Home },
-  { path: '/bridge-veth', component: VerusBasketView, props: {fullyQualifiedName: 'Bridge.vETH', currencyDictionary: currencyDictionary}},
-  { path: '/pure', component: VerusBasketView, props: {fullyQualifiedName: 'Pure', currencyDictionary: currencyDictionary}},
-  { path: '/nati-owl', component: VerusBasketView, props: {fullyQualifiedName: 'iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw', currencyDictionary: currencyDictionary}},
-  { path: '/supervrsc', component: VerusBasketView, props: {fullyQualifiedName: 'SUPERVRSC', currencyDictionary: currencyDictionary}}
+  { path: '/bridge-veth', component: VerusBasketView, props: {fullyQualifiedName: 'Bridge.vETH', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusd}},
+  { path: '/pure', component: VerusBasketView, props: {fullyQualifiedName: 'Pure', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusd}},
+  { path: '/nati-owl', component: VerusBasketView, props: {fullyQualifiedName: 'iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusd}},
+  { path: '/supervrsc', component: VerusBasketView, props: {fullyQualifiedName: 'SUPERVRSC', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusd}},
+  { path: '/bridge-varrr', component: VerusBasketView, props: {fullyQualifiedName: 'Bridge.vARRR', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusdvarrr}},
+  { path: '/bridge-vdex', component: VerusBasketView, props: {fullyQualifiedName: 'Bridge.vDEX', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusdvdex}}
 ]
 
 const router = createRouter({

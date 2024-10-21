@@ -84,6 +84,7 @@ export default {
         'fullyQualifiedName',//: String, //'fullyQualifiedName',
         //'reserveCurrencies', //: [Object] //'reserveCurrencies',
         //'supply', // String
+        'rpcUrl',
         'chartLink',
         'recentTransfersLink',
         'marketNote',
@@ -142,7 +143,7 @@ export default {
         getLatestBlock() {
             const requestData = {
                 method: 'post',
-                url: 'https://rpc.vrsc.komodefi.com',
+                url: this.rpcUrl,
                 headers: { 'Content-Type': 'application/json' },
                 data: {
                     method: 'getinfo',
@@ -178,7 +179,7 @@ export default {
         getCurrency() {
             const requestData = {
                 method: 'post',
-                url: 'https://rpc.vrsc.komodefi.com',
+                url: this.rpcUrl,
                 headers: { 'Content-Type': 'application/json' },
                 data: {
                     method: 'getcurrency',
