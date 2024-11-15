@@ -130,11 +130,11 @@ export default {
       bridgevethsupply: ref(),
       bridgevethwebsite: "https://verus.io/eth-bridge",
       bridgevethchart: [
-        {"link": "https://bridgeveth.eu1.verus.trading/view/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "EU1"},
+        {"link": "https://bridgeveth.sg1.verus.trading/view/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "SG1"},
         {"link": "https://bridgeveth.us1.verus.trading/view/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "US1"}
       ],
       bridgevethrecenttransfers: [
-        {"link": "https://bridgeveth.eu1.verus.trading/transfers/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "EU1"},
+        {"link": "https://bridgeveth.sg1.verus.trading/transfers/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "SG1"},
         {"link": "https://bridgeveth.us1.verus.trading/transfers/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "US1"}
       ],
       verusexplorer: "https://insight.verus.io",
@@ -142,12 +142,12 @@ export default {
       purebestheight: ref(),
       puresupply: ref(),
       purechart: [
-        {"link": "https://pure.eu1.verus.trading/view/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY", "title": "EU1"},
+        {"link": "https://pure.sg1.verus.trading/view/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY", "title": "SG1"},
         {"link": "https://pure.us1.verus.trading/view/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY", "title": "US1"}
       ],
 
       purerecenttransfers: [
-        {"link": "https://pure.eu1.verus.trading/transfers/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY", "title": "EU1"},
+        {"link": "https://pure.sg1.verus.trading/transfers/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY", "title": "SG1"},
         {"link": "https://pure.us1.verus.trading/transfers/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY", "title": "US1"}
       ],
       bridgevarrrreservecurrencies: ref(),
@@ -155,11 +155,11 @@ export default {
       bridgevarrrsupply: ref(),
       bridgevarrrwebsite: "https://varrr.piratechain.com",
       bridgevarrrchart: [
-        {"link": "https://bridgevarrr.eu1.verus.trading/view/iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB", "title": "EU1"},
+        {"link": "https://bridgevarrr.sg1.verus.trading/view/iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB", "title": "SG1"},
         {"link": "https://bridgevarrr.us1.verus.trading/view/iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB", "title": "US1"}
       ],
       bridgevarrrrecenttransfers: [
-        {"link": "https://bridgevarrr.eu1.verus.trading/transfers/iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB", "title": "EU1"},
+        {"link": "https://bridgevarrr.sg1.verus.trading/transfers/iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB", "title": "SG1"},
         {"link": "https://bridgevarrr.us1.verus.trading/transfers/iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB", "title": "US1"}
       ],
       varrrexplorer: "https://varrrexplorer.piratechain.com",
@@ -167,33 +167,33 @@ export default {
       switchbestheight: ref(),
       switchsupply: ref(),
       switchchart: [
-        {"link": "https://switch.eu1.verus.trading/view/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "title": "EU1"},
+        {"link": "https://switch.sg1.verus.trading/view/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "title": "SG1"},
         {"link": "https://switch.us1.verus.trading/view/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "title": "US1"}
       ],
       switchrecenttransfers: [
-        {"link": "https://switch.eu1.verus.trading/transfers/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "title": "EU1"},
+        {"link": "https://switch.sg1.verus.trading/transfers/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "title": "SG1"},
         {"link": "https://switch.us1.verus.trading/transfers/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "title": "US1"}
       ],
       kaijureservecurrencies: ref(),
       kaijubestheight: ref(),
       kaijusupply: ref(),
       kaijuchart: [
-        {"link": "https://kaiju.eu1.verus.trading/view/i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb", "title": "EU1"},
+        {"link": "https://kaiju.sg1.verus.trading/view/i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb", "title": "SG1"},
         {"link": "https://kaiju.us1.verus.trading/view/i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb", "title": "US1"}
       ],
       kaijurecenttransfers: [
-        {"link": "https://kaiju.eu1.verus.trading/transfers/i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb", "title": "EU1"},
+        {"link": "https://kaiju.sg1.verus.trading/transfers/i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb", "title": "SG1"},
         {"link": "https://kaiju.us1.verus.trading/transfers/i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb", "title": "US1"}
       ],
       bridgevdexreservecurrencies: ref(),
       bridgevdexbestheight: ref(),
       bridgevdexsupply: ref(),
       bridgevdexchart: [
-        {"link": "https://bridgevdex.eu1.verus.trading/view/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9", "title": "EU1"},
+        {"link": "https://bridgevdex.sg1.verus.trading/view/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9", "title": "SG1"},
         {"link": "https://bridgevdex.us1.verus.trading/view/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9", "title": "US1"}
       ],
       bridgevdexrecenttransfers: [
-        {"link": "https://bridgevdex.eu1.verus.trading/transfers/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9", "title": "EU1"},
+        {"link": "https://bridgevdex.sg1.verus.trading/transfers/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9", "title": "SG1"},
         {"link": "https://bridgevdex.us1.verus.trading/transfers/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9", "title": "US1"}
       ],
       bridgevdexexplorer: "https://explorer.vdex.to",
@@ -206,11 +206,11 @@ export default {
       natibestheight: ref(),
       natisupply: ref(),
       natichart: [
-        {"link": "https://nati.eu1.verus.trading/view/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC", "title": "EU1"},
+        {"link": "https://nati.sg1.verus.trading/view/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC", "title": "SG1"},
         {"link": "https://nati.us1.verus.trading/view/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC", "title": "US1"}
       ],
       natirecenttransfers: [
-        {"link": "https://nati.eu1.verus.trading/transfers/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC", "title": "EU1"},
+        {"link": "https://nati.sg1.verus.trading/transfers/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC", "title": "SG1"},
         {"link": "https://nati.us1.verus.trading/transfers/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC", "title": "US1"}
       ],
       natimarketnote: "NATI.vETH = 10k IlluminatiCoin on Eth",
@@ -218,22 +218,22 @@ export default {
       natiowlbestheight: ref(),
       natiowlsupply: ref(),
       natiowlchart: [
-        {"link": "https://natiowl.eu1.verus.trading/view/iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw", "title": "EU1"}, 
+        {"link": "https://natiowl.sg1.verus.trading/view/iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw", "title": "SG1"}, 
         {"link": "https://natiowl.us1.verus.trading/view/iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw", "title": "US1"}
       ],
       natiowlrecenttransfers: [
-        {"link": "https://natiowl.eu1.verus.trading/transfers/iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw", "title": "EU1"}, 
+        {"link": "https://natiowl.sg1.verus.trading/transfers/iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw", "title": "SG1"}, 
         {"link": "https://natiowl.us1.verus.trading/transfers/iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw", "title": "US1"}
       ],
       cybermoneyreservecurrencies: ref(),
       cybermoneybestheight: ref(),
       cybermoneysupply: ref(),
       cybermoneychart: [
-        {"link": "https://cybermoney.eu1.verus.trading/view/i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "title": "EU1"},
+        {"link": "https://cybermoney.sg1.verus.trading/view/i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "title": "SG1"},
         {"link": "https://cybermoney.us1.verus.trading/view/i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "title": "US1"}
       ],
       cybermoneyrecenttransfers: [
-        {"link": "https://cybermoney.eu1.verus.trading/transfers/i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "title": "EU1"},
+        {"link": "https://cybermoney.sg1.verus.trading/transfers/i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "title": "SG1"},
         {"link": "https://cybermoney.us1.verus.trading/transfers/i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "title": "US1"}
       ],
       cybermoneymarketnote: "**WARNING** Cybermoney contains junk token named bitcoins, not real bitcoins, however, this is still useful for cheap VerusIDs like verustrading.bitcoins@",
