@@ -166,11 +166,11 @@ export default {
       switchbestheight: ref(),
       switchsupply: ref(),
       switchchart: [
-        {"link": "https://switch.sg1.verus.trading/view/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "title": "SG1"},
+        // {"link": "https://switch.sg1.verus.trading/view/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "title": "SG1"},
         {"link": "https://switch.us1.verus.trading/view/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "title": "US1"}
       ],
       switchrecenttransfers: [
-        {"link": "https://switch.sg1.verus.trading/transfers/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "title": "SG1"},
+        // {"link": "https://switch.sg1.verus.trading/transfers/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "title": "SG1"},
         {"link": "https://switch.us1.verus.trading/transfers/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "title": "US1"}
       ],
       kaijureservecurrencies: ref(),
