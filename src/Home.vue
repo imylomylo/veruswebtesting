@@ -60,6 +60,15 @@
 
     <div class="divider"></div>
 
+    <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="VYIELD" v-bind:explorerLink="verusexplorer"
+      v-bind:chartLink="vyieldchart" v-bind:recentTransfersLink="vyieldrecenttransfers" v-bind:marketNote="vyieldmarketnote"
+      v-bind:supply="vyieldsupply" v-bind:bestHeight="vyieldbestheight" v-bind:reserveCurrencies="vyieldreservecurrencies"
+      v-bind:currencyDictionary="currencyDictionary" v-bind:isExtrasOverride="false"/>
+    <p v-else>{{ VYIELD }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }} blocks
+        to go</span></p>
+
+    <div class="divider"></div>
+
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="NATI" v-bind:explorerLink="verusexplorer"
       v-bind:chartLink="natichart" v-bind:recentTransfersLink="natirecenttransfers" v-bind:marketNote="natimarketnote"
       v-bind:supply="natisupply" v-bind:bestHeight="natibestheight" v-bind:reserveCurrencies="natireservecurrencies"
@@ -118,7 +127,8 @@ export default {
       NATI: 'NATI',
       NATIOWL: 'NATI.Owl',
       SUPERVRSC: 'SUPERVRSC',
-      CYBERMONEY: "Cybermoney",
+      CYBERMONEY: 'Cybermoney',
+      VYIELD: 'vYIELD',
       explorertx: "https://insight.verus.io/tx/",
       veruslatestblock: ref(),
       veruslongestchain: ref(),
@@ -230,6 +240,18 @@ export default {
         {"link": "https://natiowl.sg1.verus.trading/transfers/iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw", "title": "SG1"}, 
         {"link": "https://natiowl.us1.verus.trading/transfers/iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw", "title": "US1"}
       ],
+      vyieldmarketnote: "scrvUSD = savings-crv-USD, stablecoin yield 5-20% apy, check approx apy https://crvusd.curve.fi/#/ethereum/scrvUSD",
+      vyieldreservecurrencies: ref(),
+      vyieldbestheight: ref(),
+      vyieldsupply: ref(),
+      vyieldchart: [
+        {"link": "https://vyield.sg1.verus.trading/view/iAik7rePReFq2t7LZMZhHCJ52fT5pisJ5C", "title": "SG1"}, 
+        {"link": "https://vyield.us1.verus.trading/view/iAik7rePReFq2t7LZMZhHCJ52fT5pisJ5C", "title": "US1"}
+      ],
+      vyieldrecenttransfers: [
+        {"link": "https://vyield.sg1.verus.trading/transfers/iAik7rePReFq2t7LZMZhHCJ52fT5pisJ5C", "title": "SG1"}, 
+        {"link": "https://vyield.us1.verus.trading/transfers/iAik7rePReFq2t7LZMZhHCJ52fT5pisJ5C", "title": "US1"}
+      ],
       cybermoneyreservecurrencies: ref(),
       cybermoneybestheight: ref(),
       cybermoneysupply: ref(),
@@ -272,7 +294,9 @@ export default {
         { "currencyid": "i7ekXxHYzXW7uAfu5BtWZhd1MjXcWU5Rn3", "ticker": "bitcoins"},
         { "currencyid": "iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw", "ticker": "NATI.Owl"},
         { "currencyid": "i6SapneNdvpkrLPgqPhDVim7Ljek3h2UQZ", "ticker": "SUPERNET"},
-        { "currencyid": "iHnYAmrS45Hb8GVgyzy7nVQtZ5vttJ9N3X", "ticker": "SUPERVRSC"}
+        { "currencyid": "iHnYAmrS45Hb8GVgyzy7nVQtZ5vttJ9N3X", "ticker": "SUPERVRSC"},
+        { "currencyid": "i9nLSK4S1U5sVMq4eJUHR1gbFALz56J9Lj", "ticker": "scrvUSD.vETH"},
+        { "currencyid": "iAik7rePReFq2t7LZMZhHCJ52fT5pisJ5C", "ticker": "vYIELD" }
       ]
     };
   },
@@ -533,7 +557,7 @@ export default {
       this.sendRequestRPC(requestData)
         .then((response) => {
           this.supervrscreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
-          this.supervrscbestbestheight = response.data.result.bestheight
+          this.supervrscbestheight = response.data.result.bestheight
           this.supervrscsupply = response.data.result.bestcurrencystate.supply
         })
         .catch((error) => {
@@ -556,6 +580,27 @@ export default {
           this.natiowlreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
           this.natiowlbestheight = response.data.result.bestheight
           this.natiowlsupply = response.data.result.bestcurrencystate.supply
+        })
+        .catch((error) => {
+          this.currencies = error
+        })
+    },
+    getVYieldCurrency() {
+      const requestData = {
+        method: 'post',
+        url: 'https://rpc.vrsc.komodefi.com',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+          method: 'getcurrency',
+          params: [this.VYIELD],
+          id: 1
+        }
+      };
+      this.sendRequestRPC(requestData)
+        .then((response) => {
+          this.vyieldreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+          this.vyieldbestheight = response.data.result.bestheight
+          this.vyieldsupply = response.data.result.bestcurrencystate.supply
         })
         .catch((error) => {
           this.currencies = error
@@ -622,6 +667,7 @@ export default {
     this.getNatiOwlCurrency()
     this.getSuperVrscCurrency()
     this.getCybermoneyCurrency()
+    this.getVYieldCurrency()
     this.getBinancePrices()
   }
 };

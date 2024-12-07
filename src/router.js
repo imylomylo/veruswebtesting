@@ -30,7 +30,9 @@ const currencyDictionary = [
     { "currencyid": "i7ekXxHYzXW7uAfu5BtWZhd1MjXcWU5Rn3", "ticker": "bitcoins"},
     { "currencyid": "iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw", "ticker": "NATI.Owl"},
     { "currencyid": "i6SapneNdvpkrLPgqPhDVim7Ljek3h2UQZ", "ticker": "SUPERNET"},
-    { "currencyid": "iHnYAmrS45Hb8GVgyzy7nVQtZ5vttJ9N3X", "ticker": "SUPERVRSC"}
+    { "currencyid": "iHnYAmrS45Hb8GVgyzy7nVQtZ5vttJ9N3X", "ticker": "SUPERVRSC"},
+    { "currencyid": "i9nLSK4S1U5sVMq4eJUHR1gbFALz56J9Lj", "ticker": "scrvUSD.vETH"},
+    { "currencyid": "iAik7rePReFq2t7LZMZhHCJ52fT5pisJ5C", "ticker": "vYIELD" }
 ]
 
 const routes = [
@@ -40,7 +42,10 @@ const routes = [
   { path: '/nati-owl', component: VerusBasketView, props: {fullyQualifiedName: 'iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusd}},
   { path: '/supervrsc', component: VerusBasketView, props: {fullyQualifiedName: 'SUPERVRSC', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusd}},
   { path: '/bridge-varrr', component: VerusBasketView, props: {fullyQualifiedName: 'Bridge.vARRR', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusdvarrr}},
-  { path: '/bridge-vdex', component: VerusBasketView, props: {fullyQualifiedName: 'Bridge.vDEX', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusdvdex}}
+  { path: '/bridge-vdex', component: VerusBasketView, props: {fullyQualifiedName: 'Bridge.vDEX', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusdvdex}},
+  { path: '/vyield', component: VerusBasketView, props: {fullyQualifiedName: 'vYIELD', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusd}},
+  { path: '/switch', component: VerusBasketView, props: {fullyQualifiedName: 'Switch', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusd}},
+  { path: '/kaiju', component: VerusBasketView, props: {fullyQualifiedName: 'Kaiju', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusd}}  
 ]
 
 const router = createRouter({

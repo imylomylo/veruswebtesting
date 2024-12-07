@@ -100,6 +100,9 @@
                         </option>
                     </select>
                 </p>
+                <p v-else>
+                    What if disabled for a reason on this basket: In pre-conversion, or recently in pre-conversion and waiting for update
+                </p>
                 <p class="bg-primary-content p-2 text-warning" v-if="isExtras()"> <button
                         class="btn btn-outline btn-info" @click="evaluate()">Evaluate</button>
                     {{ receiveMessage }}
@@ -130,7 +133,8 @@ export default {
         'explorerLink',
         'webLink',
         'currencyDictionary',
-        'pureBasketPriceTbtcVrsc'
+        'pureBasketPriceTbtcVrsc',
+        'isExtrasOverride'
     ],
 
     setup(props) {
@@ -146,6 +150,7 @@ export default {
         const chartLink = ref([])
         const newSupply = ref(0)
         const newPriceInReserve = ref(0)
+        // const isExtrasOverride = ref(false)
         return {
             amount,
             sendCurrency,
@@ -157,7 +162,8 @@ export default {
             receiveMessage,
             showPriceTbtc,
             newSupply,
-            newPriceInReserve
+            newPriceInReserve,
+            // isExtrasOverride
         }
     },
     data() {
@@ -167,6 +173,9 @@ export default {
     },
     methods: {
         isExtras() {
+            if( this.isExtrasOverride ){
+                return false
+            }
             return parseInt(import.meta.env.VITE_EXTRAS)
         },
         togglePriceTbtc() {
@@ -353,7 +362,7 @@ export default {
             if ( receiveCurrencyTicker == 0){
                 receiveCurrencyTicker = this.getTickerByCurrencyId(this.receiveCurrency)
             }
-            this.receiveMessage = "You receive approx " + parseFloat(amountReceived.toFixed(6)) + " " + receiveCurrencyTicker + "(Tip: " + sendCurrencyTicker + " weakens  when converted/sold into the basket)"
+            this.receiveMessage = "You receive approx " + parseFloat(amountReceived.toFixed(6)) + " " + receiveCurrencyTicker + "(Tip: " + sendCurrencyTicker + " weakens  when converted/sold into the basket). Accuracy of approximation decays if amount is > 50% of reserves"
 
             // save the (relative)operations for css class evaluation
             this.operationsBasketSend = operationsSend
