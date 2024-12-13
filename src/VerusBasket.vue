@@ -6,49 +6,54 @@
                 {{ marketNote }}
             </p>
         </div>
-        <div class="text-xl"> Blocks:
+        <div class="sm:text-sm"> Blocks:
             <a class="link-info" v-if="explorerLink" :href="explorerLink" target="_blank">{{ bestHeight }}</a>
             <span v-else>{{ bestHeight }}</span> |
             Supply:
             <a class="link-info" v-if="webLink" :href="webLink" target="_blank">{{ newSupply ? newSupply : supply }}</a>
-            <span v-else>{{ newSupply ? newSupply : supply }}</span> |
+            <span v-else>{{ newSupply ? newSupply : supply }}</span>
+            
+            <span class="hidden sm:inline">|</span>
+            
+            <div class="block sm:inline">
+                <span v-if="chartLink.length != 0">Chart mirrors:
+                    <template v-for="mirror in chartLink">
+                        <div class="badge badge-lg badge-ghost"><a class="link-info" :href="mirror.link" target="_blank">{{
+                            mirror.title }}</a></div>
+                    </template>
+                </span>
+                <span v-else>Chart not available</span>
 
+                <span class="hidden sm:inline">|</span>
+            </div>
 
-            <span v-if="chartLink.length != 0">Chart mirrors:
-                <template v-for="mirror in chartLink">
-                    <div class="badge badge-lg badge-ghost"><a class="link-info" :href="mirror.link" target="_blank">{{
-                        mirror.title }}</a></div>
-                </template>
-            </span>
-            <span v-else>Chart not available</span> |
-
-
-            <span v-if="recentTransfersLink.length != 0">Recent transfers mirrors:
-                <template v-for="mirror in recentTransfersLink">
-                    <div class="badge badge-lg badge-ghost"><a class="link-info" v-if="mirror.link" :href="mirror.link"
-                            target="_blank">{{ mirror.title }}</a></div>
-                </template>
-            </span>
-            <span v-else>Recent conversions not available</span>
-
+            <div class="block sm:inline">
+                <span v-if="recentTransfersLink.length != 0">Recent transfers mirrors:
+                    <template v-for="mirror in recentTransfersLink">
+                        <div class="badge badge-lg badge-ghost"><a class="link-info" v-if="mirror.link" :href="mirror.link"
+                                target="_blank">{{ mirror.title }}</a></div>
+                    </template>
+                </span>
+                <span v-else>Recent conversions not available</span>
+            </div>
         </div>
         <div v-if="pureBasketPriceTbtcVrsc" class="pt-1 pb-1">
             Show Reserve/tBTC <input type="checkbox" value="showPriceTbtc" @change="togglePriceTbtc()" class="toggle" />
             (relative to Pure Basket)
         </div>
         <div class="p-2 overflow-x-auto">
-            <table class="table table-md">
+            <table class="table table-xs sm:table-md">
                 <thead>
                     <tr>
-                        <th>Reserve Currency</th>
+                        <th>Reserve <span class="hidden sm:inline">Currency</span></th>
                         <th v-if="showPriceTbtc">Reserve/tBTC</th>
                         <th v-for="(currency) in reserveCurrencies">
-                            Reserve / <span :class="getCellClass(currency, fullyQualifiedName)">
+                            Res<span class="hidden sm:inline">erve</span> / <span :class="getCellClass(currency, fullyQualifiedName)">
                                 {{ getTickerByCurrencyId(currency.currencyid) }} </span>
                         </th>
                         <th>LP / Reserve</th>
-                        <th>Reserves</th>
-                        <th>Weight</th>
+                        <th class="hidden sm:table-cell">Reserves</th>
+                        <th class="hidden sm:table-cell">Weight</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -67,8 +72,8 @@
 
                             {{ getTickerByCurrencyId(currencyBase.currencyid) }}
                         </td>
-                        <td>{{ parseFloat(currencyBase.reserves.toFixed(3)) }}</td>
-                        <td>{{ currencyBase.weight }}</td>
+                        <td class="hidden sm:table-cell">{{ parseFloat(currencyBase.reserves.toFixed(3)) }}</td>
+                        <td class="hidden sm:table-cell">{{ currencyBase.weight }}</td>
                     </tr>
                 </tbody>
             </table>
