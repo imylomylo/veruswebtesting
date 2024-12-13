@@ -9,7 +9,7 @@
       :pricesRelVrsc="pricesRelVrsc" /> -->
 
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="BRIDGEVETH" v-bind:webLink="bridgevethwebsite"
-      v-bind:chartLink="bridgevethchart" v-bind:recentTransfersLink="bridgevethrecenttransfers"
+      v-bind:chartLink="bridgevethchart" v-bind:recentTransfersLink="bridgevethrecenttransfers" v-bind:marketNote="bridgevethmarketnote"
       v-bind:explorerLink="verusexplorer" v-bind:supply="bridgevethsupply" v-bind:bestHeight="bridgevethbestheight"
       v-bind:reserveCurrencies="bridgevethreservecurrencies" v-bind:currencyDictionary="currencyDictionary"
       v-bind:pureBasketPriceTbtcVrsc="pureTbtcVrsc"/>
@@ -87,6 +87,15 @@
 
     <div class="divider"></div>
 
+    <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="KEKFROG"
+      v-bind:chartLink="kekfrogchart" v-bind:recentTransfersLink="kekfrogrecenttransfers"
+      v-bind:explorerLink="verusexplorer" v-bind:supply="kekfrogsupply" v-bind:bestHeight="kekfrogbestheight"
+      v-bind:reserveCurrencies="kekfrogreservecurrencies" v-bind:currencyDictionary="currencyDictionary"/>
+    <p v-else>{{ KEKFROG }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }}
+        blocks to go</span></p>
+
+    <div class="divider"></div>
+
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="SWITCH" v-bind:explorerLink="verusexplorer"
       v-bind:chartLink="switchchart" v-bind:recentTransfersLink="switchrecenttransfers"
       v-bind:supply="switchsupply" v-bind:bestHeight="switchbestheight"
@@ -125,10 +134,11 @@ export default {
       SWITCH: 'Switch',
       KAIJU: 'Kaiju',
       NATI: 'NATI',
-      NATIOWL: 'NATI.Owl',
+      NATIOWL: 'NATI\u{1F989}',
       SUPERVRSC: 'SUPERVRSC',
       CYBERMONEY: 'Cybermoney',
       VYIELD: 'vYIELD',
+      KEKFROG: 'KEK\u{1F438}',
       explorertx: "https://insight.verus.io/tx/",
       veruslatestblock: ref(),
       veruslongestchain: ref(),
@@ -137,6 +147,7 @@ export default {
       bridgevethreservecurrencies: ref(),
       bridgevethbestheight: ref(),
       bridgevethsupply: ref(),
+      bridgevethmarketnote: "DAI savings rate accrues in Bridge.vETH reserves from all DAI bridged network-wide $$",
       bridgevethwebsite: "https://verus.io/eth-bridge",
       bridgevethchart: [
         {"link": "https://bridgeveth.sg1.verus.trading/view/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "SG1"},
@@ -183,6 +194,17 @@ export default {
         // {"link": "https://switch.sg1.verus.trading/transfers/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "title": "SG1"},
         {"link": "https://switch.us1.verus.trading/transfers/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc", "title": "US1"}
       ],
+      kekfrogreservecurrencies: ref(),
+      kekfrogbestheight: ref(),
+      kekfrogsupply: ref(),
+      kekfrogchart: [
+        {"link": "https://kekfrog.sg1.verus.trading/view/iCDjBN71SbSppgsNTpwwMBT69399DpV4hA", "title": "SG1"},
+        {"link": "https://kekfrog.us1.verus.trading/view/iCDjBN71SbSppgsNTpwwMBT69399DpV4hA", "title": "US1"}
+      ],
+      kekfrogrecenttransfers: [
+        {"link": "https://kaiju.sg1.verus.trading/transfers/iCDjBN71SbSppgsNTpwwMBT69399DpV4hA", "title": "SG1"},
+        {"link": "https://kaiju.us1.verus.trading/transfers/iCDjBN71SbSppgsNTpwwMBT69399DpV4hA", "title": "US1"}
+      ],
       kaijureservecurrencies: ref(),
       kaijubestheight: ref(),
       kaijusupply: ref(),
@@ -228,7 +250,7 @@ export default {
         {"link": "https://nati.sg1.verus.trading/transfers/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC", "title": "SG1"},
         {"link": "https://nati.us1.verus.trading/transfers/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC", "title": "US1"}
       ],
-      natimarketnote: "NATI.vETH = 10k IlluminatiCoin on Eth",
+      natimarketnote: "NATI.vETH = 10k IlluminatiCoin on Eth, tinfoil costs extra!!",
       natiowlreservecurrencies: ref(),
       natiowlbestheight: ref(),
       natiowlsupply: ref(),
@@ -263,7 +285,7 @@ export default {
         {"link": "https://cybermoney.sg1.verus.trading/transfers/i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "title": "SG1"},
         {"link": "https://cybermoney.us1.verus.trading/transfers/i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "title": "US1"}
       ],
-      cybermoneymarketnote: "**WARNING** Cybermoney contains junk token named bitcoins, not real bitcoins, however, this is still useful for cheap VerusIDs like verustrading.bitcoins@",
+      cybermoneymarketnote: "Cybermoney contains junk-meme token named bitcoins, not real bitcoins, however, this is still useful for cheap VerusIDs like verustrading.bitcoins@",
       pureTbtcVrsc: ref(),
       res: ref([]),
       binance_btcusd: ref(),
@@ -292,11 +314,13 @@ export default {
         { "currencyid": "iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB", "ticker": "Bridge.vARRR"},
         { "currencyid": "i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "ticker": "cybermoney"},
         { "currencyid": "i7ekXxHYzXW7uAfu5BtWZhd1MjXcWU5Rn3", "ticker": "bitcoins"},
-        { "currencyid": "iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw", "ticker": "NATI.Owl"},
+        { "currencyid": "iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw", "ticker": "NATI\u{1F989}"},
         { "currencyid": "i6SapneNdvpkrLPgqPhDVim7Ljek3h2UQZ", "ticker": "SUPERNET"},
         { "currencyid": "iHnYAmrS45Hb8GVgyzy7nVQtZ5vttJ9N3X", "ticker": "SUPERVRSC"},
         { "currencyid": "i9nLSK4S1U5sVMq4eJUHR1gbFALz56J9Lj", "ticker": "scrvUSD.vETH"},
-        { "currencyid": "iAik7rePReFq2t7LZMZhHCJ52fT5pisJ5C", "ticker": "vYIELD" }
+        { "currencyid": "iAik7rePReFq2t7LZMZhHCJ52fT5pisJ5C", "ticker": "vYIELD" },
+        { "currencyid": "iCDjBN71SbSppgsNTpwwMBT69399DpV4hA", "ticker": "KEK\u{1F438}"},
+        { "currencyid": "i5VVBEi6efBrXMaeqFW3MTPSzbmpNLysGR", "ticker": "PepeCoin.vETH"}
       ]
     };
   },
@@ -606,6 +630,27 @@ export default {
           this.currencies = error
         })
     },
+    getKekFrogCurrency() {
+      const requestData = {
+        method: 'post',
+        url: 'https://rpc.vrsc.komodefi.com',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+          method: 'getcurrency',
+          params: ['iCDjBN71SbSppgsNTpwwMBT69399DpV4hA'],
+          id: 1
+        }
+      };
+      this.sendRequestRPC(requestData)
+        .then((response) => {
+          this.kekfrogreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+          this.kekfrogbestheight = response.data.result.bestheight
+          this.kekfrogsupply = response.data.result.bestcurrencystate.supply
+        })
+        .catch((error) => {
+          this.currencies = error
+        })
+    },
     getCybermoneyCurrency() {
       const requestData = {
         method: 'post',
@@ -668,6 +713,7 @@ export default {
     this.getSuperVrscCurrency()
     this.getCybermoneyCurrency()
     this.getVYieldCurrency()
+    this.getKekFrogCurrency()
     this.getBinancePrices()
   }
 };
