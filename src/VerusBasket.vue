@@ -47,10 +47,11 @@
                     <tr>
                         <th>Reserve <span class="hidden sm:inline">Currency</span></th>
                         <th v-if="showPriceTbtc">Reserve/tBTC</th>
-                        <th v-for="(currency) in reserveCurrencies">
-                            Res<span class="hidden sm:inline">erve</span> / <span :class="getCellClass(currency, fullyQualifiedName)">
+                        <th v-if="!isMobile" v-for="(currency, index) in reserveCurrencies" :class="{'hidden': index !== 0 && isMobile}">
+                            Reserve / <span :class="getCellClass(currency, fullyQualifiedName)">
                                 {{ getTickerByCurrencyId(currency.currencyid) }} </span>
                         </th>
+                        <th v-else>Prices</th>
                         <th>LP / Reserve</th>
                         <th class="hidden sm:table-cell">Reserves</th>
                         <th class="hidden sm:table-cell">Weight</th>
@@ -62,9 +63,17 @@
                             {{ getCurrencyTicker(currencyBase) }}
                         </td>
                         <td v-if="showPriceTbtc">{{ getPriceReserveTbtc(reserveCurrencies, currencyBase) }}</td>
-                        <td v-for="(currencyRel, colIndex) in reserveCurrencies" :key="colIndex"
+                        <td v-if="!isMobile" v-for="(currencyRel, colIndex) in reserveCurrencies" :key="colIndex" 
                             :class="getCellClass(currencyBase, currencyRel)">
                             {{ getReservePrice(reserveCurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
+                        </td>
+                        <td v-else>
+                            <div class="stacked-data">
+                                <div v-for="(currencyRel, colIndex) in reserveCurrencies" :key="colIndex" 
+                                    :class="getCellClass(currencyBase, currencyRel, null, forceHide=true)">
+                                    {{ getReservePrice(reserveCurrencies, currencyBase, currencyRel) }} {{ getTickerByCurrencyId(currencyRel.currencyid) }}
+                                </div>
+                            </div>
                         </td>
                         <td>
                         <!-- :class="getCellClass(currencyBase, fullyQualifiedName)"> -->
@@ -176,6 +185,11 @@ export default {
             something: 'blah'
         }
     },
+    computed: {
+        isMobile() {
+            return window.innerWidth < 640;
+        }
+    },
     methods: {
         isExtras() {
             if( this.isExtrasOverride ){
@@ -206,12 +220,26 @@ export default {
             // If the currency ID is not found, you can return a default value or handle the situation accordingly.
             return "Currency not found";
         },
-        getCellClass(currencyBase, currencyRel) {
+        getCellClass(currencyBase, currencyRel, index = null, forceHide = false) {
+            let classes = {}
+            if (this.isMobile && currencyBase.currencyid === currencyRel.currencyid) {
+                classes['hidden']; // Hide on mobile by force when base & rel the same (for prices of same currency, which is always 1)
+                return 'hidden';
+            }
+
+            if (this.isMobile && index != null) {
+                classes['hidden'] = index !== 0 && index != null; // Hide all but the first cell on mobile
+                return 'hidden';
+            }
+
+
             if (this.operationsBasketReceive == 'undefined' || this.operationsBasketSend == 'undefined') {
                 return ''
+                // classes['']
             }
             if (currencyBase.currencyid === currencyRel.currencyid) {
                 return ''
+                // classes['']
             }
             // rel is bridge for the table cell with the ticker.
             // when using this with actual bridge receiving...need some logic change
@@ -221,23 +249,28 @@ export default {
                 // untested with lp currency as receive
                 // return this.operationsBridgeVethSend[currencyBase.currencyid] === 'add' ? 'light-red' : this.operationsBridgeVethSend[currencyBase.currencyid] === 'remove' ? 'light-green' : this.operationsBridgeVethReceive[currencyBase.currencyid] === 'remove' ? 'light-green' : ''
                 return this.operationsBasketSend[currencyBase.currencyid] === 'add' ? 'text-red-300' : this.operationsBasketReceive[currencyBase.currencyid] === 'remove' ? 'text-green-300' : ''
+                // classes[this.operationsBasketSend[currencyBase.currencyid] === 'add' ? 'text-red-300' : this.operationsBasketReceive[currencyBase.currencyid] === 'remove' ? 'text-green-300' : '']
             }
 
 
             // the row is the base currency, it devalues when sendCurrency
             if (this.operationsBasketSend[currencyBase.currencyid]) {
                 return this.relativeOperationsBasketSend[currencyRel.currencyid] === 'add' ? 'text-green-300' : this.relativeOperationsBasketSend[currencyRel.currencyid] === 'remove' ? 'text-red-300' : ''
+                // classes[this.relativeOperationsBasketSend[currencyRel.currencyid] === 'add' ? 'text-green-300' : this.relativeOperationsBasketSend[currencyRel.currencyid] === 'remove' ? 'text-red-300' : '']
             }
             if (this.operationsBasketReceive[currencyBase.currencyid]) {
                 return this.relativeOperationsBasketReceive[currencyRel.currencyid] === 'add' ? 'text-green-300' : this.relativeOperationsBasketReceive[currencyRel.currencyid] === 'remove' ? 'text-red-300' : ''
+                // classes[this.relativeOperationsBasketReceive[currencyRel.currencyid] === 'add' ? 'text-green-300' : this.relativeOperationsBasketReceive[currencyRel.currencyid] === 'remove' ? 'text-red-300' : '']
             }
 
             // rel is sendCurrency, operation of adding to basket, means it is green when in rel column
             if (this.operationsBasketSend[currencyRel.currencyid]) {
                 return this.operationsBasketSend[currencyRel.currencyid] === 'add' ? 'text-green-300' : ''//this.operationsBridgeVethSend[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+                // classes[this.operationsBasketSend[currencyRel.currencyid] === 'add' ? 'text-green-300' : '']//this.operationsBridgeVethSend[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
             }
             if (this.operationsBasketReceive[currencyRel.currencyid]) {
                 return this.operationsBasketReceive[currencyRel.currencyid] === 'remove' ? 'text-red-300' : ''
+                // classes[this.operationsBasketReceive[currencyRel.currencyid] === 'remove' ? 'text-red-300' : '']
             }
         },
         getReservePrice(reserveCurrencies, currency, targetCurrency) {
@@ -428,5 +461,9 @@ export default {
 
 .light-grey {
     background-color: lightgrey;
+}
+
+.stacked-data div {
+    @apply py-1; /* Add some padding for better spacing */
 }
 </style>
