@@ -33,6 +33,13 @@
 
     <div class="divider"></div>
 
+    <VerusBasket v-bind:fullyQualifiedName="BRIDGECHIPS" v-bind:webLink="bridgechipswebsite"
+      v-bind:chartLink="bridgechipschart" v-bind:recentTransfersLink="bridgechipsrecenttransfers"
+      v-bind:explorerLink="chipsexplorer" v-bind:supply="bridgechipssupply" v-bind:bestHeight="bridgechipsbestheight"
+      v-bind:reserveCurrencies="bridgechipsreservecurrencies" v-bind:currencyDictionary="currencyDictionary" />
+
+    <div class="divider"></div>
+
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="PURE" v-bind:explorerLink="verusexplorer"
       v-bind:chartLink="purechart" v-bind:recentTransfersLink="purerecenttransfers"
       v-bind:supply="puresupply" v-bind:bestHeight="purebestheight" v-bind:reserveCurrencies="purereservecurrencies"
@@ -128,6 +135,7 @@ export default {
   data() {
     return {
       BRIDGEVETH: 'Bridge.vETH',
+      BRIDGECHIPS: 'Bridge.CHIPS',
       BRIDGEVARRR: 'Bridge.vARRR',
       BRIDGEVDEX: 'Bridge.vDEX',
       PURE: 'Pure',
@@ -170,6 +178,19 @@ export default {
         {"link": "https://pure.sg1.verus.trading/transfers/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY", "title": "SG1"},
         {"link": "https://pure.us1.verus.trading/transfers/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY", "title": "US1"}
       ],
+      bridgechipsreservecurrencies: ref(),
+      bridgechipsbestheight: ref(),
+      bridgechipssupply: ref(),
+      bridgechipswebsite: "https://bridge.chips.cash",
+      bridgechipschart: [
+        {"link": "https://bridgechips.sg1.verus.trading/view/i3nokiCTVevZMLpR3VmZ7YDfCqA5juUqqH", "title": "SG1"},
+        {"link": "https://bridgechips.us1.verus.trading/view/i3nokiCTVevZMLpR3VmZ7YDfCqA5juUqqH", "title": "US1"}
+      ],
+      bridgechipsrecenttransfers: [
+        {"link": "https://bridgechips.sg1.verus.trading/transfers/i3nokiCTVevZMLpR3VmZ7YDfCqA5juUqqH", "title": "SG1"},
+        {"link": "https://bridgechips.us1.verus.trading/transfers/i3nokiCTVevZMLpR3VmZ7YDfCqA5juUqqH", "title": "US1"}
+      ],
+      chipsexplorer: "https://explorer.chips.cash",
       bridgevarrrreservecurrencies: ref(),
       bridgevarrrbestheight: ref(),
       bridgevarrrsupply: ref(),
@@ -202,8 +223,8 @@ export default {
         {"link": "https://kekfrog.us1.verus.trading/view/iCDjBN71SbSppgsNTpwwMBT69399DpV4hA", "title": "US1"}
       ],
       kekfrogrecenttransfers: [
-        {"link": "https://kaiju.sg1.verus.trading/transfers/iCDjBN71SbSppgsNTpwwMBT69399DpV4hA", "title": "SG1"},
-        {"link": "https://kaiju.us1.verus.trading/transfers/iCDjBN71SbSppgsNTpwwMBT69399DpV4hA", "title": "US1"}
+        {"link": "https://kekfrog.sg1.verus.trading/transfers/iCDjBN71SbSppgsNTpwwMBT69399DpV4hA", "title": "SG1"},
+        {"link": "https://kekfrog.us1.verus.trading/transfers/iCDjBN71SbSppgsNTpwwMBT69399DpV4hA", "title": "US1"}
       ],
       kaijureservecurrencies: ref(),
       kaijubestheight: ref(),
@@ -320,7 +341,9 @@ export default {
         { "currencyid": "i9nLSK4S1U5sVMq4eJUHR1gbFALz56J9Lj", "ticker": "scrvUSD.vETH"},
         { "currencyid": "iAik7rePReFq2t7LZMZhHCJ52fT5pisJ5C", "ticker": "vYIELD" },
         { "currencyid": "iCDjBN71SbSppgsNTpwwMBT69399DpV4hA", "ticker": "KEK\u{1F438}"},
-        { "currencyid": "i5VVBEi6efBrXMaeqFW3MTPSzbmpNLysGR", "ticker": "PepeCoin.vETH"}
+        { "currencyid": "i5VVBEi6efBrXMaeqFW3MTPSzbmpNLysGR", "ticker": "PepeCoin.vETH"},
+        { "currencyid": "i3nokiCTVevZMLpR3VmZ7YDfCqA5juUqqH", "ticker": "Bridge.CHIPS"},
+        { "currencyid": "iJ3WZocnjG9ufv7GKUA4LijQno5gTMb7tP", "ticker": "CHIPS"}
       ]
     };
   },
@@ -456,6 +479,28 @@ export default {
           const vrscReserves = this.purereservecurrencies.find(item => item.currencyid == "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV").reserves
           const tbtcReserves = this.purereservecurrencies.find(item => item.currencyid == "iS8TfRPfVpKo5FVfSUzfHBQxo9KuzpnqLU").reserves
           this.pureTbtcVrsc = parseFloat(vrscReserves / tbtcReserves)
+        })
+        .catch((error) => {
+          this.currencies = error
+        })
+    },
+    getBridgeChipsCurrency() {
+      const requestData = {
+        method: 'post',
+        url: 'https://rpc.chips.komodefi.com',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+          method: 'getcurrency',
+          params: ['Bridge.CHIPS'],
+          id: 1
+        }
+      };
+      this.sendRequestRPC(requestData)
+        .then((response) => {
+          this.responseBridgeChipsBestCurrencyState = response.data.result.bestcurrencystate
+          this.bridgechipsreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+          this.bridgechipsbestheight = response.data.result.bestheight
+          this.bridgechipssupply = response.data.result.bestcurrencystate.supply
         })
         .catch((error) => {
           this.currencies = error
@@ -705,6 +750,7 @@ export default {
     this.getBridgeVethCurrency()
     this.getPureCurrency()
     this.getBridgeVarrrCurrency()
+    this.getBridgeChipsCurrency()
     this.getSwitchCurrency()
     this.getKaijuCurrency()
     this.getBridgeVdexCurrency()
