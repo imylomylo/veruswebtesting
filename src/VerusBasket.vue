@@ -6,49 +6,55 @@
                 {{ marketNote }}
             </p>
         </div>
-        <div class="text-xl"> Blocks:
+        <div class="sm:text-sm"> Blocks:
             <a class="link-info" v-if="explorerLink" :href="explorerLink" target="_blank">{{ bestHeight }}</a>
             <span v-else>{{ bestHeight }}</span> |
             Supply:
             <a class="link-info" v-if="webLink" :href="webLink" target="_blank">{{ newSupply ? newSupply : supply }}</a>
-            <span v-else>{{ newSupply ? newSupply : supply }}</span> |
+            <span v-else>{{ newSupply ? newSupply : supply }}</span>
+            
+            <span class="hidden sm:inline">|</span>
+            
+            <div class="block sm:inline">
+                <span v-if="chartLink.length != 0">Chart mirrors:
+                    <template v-for="mirror in chartLink">
+                        <div class="badge badge-lg badge-ghost"><a class="link-info" :href="mirror.link" target="_blank">{{
+                            mirror.title }}</a></div>
+                    </template>
+                </span>
+                <span v-else>Chart not available</span>
 
+                <span class="hidden sm:inline">|</span>
+            </div>
 
-            <span v-if="chartLink.length != 0">Chart mirrors:
-                <template v-for="mirror in chartLink">
-                    <div class="badge badge-lg badge-ghost"><a class="link-info" :href="mirror.link" target="_blank">{{
-                        mirror.title }}</a></div>
-                </template>
-            </span>
-            <span v-else>Chart not available</span> |
-
-
-            <span v-if="recentTransfersLink.length != 0">Recent transfers mirrors:
-                <template v-for="mirror in recentTransfersLink">
-                    <div class="badge badge-lg badge-ghost"><a class="link-info" v-if="mirror.link" :href="mirror.link"
-                            target="_blank">{{ mirror.title }}</a></div>
-                </template>
-            </span>
-            <span v-else>Recent conversions not available</span>
-
+            <div class="block sm:inline">
+                <span v-if="recentTransfersLink.length != 0">Recent transfers mirrors:
+                    <template v-for="mirror in recentTransfersLink">
+                        <div class="badge badge-lg badge-ghost"><a class="link-info" v-if="mirror.link" :href="mirror.link"
+                                target="_blank">{{ mirror.title }}</a></div>
+                    </template>
+                </span>
+                <span v-else>Recent conversions not available</span>
+            </div>
         </div>
         <div v-if="pureBasketPriceTbtcVrsc" class="pt-1 pb-1">
             Show Reserve/tBTC <input type="checkbox" value="showPriceTbtc" @change="togglePriceTbtc()" class="toggle" />
             (relative to Pure Basket)
         </div>
         <div class="p-2 overflow-x-auto">
-            <table class="table table-md">
+            <table class="table table-xs sm:table-md">
                 <thead>
                     <tr>
-                        <th>Reserve Currency</th>
+                        <th>Reserve <span class="hidden sm:inline">Currency</span></th>
                         <th v-if="showPriceTbtc">Reserve/tBTC</th>
-                        <th v-for="(currency) in reserveCurrencies">
+                        <th v-if="!isMobile" v-for="(currency, index) in reserveCurrencies" :class="{'hidden': index !== 0 && isMobile}">
                             Reserve / <span :class="getCellClass(currency, fullyQualifiedName)">
                                 {{ getTickerByCurrencyId(currency.currencyid) }} </span>
                         </th>
+                        <th v-else>Prices</th>
                         <th>LP / Reserve</th>
-                        <th>Reserves</th>
-                        <th>Weight</th>
+                        <th class="hidden sm:table-cell">Reserves</th>
+                        <th class="hidden sm:table-cell">Weight</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -57,9 +63,17 @@
                             {{ getCurrencyTicker(currencyBase) }}
                         </td>
                         <td v-if="showPriceTbtc">{{ getPriceReserveTbtc(reserveCurrencies, currencyBase) }}</td>
-                        <td v-for="(currencyRel, colIndex) in reserveCurrencies" :key="colIndex"
+                        <td v-if="!isMobile" v-for="(currencyRel, colIndex) in reserveCurrencies" :key="colIndex" 
                             :class="getCellClass(currencyBase, currencyRel)">
                             {{ getReservePrice(reserveCurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
+                        </td>
+                        <td v-else>
+                            <div class="stacked-data">
+                                <div v-for="(currencyRel, colIndex) in reserveCurrencies" :key="colIndex" 
+                                    :class="getCellClass(currencyBase, currencyRel, null, forceHide=true)">
+                                    {{ getReservePrice(reserveCurrencies, currencyBase, currencyRel) }} {{ getTickerByCurrencyId(currencyRel.currencyid) }}
+                                </div>
+                            </div>
                         </td>
                         <td>
                         <!-- :class="getCellClass(currencyBase, fullyQualifiedName)"> -->
@@ -67,8 +81,8 @@
 
                             {{ getTickerByCurrencyId(currencyBase.currencyid) }}
                         </td>
-                        <td>{{ parseFloat(currencyBase.reserves.toFixed(3)) }}</td>
-                        <td>{{ currencyBase.weight }}</td>
+                        <td class="hidden sm:table-cell">{{ parseFloat(currencyBase.reserves.toFixed(3)) }}</td>
+                        <td class="hidden sm:table-cell">{{ currencyBase.weight }}</td>
                     </tr>
                 </tbody>
             </table>
@@ -171,6 +185,11 @@ export default {
             something: 'blah'
         }
     },
+    computed: {
+        isMobile() {
+            return window.innerWidth < 640;
+        }
+    },
     methods: {
         isExtras() {
             if( this.isExtrasOverride ){
@@ -201,12 +220,26 @@ export default {
             // If the currency ID is not found, you can return a default value or handle the situation accordingly.
             return "Currency not found";
         },
-        getCellClass(currencyBase, currencyRel) {
+        getCellClass(currencyBase, currencyRel, index = null, forceHide = false) {
+            let classes = {}
+            if (this.isMobile && currencyBase.currencyid === currencyRel.currencyid) {
+                classes['hidden']; // Hide on mobile by force when base & rel the same (for prices of same currency, which is always 1)
+                return 'hidden';
+            }
+
+            if (this.isMobile && index != null) {
+                classes['hidden'] = index !== 0 && index != null; // Hide all but the first cell on mobile
+                return 'hidden';
+            }
+
+
             if (this.operationsBasketReceive == 'undefined' || this.operationsBasketSend == 'undefined') {
                 return ''
+                // classes['']
             }
             if (currencyBase.currencyid === currencyRel.currencyid) {
                 return ''
+                // classes['']
             }
             // rel is bridge for the table cell with the ticker.
             // when using this with actual bridge receiving...need some logic change
@@ -216,23 +249,28 @@ export default {
                 // untested with lp currency as receive
                 // return this.operationsBridgeVethSend[currencyBase.currencyid] === 'add' ? 'light-red' : this.operationsBridgeVethSend[currencyBase.currencyid] === 'remove' ? 'light-green' : this.operationsBridgeVethReceive[currencyBase.currencyid] === 'remove' ? 'light-green' : ''
                 return this.operationsBasketSend[currencyBase.currencyid] === 'add' ? 'text-red-300' : this.operationsBasketReceive[currencyBase.currencyid] === 'remove' ? 'text-green-300' : ''
+                // classes[this.operationsBasketSend[currencyBase.currencyid] === 'add' ? 'text-red-300' : this.operationsBasketReceive[currencyBase.currencyid] === 'remove' ? 'text-green-300' : '']
             }
 
 
             // the row is the base currency, it devalues when sendCurrency
             if (this.operationsBasketSend[currencyBase.currencyid]) {
                 return this.relativeOperationsBasketSend[currencyRel.currencyid] === 'add' ? 'text-green-300' : this.relativeOperationsBasketSend[currencyRel.currencyid] === 'remove' ? 'text-red-300' : ''
+                // classes[this.relativeOperationsBasketSend[currencyRel.currencyid] === 'add' ? 'text-green-300' : this.relativeOperationsBasketSend[currencyRel.currencyid] === 'remove' ? 'text-red-300' : '']
             }
             if (this.operationsBasketReceive[currencyBase.currencyid]) {
                 return this.relativeOperationsBasketReceive[currencyRel.currencyid] === 'add' ? 'text-green-300' : this.relativeOperationsBasketReceive[currencyRel.currencyid] === 'remove' ? 'text-red-300' : ''
+                // classes[this.relativeOperationsBasketReceive[currencyRel.currencyid] === 'add' ? 'text-green-300' : this.relativeOperationsBasketReceive[currencyRel.currencyid] === 'remove' ? 'text-red-300' : '']
             }
 
             // rel is sendCurrency, operation of adding to basket, means it is green when in rel column
             if (this.operationsBasketSend[currencyRel.currencyid]) {
                 return this.operationsBasketSend[currencyRel.currencyid] === 'add' ? 'text-green-300' : ''//this.operationsBridgeVethSend[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
+                // classes[this.operationsBasketSend[currencyRel.currencyid] === 'add' ? 'text-green-300' : '']//this.operationsBridgeVethSend[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
             }
             if (this.operationsBasketReceive[currencyRel.currencyid]) {
                 return this.operationsBasketReceive[currencyRel.currencyid] === 'remove' ? 'text-red-300' : ''
+                // classes[this.operationsBasketReceive[currencyRel.currencyid] === 'remove' ? 'text-red-300' : '']
             }
         },
         getReservePrice(reserveCurrencies, currency, targetCurrency) {
@@ -423,5 +461,9 @@ export default {
 
 .light-grey {
     background-color: lightgrey;
+}
+
+.stacked-data div {
+    @apply py-1; /* Add some padding for better spacing */
 }
 </style>
