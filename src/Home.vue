@@ -8,6 +8,15 @@
     <!-- <PriceInTbtc v-if="isExtras()" :pureTbtcReserves="pureTbtcReserves" :priceVrscDai="priceVrscDai"
       :pricesRelVrsc="pricesRelVrsc" /> -->
 
+      <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="SUPERBASKET" v-bind:webLink="superbasketwebsite"
+      v-bind:chartLink="superbasketchart" v-bind:recentTransfersLink="superbasketrecenttransfers" v-bind:marketNote="superbasketmarketnote"
+      v-bind:explorerLink="verusexplorer" v-bind:supply="superbasketsupply" v-bind:bestHeight="superbasketbestheight"
+      v-bind:reserveCurrencies="superbasketreservecurrencies" v-bind:currencyDictionary="currencyDictionary" v-bind:isExtrasOverride="true"/>
+    <p v-else>{{ SUPERBASKET }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }}
+        blocks to go</span></p>
+
+    <div class="divider"></div>
+
     <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="BRIDGEVETH" v-bind:webLink="bridgevethwebsite"
       v-bind:chartLink="bridgevethchart" v-bind:recentTransfersLink="bridgevethrecenttransfers" v-bind:marketNote="bridgevethmarketnote"
       v-bind:explorerLink="verusexplorer" v-bind:supply="bridgevethsupply" v-bind:bestHeight="bridgevethbestheight"
@@ -138,6 +147,7 @@ export default {
       BRIDGECHIPS: 'Bridge.CHIPS',
       BRIDGEVARRR: 'Bridge.vARRR',
       BRIDGEVDEX: 'Bridge.vDEX',
+      SUPERBASKET: 'SUPER\u{1F6D2}',
       PURE: 'Pure',
       SWITCH: 'Switch',
       KAIJU: 'Kaiju',
@@ -152,6 +162,21 @@ export default {
       veruslongestchain: ref(),
       verusSyncOK: ref(false),
       verusBlocksRemaining: ref(0),
+      
+      superbasketreservecurrencies: ref(),
+      superbasketbestheight: ref(),
+      superbasketsupply: ref(),
+      superbasketmarketnote: "Pre-conversion ends block 3437350",
+      superbasketwebsite: "https://verus.io/eth-bridge",
+      superbasketchart: [
+        {"link": "https://bridgeveth.sg1.verus.trading/view/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "SG1"},
+        {"link": "https://bridgeveth.us1.verus.trading/view/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "US1"}
+      ],
+      superbasketrecenttransfers: [
+        {"link": "https://bridgeveth.sg1.verus.trading/transfers/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "SG1"},
+        {"link": "https://bridgeveth.us1.verus.trading/transfers/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "US1"}
+      ],
+      
       bridgevethreservecurrencies: ref(),
       bridgevethbestheight: ref(),
       bridgevethsupply: ref(),
@@ -343,7 +368,8 @@ export default {
         { "currencyid": "iCDjBN71SbSppgsNTpwwMBT69399DpV4hA", "ticker": "KEK\u{1F438}"},
         { "currencyid": "i5VVBEi6efBrXMaeqFW3MTPSzbmpNLysGR", "ticker": "PepeCoin.vETH"},
         { "currencyid": "i3nokiCTVevZMLpR3VmZ7YDfCqA5juUqqH", "ticker": "Bridge.CHIPS"},
-        { "currencyid": "iJ3WZocnjG9ufv7GKUA4LijQno5gTMb7tP", "ticker": "CHIPS"}
+        { "currencyid": "iJ3WZocnjG9ufv7GKUA4LijQno5gTMb7tP", "ticker": "CHIPS"},
+        { "currencyid": "iFrFn9b6ctse7XBzcWkRbpYMAHoKjbYKqG", "ticker": "SUPER\u{1F6D2}"}
       ]
     };
   },
@@ -437,6 +463,27 @@ export default {
         headers: requestData.headers,
         data: requestData.data
       });
+    },
+    getSuperBasketCurrency() {
+      const requestData = {
+        method: 'post',
+        url: 'https://rpc.vrsc.komodefi.com',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+          method: 'getcurrency',
+          params: [this.SUPERBASKET],
+          id: 1
+        }
+      };
+      this.sendRequestRPC(requestData)
+        .then((response) => {
+          this.superbasketreservecurrencies = response.data.result.bestcurrencystate.reservecurrencies
+          this.superbasketbestheight = response.data.result.bestheight
+          this.superbasketsupply = response.data.result.bestcurrencystate.supply
+        })
+        .catch((error) => {
+          this.currencies = error
+        })
     },
     getBridgeVethCurrency() {
       const requestData = {
@@ -747,6 +794,7 @@ export default {
   async mounted() {
     // this.sendRequest();
     this.getLatestBlock()
+    this.getSuperBasketCurrency()
     this.getBridgeVethCurrency()
     this.getPureCurrency()
     this.getBridgeVarrrCurrency()
