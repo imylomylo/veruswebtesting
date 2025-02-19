@@ -169,12 +169,10 @@ export default {
       superbasketmarketnote: "Pre-conversion ends block 3437350",
       superbasketwebsite: "https://verus.io/eth-bridge",
       superbasketchart: [
-        {"link": "https://bridgeveth.sg1.verus.trading/view/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "SG1"},
-        {"link": "https://bridgeveth.us1.verus.trading/view/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "US1"}
+
       ],
       superbasketrecenttransfers: [
-        {"link": "https://bridgeveth.sg1.verus.trading/transfers/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "SG1"},
-        {"link": "https://bridgeveth.us1.verus.trading/transfers/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx", "title": "US1"}
+        {"link": "https://superbasket.us1.verus.trading/transfers/iFrFn9b6ctse7XBzcWkRbpYMAHoKjbYKqG", "title": "US1"}
       ],
       
       bridgevethreservecurrencies: ref(),
