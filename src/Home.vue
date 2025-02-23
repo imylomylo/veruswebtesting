@@ -4,7 +4,10 @@
       Dark/Light <input type="checkbox" value="garden" class="toggle theme-controller" />
     </div>
     <div class="p-2">Binance prices: BTCUSD: {{ parseFloat(binance_btcusd).toFixed(2) }} , ETHUSD: {{ parseFloat(binance_ethusd).toFixed(2) }} , MKRUSD: {{ parseFloat(binance_mkrusd).toFixed(2) }} , ETHBTC: {{ parseFloat(binance_ethbtc).toFixed(6) }} , MKRBTC: {{ parseFloat(binance_mkrbtc).toFixed(6) }}</div>
-    <div class="p-2">Donations: <a class="link link-info" target="_blank" href="https://insight.verus.io/address/VERUSTRADING@">VERUSTRADING@</a> and <a class="link link-info" target="_blank" href="https://insight.verus.io/address/verus%20coin%20foundation@">Verus Coin Foundation@</a></div>
+    <div class="p-2">Donations: <a class="link link-info" target="_blank" href="https://insight.verus.io/address/VERUSTRADING@">VERUSTRADING@</a> and <a class="link link-info" target="_blank" href="https://insight.verus.io/address/verus%20coin%20foundation@">Verus Coin Foundation@</a>
+Staking => 
+      <span v-for="chain in chains">{{chain.toUpperCase()}}: {{stakingsupply[chain]}} || </span>
+    </div>
     <!-- <PriceInTbtc v-if="isExtras()" :pureTbtcReserves="pureTbtcReserves" :priceVrscDai="priceVrscDai"
       :pricesRelVrsc="pricesRelVrsc" /> -->
 
@@ -143,6 +146,7 @@ export default {
   },
   data() {
     return {
+      chains: ['vrsc', 'varrr', 'vdex', 'chips'],
       BRIDGEVETH: 'Bridge.vETH',
       BRIDGECHIPS: 'Bridge.CHIPS',
       BRIDGEVARRR: 'Bridge.vARRR',
@@ -166,7 +170,7 @@ export default {
       superbasketreservecurrencies: ref(),
       superbasketbestheight: ref(),
       superbasketsupply: ref(),
-      superbasketmarketnote: "Pre-conversion ends block 3437350",
+      superbasketmarketnote: "",
       superbasketwebsite: "https://verus.io/eth-bridge",
       superbasketchart: [
 
@@ -337,6 +341,11 @@ export default {
       binance_mkrusd: ref(),
       binance_ethbtc: ref(),
       binance_mkrbtc: ref(),
+      stakingsupply: ref([]),
+      vrsc_staking: ref(),
+      varrr_staking: ref(),
+      vdex_staking: ref(),
+      chips_staking: ref(),
       currencyDictionary: [
         { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
         { "currencyid": "iGBs4DWztRNvNEJBt4mqHszLxfKTNHTkhM", "ticker": "DAI.vETH" },
@@ -424,6 +433,27 @@ export default {
         return this.operationsSwitch[currencyRel.currencyid] === 'add' ? 'light-green' : this.operationsSwitch[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
       }
     },
+    getStakingSupply(chain) {
+      const requestData = {
+        method: 'post',
+        url: 'https://rpc.' +chain+'.komodefi.com',
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+          method: 'getmininginfo',
+          params: [],
+          id: 999
+        }
+      }
+      // console.log(requestData)
+      this.sendRequestRPC(requestData)
+        .then((response) => {
+          this.stakingsupply[chain] = Math.trunc(response.data.result.stakingsupply)
+          // console.log(this.stakingsupply[chain])
+        })
+        .catch((error) => {
+          this.stakingsupply[chain] = error
+        })
+    },
     getLatestBlock() {
       const requestData = {
         method: 'post',
@@ -437,22 +467,21 @@ export default {
       };
       this.sendRequestRPC(requestData)
         .then((response) => {
-          console.log(response.data.result.blocks)
-          console.log(this.verusSyncOK)
+          // console.log(response.data.result.blocks)
+          // console.log(this.verusSyncOK)
           // return response.data.result.blocks
           this.veruslatestblock = response.data.result.blocks
           this.veruslongestchain = response.data.result.longestchain
           this.verusBlocksRemaining = this.veruslongestchain - this.veruslatestblock
           if (this.veruslatestblock == this.veruslongestchain) {
             this.verusSyncOK = true
-            console.log(this.verusSyncOK)
+            // console.log(this.verusSyncOK)
 
           }
         })
         .catch((error) => {
           this.veruslatestblock = error
         })
-
     },
     sendRequestRPC(requestData) {
       return axios({
@@ -807,6 +836,7 @@ export default {
     this.getVYieldCurrency()
     this.getKekFrogCurrency()
     this.getBinancePrices()
+    this.chains.forEach( chain => this.getStakingSupply(chain))
   }
 };
 </script>
