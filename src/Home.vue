@@ -11,7 +11,7 @@
       <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="SUPERBASKET" v-bind:webLink="superbasketwebsite"
       v-bind:chartLink="superbasketchart" v-bind:recentTransfersLink="superbasketrecenttransfers" v-bind:marketNote="superbasketmarketnote"
       v-bind:explorerLink="verusexplorer" v-bind:supply="superbasketsupply" v-bind:bestHeight="superbasketbestheight"
-      v-bind:reserveCurrencies="superbasketreservecurrencies" v-bind:currencyDictionary="currencyDictionary" v-bind:isExtrasOverride="true"/>
+      v-bind:reserveCurrencies="superbasketreservecurrencies" v-bind:currencyDictionary="currencyDictionary" v-bind:isExtrasOverride="false"/>
     <p v-else>{{ SUPERBASKET }} is not ready - syncing data <span v-if="verusBlocksRemaining">{{ verusBlocksRemaining }}
         blocks to go</span></p>
 
