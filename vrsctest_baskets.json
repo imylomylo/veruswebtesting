@@ -10,7 +10,7 @@
         "chart": [],
         "recenttransfers": [],
         "website": "",
-        "marketnote": "",
+        "marketnote": "Ask Hopium Dealer for reserves, or trade in SPORTS or B1MSMALL3",
         "explorer": ""
     },
     {
@@ -24,7 +24,7 @@
         "chart": [],
         "recenttransfers": [],
         "website": "",
-        "marketnote": "",
+        "marketnote": "Ask Hopium Dealer for reserves, or trade in SPORTS or B1MSMALL3",
         "explorer": ""
     },
     {
@@ -38,7 +38,7 @@
         "chart": [],
         "recenttransfers": [],
         "website": "",
-        "marketnote": "",
+        "marketnote": "Ask Hopium Dealer for reserves, or trade in SPORTS or B1MSMALL3",
         "explorer": ""
     },
     {
@@ -52,12 +52,40 @@
         "chart": [],
         "recenttransfers": [],
         "website": "",
-        "marketnote": "",
+        "marketnote": "Ask Hopium Dealer for reserves, or trade in SPORTS or B1MSMALL3",
         "explorer": ""
     },
     {
         "ticker": "OCTAGON1",
         "currencyid": "i6dDMpR4NxsdjndAwxWhqDk9VLneyskxZK",
+        "options": 33,
+        "rpc": "https://rpc.vrsctest.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [],
+        "recenttransfers": [],
+        "website": "",
+        "marketnote": "Ask Hopium Dealer for reserves, or trade in SPORTS or B1MSMALL3",
+        "explorer": ""
+    },
+    {
+        "ticker": "SPORTS",
+        "currencyid": "iGhBps9rmbN7U544dZY7nx2rfg26QTh1zY",
+        "options": 33,
+        "rpc": "https://rpc.vrsctest.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [],
+        "recenttransfers": [],
+        "website": "",
+        "marketnote": "",
+        "explorer": ""
+    },
+    {
+        "ticker": "B1MSMALL3",
+        "currencyid": "iR3kBaMZy61VRWVZxQyWe3jovHDnPr75Wv",
         "options": 33,
         "rpc": "https://rpc.vrsctest.komodefi.com",
         "reservecurrencies": "",
@@ -112,36 +140,8 @@
         "explorer": ""
     },
     {
-        "ticker": "SPORTS",
-        "currencyid": "iGhBps9rmbN7U544dZY7nx2rfg26QTh1zY",
-        "options": 33,
-        "rpc": "https://rpc.vrsctest.komodefi.com",
-        "reservecurrencies": "",
-        "supply": "",
-        "bestheight": "",
-        "chart": [],
-        "recenttransfers": [],
-        "website": "",
-        "marketnote": "",
-        "explorer": ""
-    },
-    {
         "ticker": "VRSC-BTC-USD-EUR",
         "currencyid": "iCW8CmZFYBBWbXv321hRKLrmyzfFxDXhyT",
-        "options": 33,
-        "rpc": "https://rpc.vrsctest.komodefi.com",
-        "reservecurrencies": "",
-        "supply": "",
-        "bestheight": "",
-        "chart": [],
-        "recenttransfers": [],
-        "website": "",
-        "marketnote": "",
-        "explorer": ""
-    },
-    {
-        "ticker": "B1MSMALL3",
-        "currencyid": "iR3kBaMZy61VRWVZxQyWe3jovHDnPr75Wv",
         "options": 33,
         "rpc": "https://rpc.vrsctest.komodefi.com",
         "reservecurrencies": "",
