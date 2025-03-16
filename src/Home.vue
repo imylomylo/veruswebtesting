@@ -13,11 +13,30 @@
     <span v-for="chain in chains">{{ chain.toUpperCase() }}: {{ stakingsupply[chain] }} || </span>
   </div>
 
-  <VerusBasket v-for="basket of baskets" v-bind:fullyQualifiedName="basket.ticker" v-bind:webLink="basket.website"
-    v-bind:chartLink="basket.chart" v-bind:recentTransfersLink="basket.recenttransfers"
-    v-bind:marketNote="basket.marketnote" v-bind:explorerLink="basket.explorer" v-bind:supply="basket.supply"
-    v-bind:bestHeight="basket.bestheight" v-bind:reserveCurrencies="basket.reservecurrencies"
-    v-bind:currencyDictionary="currencyDictionary" v-bind:isExtrasOverride="false" />
+  <div class="tabs tabs-border">
+    <input type="radio" name="my_tabs_2" class="tab" aria-label="Mainnet" checked="checked" />
+    <div class="tab-content border-base-300 bg-base-100 p-10">
+      <VerusBasket v-for="basket of baskets" v-bind:fullyQualifiedName="basket.ticker" v-bind:webLink="basket.website"
+        v-bind:chartLink="basket.chart" v-bind:recentTransfersLink="basket.recenttransfers"
+        v-bind:marketNote="basket.marketnote" v-bind:explorerLink="basket.explorer" v-bind:supply="basket.supply"
+        v-bind:bestHeight="basket.bestheight" v-bind:reserveCurrencies="basket.reservecurrencies"
+        v-bind:currencyDictionary="currencyDictionary" v-bind:isExtrasOverride="false" />
+
+
+    </div>
+
+    <input type="radio" name="my_tabs_2" class="tab" aria-label="VRSCTEST" />
+    <div class="tab-content border-base-300 bg-base-100 p-10">
+      <VerusBasket v-for="basket of vrsctest_baskets" v-bind:fullyQualifiedName="basket.ticker"
+        v-bind:webLink="basket.website" v-bind:chartLink="basket.chart"
+        v-bind:recentTransfersLink="basket.recenttransfers" v-bind:marketNote="basket.marketnote"
+        v-bind:explorerLink="basket.explorer" v-bind:supply="basket.supply" v-bind:bestHeight="basket.bestheight"
+        v-bind:reserveCurrencies="basket.reservecurrencies" v-bind:currencyDictionary="vrsctest_currencyDictionary"
+        v-bind:isExtrasOverride="false" />
+    </div>
+  </div>
+
+
 
 
   <!-- <VerusBasket v-if="verusSyncOK" v-bind:fullyQualifiedName="BRIDGEVETH" v-bind:webLink="bridgevethwebsite"
@@ -67,7 +86,9 @@ export default {
       vdex_staking: ref(),
       chips_staking: ref(),
       currencyDictionary: [],
-      baskets: ref([])
+      baskets: ref([]),
+      vrsctest_currencyDictionary: [],
+      vrsctest_baskets: ref([])
     };
   },
   methods: {
@@ -255,20 +276,26 @@ export default {
   },
   async created() {
     try {
-      const [response1, response2] = await Promise.all([
+      const [response1, response2, response3, response4] = await Promise.all([
         fetch('/currencies.json'),
-        fetch('/baskets.json'), // Replace with your second file name
+        fetch('/baskets.json'),
+        fetch('/vrsctest_currencies.json'),
+        fetch('/vrsctest_baskets.json')
       ]);
 
-      const data1 = await response1.json();
-      const data2 = await response2.json();
+      const data1 = await response1.json()
+      const data2 = await response2.json()
+      const data3 = await response3.json()
+      const data4 = await response4.json()
+
 
       this.currencyDictionary = data1
       this.baskets = data2
+      this.vrsctest_currencyDictionary = data3
+      this.vrsctest_baskets = data4
     } catch (error) {
       console.log(error)
     }
-
 
     try {
       // Fetch details for each basket and update the array
@@ -278,6 +305,32 @@ export default {
           console.log(`Updating basket ${basket.ticker} with:`, details);
           // Update the basket in place
           this.baskets[index] = {
+            ...basket,
+            reservecurrencies: details.reservecurrencies,
+            supply: details.supply,
+            bestheight: details.bestheight,
+          }
+        }
+        else {
+          console.warn('No details fetch for ${basket.currencyid}')
+        }
+      })
+
+      // Wait for all fetches to complete
+      await Promise.all(fetchPromises);
+    } catch (error) {
+      console.error('Error loading JSON files or fetching details:', error);
+    }
+
+
+    try {
+      // Fetch details for each basket and update the array
+      const fetchPromises = this.vrsctest_baskets.map(async (basket, index) => {
+        const details = await this.getCurrencyDetails(basket.rpc, basket.currencyid);
+        if (details) {
+          console.log(`Updating basket ${basket.ticker} with:`, details);
+          // Update the basket in place
+          this.vrsctest_baskets[index] = {
             ...basket,
             reservecurrencies: details.reservecurrencies,
             supply: details.supply,
