@@ -37,7 +37,7 @@
             (relative to Pure Basket)
         </div>
         <div class="p-2 overflow-x-auto">
-            <table class="table table-md">
+            <table class="table table-sm">
                 <thead>
                     <tr>
                         <th>Reserve Currency</th>

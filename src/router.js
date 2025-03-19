@@ -6,6 +6,7 @@ import Home from './Home.vue'
 const rpc_verusd = 'https://rpc.vrsc.komodefi.com'
 const rpc_verusdvarrr = 'https://rpc.varrr.komodefi.com'
 const rpc_verusdvdex = 'https://rpc.vdex.komodefi.com'
+const rpc_chips = 'https://rpc.chips.komodefi.com'
 
 const currencyDictionary = [
     { "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV", "ticker": "VRSC" },
@@ -31,8 +32,13 @@ const currencyDictionary = [
     { "currencyid": "iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw", "ticker": "NATI.Owl"},
     { "currencyid": "i6SapneNdvpkrLPgqPhDVim7Ljek3h2UQZ", "ticker": "SUPERNET"},
     { "currencyid": "iHnYAmrS45Hb8GVgyzy7nVQtZ5vttJ9N3X", "ticker": "SUPERVRSC"},
-    { "currencyid": "i9nLSK4S1U5sVMq4eJUHR1gbFALz56J9Lj", "ticker": "scrvUSD.vETH"},
-    { "currencyid": "iAik7rePReFq2t7LZMZhHCJ52fT5pisJ5C", "ticker": "vYIELD" }
+    { "currencyid": "i9nLSK4S1U5sVMq4eJUHR1gbFALz56J9Lj", "ticker": "scrvUSD.vETH" },
+    { "currencyid": "iAik7rePReFq2t7LZMZhHCJ52fT5pisJ5C", "ticker": "vYIELD" },
+    { "currencyid": "iCDjBN71SbSppgsNTpwwMBT69399DpV4hA", "ticker": "KEK🐸" },
+    { "currencyid": "i5VVBEi6efBrXMaeqFW3MTPSzbmpNLysGR", "ticker": "PepeCoin.vETH" },
+    { "currencyid": "i3nokiCTVevZMLpR3VmZ7YDfCqA5juUqqH", "ticker": "Bridge.CHIPS" },
+    { "currencyid": "iJ3WZocnjG9ufv7GKUA4LijQno5gTMb7tP", "ticker": "CHIPS" },
+    { "currencyid": "iFrFn9b6ctse7XBzcWkRbpYMAHoKjbYKqG", "ticker": "SUPER🛒" }
 ]
 
 const routes = [
@@ -45,7 +51,9 @@ const routes = [
   { path: '/bridge-vdex', component: VerusBasketView, props: {fullyQualifiedName: 'Bridge.vDEX', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusdvdex}},
   { path: '/vyield', component: VerusBasketView, props: {fullyQualifiedName: 'vYIELD', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusd}},
   { path: '/switch', component: VerusBasketView, props: {fullyQualifiedName: 'Switch', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusd}},
-  { path: '/kaiju', component: VerusBasketView, props: {fullyQualifiedName: 'Kaiju', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusd}}  
+  { path: '/kaiju', component: VerusBasketView, props: {fullyQualifiedName: 'Kaiju', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusd}},
+  { path: '/super-basket', component: VerusBasketView, props: {fullyQualifiedName: 'SUPER🛒', currencyDictionary: currencyDictionary, rpcUrl: rpc_verusd}},
+  { path: '/bridge-chips', component: VerusBasketView, props: {fullyQualifiedName: 'Bridge.Chips', currencyDictionary: currencyDictionary, rpcUrl: rpc_chips}}
 ]
 
 const router = createRouter({
