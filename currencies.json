@@ -28,5 +28,7 @@
     { "currencyid": "i5VVBEi6efBrXMaeqFW3MTPSzbmpNLysGR", "ticker": "PepeCoin.vETH" },
     { "currencyid": "i3nokiCTVevZMLpR3VmZ7YDfCqA5juUqqH", "ticker": "Bridge.CHIPS" },
     { "currencyid": "iJ3WZocnjG9ufv7GKUA4LijQno5gTMb7tP", "ticker": "CHIPS" },
-    { "currencyid": "iFrFn9b6ctse7XBzcWkRbpYMAHoKjbYKqG", "ticker": "SUPER🛒" }
+    { "currencyid": "iFrFn9b6ctse7XBzcWkRbpYMAHoKjbYKqG", "ticker": "SUPER🛒" },
+    { "currencyid": "iDetLA1snrDVhCCk42rdWfqmJcYCMcEFry", "ticker": "Bankroll.CHIPS" },
+    { "currencyid": "iNLBYPcNM3c5mzRdtfjd9Hk86WPijQfZhW", "ticker": "Highroller.CHIPS" }
   ]

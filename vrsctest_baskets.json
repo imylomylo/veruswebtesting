@@ -1,5 +1,19 @@
 [
     {
+        "ticker": "bankroll",
+        "currencyid": "i3zeobcYAJt6rkteDehA3UKnw4HydPunwR",
+        "options": 33,
+        "rpc": "https://rpc.vrsctest.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [],
+        "recenttransfers": [],
+        "website": "",
+        "marketnote": "Ask Hopium Dealer for reserves, or trade in SPORTS or B1MSMALL3",
+        "explorer": ""
+    },
+    {
         "ticker": "FOURK1",
         "currencyid": "i5wkLGS1vNEsT7iZYWw4ThGB3215oDs4Qw",
         "options": 33,

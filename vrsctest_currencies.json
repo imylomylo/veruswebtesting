@@ -1,5 +1,9 @@
 [
     {
+        "ticker": "bankroll",
+        "currencyid": "i3zeobcYAJt6rkteDehA3UKnw4HydPunwR"
+    },
+    {
         "ticker": "kneipe-veth-vrsctest-usdt-basket",
         "currencyid": "iRqPwMWVawLy5uNsv6UPUjtEhmnX63rtGZ"
     },

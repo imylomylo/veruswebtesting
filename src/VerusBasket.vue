@@ -98,7 +98,7 @@
                         <option v-for="option in reserveCurrencies" :value="option.currencyid">
                             {{ getCurrencyTicker(option) }}
                         </option>
-                        <option :value="fullyQualifiedName">
+                        <option :value="fullyQualifiedName" v-if="!isPreconvert">
                             {{ fullyQualifiedName }}
                         </option>
                     </select>
@@ -106,7 +106,7 @@
                     Receive:
                     <select class="select select-success" v-model="receiveCurrency">
                         <option disabled value="">Please select one</option>
-                        <option v-for="option in reserveCurrencies" :value="option.currencyid">
+                        <option v-for="option in reserveCurrencies" :value="option.currencyid" v-if="!isPreconvert">
                             {{ getCurrencyTicker(option) }}
                         </option>
                         <option :value="fullyQualifiedName">
@@ -148,7 +148,8 @@ export default {
         'webLink',
         'currencyDictionary',
         'pureBasketPriceTbtcVrsc',
-        'isExtrasOverride'
+        'isExtrasOverride',
+        'isPreconvert'
     ],
 
     setup(props) {
@@ -161,10 +162,9 @@ export default {
         const relativeOperationsBasketReceive = ref([])
         const receiveMessage = ref()
         const showPriceTbtc = ref(false)
-        const chartLink = ref([])
         const newSupply = ref(0)
         const newPriceInReserve = ref(0)
-        // const isExtrasOverride = ref(false)
+        // const isPreconvert = ref(false)
         return {
             amount,
             sendCurrency,
@@ -335,7 +335,12 @@ export default {
                 let reservesAdd = this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).reserves
                 let reserveWeight = this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).weight
                 let reservesNewAmount = parseFloat(reservesAdd) + parseFloat(this.amount)
-                generatedLP = this.amount / (reservesNewAmount * 1 / reserveWeight) * this.supply
+                if( this.isPreconvert) {
+                    generatedLP = 0
+                }
+                else {
+                    generatedLP = this.amount / (reservesNewAmount * 1 / reserveWeight) * this.supply
+                }
                 // console.log(generatedLP)
                 this.reserveCurrencies.find(item => item.currencyid == this.sendCurrency).reserves = reservesNewAmount
                 let newPriceInReserve = (reservesNewAmount * 1 / reserveWeight) / this.supply
@@ -400,7 +405,13 @@ export default {
             if ( receiveCurrencyTicker == 0){
                 receiveCurrencyTicker = this.getTickerByCurrencyId(this.receiveCurrency)
             }
-            this.receiveMessage = "You receive approx " + parseFloat(amountReceived.toFixed(6)) + " " + receiveCurrencyTicker + "(Tip: " + sendCurrencyTicker + " weakens  when converted/sold into the basket). Accuracy of approximation decays if amount is > 50% of reserves"
+
+            if( this.isPreconvert ){
+                this.receiveMessage = "At launch, you’ll receive a share of the initial supply based on your contribution, adjusted for the reserve’s portion/weight."
+            }
+            else {
+                this.receiveMessage = "You receive approx " + parseFloat(amountReceived.toFixed(6)) + " " + receiveCurrencyTicker + "(Tip: " + sendCurrencyTicker + " weakens  when converted/sold into the basket). Accuracy of approximation decays if amount is > 50% of reserves"
+            }
 
             // save the (relative)operations for css class evaluation
             this.operationsBasketSend = operationsSend

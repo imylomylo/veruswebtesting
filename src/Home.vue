@@ -20,7 +20,7 @@
         v-bind:chartLink="basket.chart" v-bind:recentTransfersLink="basket.recenttransfers"
         v-bind:marketNote="basket.marketnote" v-bind:explorerLink="basket.explorer" v-bind:supply="basket.supply"
         v-bind:bestHeight="basket.bestheight" v-bind:reserveCurrencies="basket.reservecurrencies"
-        v-bind:currencyDictionary="currencyDictionary" v-bind:isExtrasOverride="false" />
+        v-bind:currencyDictionary="currencyDictionary" v-bind:isExtrasOverride="false" v-bind:isPreconvert="basket.isPreconvert" />
 
 
     </div>
