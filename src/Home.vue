@@ -165,7 +165,7 @@ export default {
           console.log(`RPC for ${chain} failed, falling back to local file: ${error.message}`);
           this.stakingsupply[chain] = 'N/A';
           try {
-            const response = await fetch(`/${chain}.mininginfo.json`);
+            const response = await fetch(`/files/${chain}.mininginfo.json`);
             if (!response.ok) {
               throw new Error(`Failed to fetch local data for ${chain}: ${response.statusText}`);
             }
@@ -235,7 +235,7 @@ export default {
       }
       else {
         try {
-          const response = await fetch(`/${currencyid}.json`);
+          const response = await fetch(`/files/${currencyid}.json`);
           if (!response.ok) {
             throw new Error(`Failed to fetch local data for ${currencyid}: ${response.statusText}`);
           }
