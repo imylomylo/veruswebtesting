@@ -1,0 +1,21 @@
+{
+  "blocks": 1540939,
+  "currentblocksize": 1572,
+  "currentblocktx": 1,
+  "averageblockfees": 0.00000800,
+  "difficulty": 146631910020.2962,
+  "stakingsupply": 754823.00041716,
+  "errors": "",
+  "genproclimit": 0,
+  "localhashps": 0,
+  "networkhashps": 261291974218,
+  "pooledtx": 0,
+  "testnet": false,
+  "chain": "main",
+  "generate": true,
+  "staking": true,
+  "numthreads": 0,
+  "mergemining": 1,
+  "mergeminedchains": [
+  ]
+}

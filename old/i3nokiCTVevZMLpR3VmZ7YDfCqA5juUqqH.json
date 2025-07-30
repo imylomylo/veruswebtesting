@@ -1,0 +1,143 @@
+{
+  "version": 1,
+  "options": 545,
+  "name": "Bridge",
+  "currencyid": "i3nokiCTVevZMLpR3VmZ7YDfCqA5juUqqH",
+  "parent": "iJ3WZocnjG9ufv7GKUA4LijQno5gTMb7tP",
+  "systemid": "iJ3WZocnjG9ufv7GKUA4LijQno5gTMb7tP",
+  "notarizationprotocol": 1,
+  "proofprotocol": 1,
+  "launchsystemid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+  "startblock": 3414690,
+  "endblock": 0,
+  "currencies": [
+    "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+    "iJ3WZocnjG9ufv7GKUA4LijQno5gTMb7tP"
+  ],
+  "weights": [
+    0.50000000,
+    0.50000000
+  ],
+  "conversions": [
+    0.00000000,
+    0.00000000
+  ],
+  "initialsupply": 100000.00000000,
+  "prelaunchcarveout": 0.00000000,
+  "gateway": "iJ3WZocnjG9ufv7GKUA4LijQno5gTMb7tP",
+  "initialcontributions": [
+    0.00000000,
+    0.00000000
+  ],
+  "gatewayconverterissuance": 150000.00000000,
+  "idregistrationfees": 100.00000000,
+  "idreferrallevels": 3,
+  "idimportfees": 0.02000000,
+  "currencyidhex": "192b10ec519f6faec7932d22ace838f6931c7503",
+  "fullyqualifiedname": "Bridge.CHIPS",
+  "magicnumber": -999150285,
+  "currencynames": {
+    "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV": "VRSC",
+    "iJ3WZocnjG9ufv7GKUA4LijQno5gTMb7tP": "CHIPS"
+  },
+  "definitiontxid": "487fa82fd113bf8007ea907ddcb3d225b7ffabe76ba8fb05cfe9381a5795598f",
+  "definitiontxout": 34,
+  "bestheight": 1540786,
+  "lastconfirmedheight": 1540786,
+  "bestcurrencystate": {
+    "flags": 49,
+    "version": 1,
+    "currencyid": "i3nokiCTVevZMLpR3VmZ7YDfCqA5juUqqH",
+    "reservecurrencies": [
+      {
+        "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "weight": 0.50000000,
+        "reserves": 12440.09007164,
+        "priceinreserve": 0.24821772
+      },
+      {
+        "currencyid": "iJ3WZocnjG9ufv7GKUA4LijQno5gTMb7tP",
+        "weight": 0.50000000,
+        "reserves": 280353.37669975,
+        "priceinreserve": 5.59390459
+      }
+    ],
+    "initialsupply": 100000.00000000,
+    "emitted": 0.00000000,
+    "supply": 100235.30852367,
+    "currencies": {
+      "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV": {
+        "reservein": 5.78698599,
+        "primarycurrencyin": 0.00000000,
+        "reserveout": 0.00000000,
+        "lastconversionprice": 0.24813110,
+        "viaconversionprice": 0.24815996,
+        "fees": 0.00289348,
+        "conversionfees": 0.00289348,
+        "priorweights": 0.50000000
+      },
+      "iJ3WZocnjG9ufv7GKUA4LijQno5gTMb7tP": {
+        "reservein": 0.00000000,
+        "primarycurrencyin": 0.00000000,
+        "reserveout": 130.44523109,
+        "lastconversionprice": 5.59650737,
+        "viaconversionprice": 5.59455520,
+        "fees": 0.00020010,
+        "conversionfees": 0.00000000,
+        "priorweights": 0.50000000
+      }
+    },
+    "primarycurrencyfees": 0.00000000,
+    "primarycurrencyconversionfees": 0.00000000,
+    "primarycurrencyout": 0.00000000,
+    "preconvertedout": 0.00000000
+  },
+  "lastconfirmedcurrencystate": {
+    "flags": 49,
+    "version": 1,
+    "currencyid": "i3nokiCTVevZMLpR3VmZ7YDfCqA5juUqqH",
+    "reservecurrencies": [
+      {
+        "currencyid": "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV",
+        "weight": 0.50000000,
+        "reserves": 12440.09007164,
+        "priceinreserve": 0.24821772
+      },
+      {
+        "currencyid": "iJ3WZocnjG9ufv7GKUA4LijQno5gTMb7tP",
+        "weight": 0.50000000,
+        "reserves": 280353.37669975,
+        "priceinreserve": 5.59390459
+      }
+    ],
+    "initialsupply": 100000.00000000,
+    "emitted": 0.00000000,
+    "supply": 100235.30852367,
+    "currencies": {
+      "i5w5MuNik5NtLcYmNzcvaoixooEebB6MGV": {
+        "reservein": 5.78698599,
+        "primarycurrencyin": 0.00000000,
+        "reserveout": 0.00000000,
+        "lastconversionprice": 0.24813110,
+        "viaconversionprice": 0.24815996,
+        "fees": 0.00289348,
+        "conversionfees": 0.00289348,
+        "priorweights": 0.50000000
+      },
+      "iJ3WZocnjG9ufv7GKUA4LijQno5gTMb7tP": {
+        "reservein": 0.00000000,
+        "primarycurrencyin": 0.00000000,
+        "reserveout": 130.44523109,
+        "lastconversionprice": 5.59650737,
+        "viaconversionprice": 5.59455520,
+        "fees": 0.00020010,
+        "conversionfees": 0.00000000,
+        "priorweights": 0.50000000
+      }
+    },
+    "primarycurrencyfees": 0.00000000,
+    "primarycurrencyconversionfees": 0.00000000,
+    "primarycurrencyout": 0.00000000,
+    "preconvertedout": 0.00000000
+  }
+}

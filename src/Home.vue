@@ -161,8 +161,19 @@ export default {
           this.stakingsupply[chain] = Math.trunc(response.data.result.stakingsupply)
           // console.log(this.stakingsupply[chain])
         })
-        .catch((error) => {
-          this.stakingsupply[chain] = error
+        .catch(async (error) => {
+          console.log(`RPC for ${chain} failed, falling back to local file: ${error.message}`);
+          this.stakingsupply[chain] = 'N/A';
+          try {
+            const response = await fetch(`/${chain}.mininginfo.json`);
+            if (!response.ok) {
+              throw new Error(`Failed to fetch local data for ${chain}: ${response.statusText}`);
+            }
+            const data = await response.json();
+            this.stakingsupply[chain] = Math.trunc(data.stakingsupply);
+          } catch (fetchError) {
+            console.error(`Failed to fetch or parse local staking data for ${chain}:`, fetchError);
+          }
         })
     },
     getLatestBlock() {
@@ -202,23 +213,43 @@ export default {
         data: requestData.data
       });
     },
-    async getCurrencyDetails(rpcUrl, currencyid) {
-      const requestData = {
-        method: 'post',
-        url: rpcUrl,
-        headers: { 'Content-Type': 'application/json' },
-        data: {
-          method: 'getcurrency',
-          params: [currencyid],
-          id: 1
+    async getCurrencyDetails(rpcUrl, currencyid, useRpc = true) {
+      if (useRpc) {
+        const requestData = {
+          method: 'post',
+          url: rpcUrl,
+          headers: { 'Content-Type': 'application/json' },
+          data: {
+            method: 'getcurrency',
+            params: [currencyid],
+            id: 1
+          }
+        };
+        const response = await this.sendRequestRPC(requestData)
+        const result = response.data.result
+        return {
+          reservecurrencies: result.bestcurrencystate.reservecurrencies,
+          bestheight: result.bestheight,
+          supply: result.bestcurrencystate.supply
         }
-      };
-      const response = await this.sendRequestRPC(requestData)
-      const result = response.data.result
-      return {
-        reservecurrencies: result.bestcurrencystate.reservecurrencies,
-        bestheight: result.bestheight,
-        supply: result.bestcurrencystate.supply
+      }
+      else {
+        try {
+          const response = await fetch(`/${currencyid}.json`);
+          if (!response.ok) {
+            throw new Error(`Failed to fetch local data for ${currencyid}: ${response.statusText}`);
+          }
+          const data = await response.json();
+          const result = data;
+          return {
+            reservecurrencies: result.bestcurrencystate.reservecurrencies,
+            bestheight: result.bestheight,
+            supply: result.bestcurrencystate.supply,
+          };
+        } catch (error) {
+          console.error(error);
+          return null;
+        }
       }
     },
     // getPureCurrency() {
@@ -300,7 +331,11 @@ export default {
     try {
       // Fetch details for each basket and update the array
       const fetchPromises = this.baskets.map(async (basket, index) => {
-        const details = await this.getCurrencyDetails(basket.rpc, basket.currencyid);
+        let useRpc = true;
+        if(basket.rpc==''){
+          useRpc = false
+        }
+        const details = await this.getCurrencyDetails(basket.rpc, basket.currencyid, useRpc);
         if (details) {
           console.log(`Updating basket ${basket.ticker} with:`, details);
           // Update the basket in place
@@ -312,7 +347,7 @@ export default {
           }
         }
         else {
-          console.warn('No details fetch for ${basket.currencyid}')
+          console.warn(`No details fetch for ${basket.currencyid}`);
         }
       })
 
@@ -338,7 +373,7 @@ export default {
           }
         }
         else {
-          console.warn('No details fetch for ${basket.currencyid}')
+          console.warn(`No details fetch for ${basket.currencyid}`);
         }
       })
 

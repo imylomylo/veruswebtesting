@@ -8,10 +8,6 @@
         "bestheight": "",
         "chart": [],
         "recenttransfers": [
-            {
-                "link": "https://superbasket.us1.verus.trading/transfers/iFrFn9b6ctse7XBzcWkRbpYMAHoKjbYKqG",
-                "title": "US1"
-            }
         ],
         "website": "https://verus.io/eth-bridge",
         "marketnote": "First 8 reserve currency basket",
@@ -26,24 +22,10 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-            {
-                "link": "https://bridgeveth.sg1.verus.trading/view/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx",
-                "title": "SG1"
-            },
-            {
-                "link": "https://bridgeveth.us1.verus.trading/view/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx",
-                "title": "US1"
-            }
+
         ],
         "recenttransfers": [
-            {
-                "link": "https://bridgeveth.sg1.verus.trading/transfers/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx",
-                "title": "SG1"
-            },
-            {
-                "link": "https://bridgeveth.us1.verus.trading/transfers/i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx",
-                "title": "US1"
-            }
+
         ],
         "website": "https://verus.io/eth-bridge",
         "marketnote": "DAI savings rate accrues in Bridge.vETH reserves from all DAI bridged network-wide $$",
@@ -53,29 +35,15 @@
     {
         "currencyid": "i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9",
         "ticker": "Bridge.vDEX",
-        "rpc": "https://rpc.vdex.komodefi.com",
+        "rpc": "",
         "reservecurrencies": "",
         "supply": "",
         "bestheight": "",
         "chart": [
-            {
-                "link": "https://bridgevdex.sg1.verus.trading/view/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9",
-                "title": "SG1"
-            },
-            {
-                "link": "https://bridgevdex.us1.verus.trading/view/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9",
-                "title": "US1"
-            }
+
         ],
         "recenttransfers": [
-            {
-                "link": "https://bridgevdex.sg1.verus.trading/transfers/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9",
-                "title": "SG1"
-            },
-            {
-                "link": "https://bridgevdex.us1.verus.trading/transfers/i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9",
-                "title": "US1"
-            }
+
         ],
         "website": "",
         "marketnote": "",
@@ -90,24 +58,10 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-            {
-                "link": "https://bridgevarrr.sg1.verus.trading/view/iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB",
-                "title": "SG1"
-            },
-            {
-                "link": "https://bridgevarrr.us1.verus.trading/view/iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB",
-                "title": "US1"
-            }
+
         ],
         "recenttransfers": [
-            {
-                "link": "https://bridgevarrr.sg1.verus.trading/transfers/iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB",
-                "title": "SG1"
-            },
-            {
-                "link": "https://bridgevarrr.us1.verus.trading/transfers/iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB",
-                "title": "US1"
-            }
+
         ],
         "website": "",
         "marketnote": "",
@@ -117,29 +71,15 @@
     {
         "currencyid": "i3nokiCTVevZMLpR3VmZ7YDfCqA5juUqqH",
         "ticker": "Bridge.CHIPS",
-        "rpc": "https://rpc.chips.komodefi.com",
+        "rpc": "",
         "reservecurrencies": "",
         "supply": "",
         "bestheight": "",
         "chart": [
-            {
-                "link": "https://bridgechips.sg1.verus.trading/view/i3nokiCTVevZMLpR3VmZ7YDfCqA5juUqqH",
-                "title": "SG1"
-            },
-            {
-                "link": "https://bridgechips.us1.verus.trading/view/i3nokiCTVevZMLpR3VmZ7YDfCqA5juUqqH",
-                "title": "US1"
-            }
+
         ],
         "recenttransfers": [
-            {
-                "link": "https://bridgechips.sg1.verus.trading/transfers/i3nokiCTVevZMLpR3VmZ7YDfCqA5juUqqH",
-                "title": "SG1"
-            },
-            {
-                "link": "https://bridgechips.us1.verus.trading/transfers/i3nokiCTVevZMLpR3VmZ7YDfCqA5juUqqH",
-                "title": "US1"
-            }
+
         ],
         "website": "https://bridge.chips.cash",
         "marketnote": "",
@@ -154,24 +94,10 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-            {
-                "link": "https://pure.sg1.verus.trading/view/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY",
-                "title": "SG1"
-            },
-            {
-                "link": "https://pure.us1.verus.trading/view/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY",
-                "title": "US1"
-            }
+
         ],
         "recenttransfers": [
-            {
-                "link": "https://pure.sg1.verus.trading/transfers/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY",
-                "title": "SG1"
-            },
-            {
-                "link": "https://pure.us1.verus.trading/transfers/iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY",
-                "title": "US1"
-            }
+
         ],
         "website": "",
         "marketnote": "",
@@ -186,24 +112,10 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-            {
-                "link": "https://natiowl.sg1.verus.trading/view/iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw",
-                "title": "SG1"
-            },
-            {
-                "link": "https://natiowl.us1.verus.trading/view/iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw",
-                "title": "US1"
-            }
+
         ],
         "recenttransfers": [
-            {
-                "link": "https://natiowl.sg1.verus.trading/transfers/iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw",
-                "title": "SG1"
-            },
-            {
-                "link": "https://natiowl.us1.verus.trading/transfers/iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw",
-                "title": "US1"
-            }
+
         ],
         "website": "",
         "marketnote": "",
@@ -218,24 +130,10 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-            {
-                "link": "https://nati.sg1.verus.trading/view/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC",
-                "title": "SG1"
-            },
-            {
-                "link": "https://nati.us1.verus.trading/view/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC",
-                "title": "US1"
-            }
+
         ],
         "recenttransfers": [
-            {
-                "link": "https://nati.sg1.verus.trading/transfers/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC",
-                "title": "SG1"
-            },
-            {
-                "link": "https://nati.us1.verus.trading/transfers/iRt7tpLewArQnRddBVFARGKJStK6w5pDmC",
-                "title": "US1"
-            }
+
         ],
         "website": "",
         "marketnote": "NATI.vETH = 10k IlluminatiCoin on Eth, tinfoil costs extra!!",
@@ -250,24 +148,10 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-            {
-                "link": "https://supervrsc.sg1.verus.trading/view/iHnYAmrS45Hb8GVgyzy7nVQtZ5vttJ9N3X",
-                "title": "SG1"
-            },
-            {
-                "link": "https://supervrsc.us1.verus.trading/view/iHnYAmrS45Hb8GVgyzy7nVQtZ5vttJ9N3X",
-                "title": "US1"
-            }
+
         ],
         "recenttransfers": [
-            {
-                "link": "https://supervrsc.sg1.verus.trading/transfers/iHnYAmrS45Hb8GVgyzy7nVQtZ5vttJ9N3X",
-                "title": "SG1"
-            },
-            {
-                "link": "https://supervrsc.us1.verus.trading/transfers/iHnYAmrS45Hb8GVgyzy7nVQtZ5vttJ9N3X",
-                "title": "US1"
-            }
+
         ],
         "website": "",
         "marketnote": "",
@@ -277,7 +161,7 @@
     {
         "currencyid": "iNLBYPcNM3c5mzRdtfjd9Hk86WPijQfZhW",
         "ticker": "Highroller.CHIPS",
-        "rpc": "https://rpc.chips.komodefi.com",
+        "rpc": "",
         "reservecurrencies": "",
         "supply": "",
         "bestheight": "",
@@ -288,12 +172,12 @@
         "website": "",
         "marketnote": "",
         "explorer": "",
-        "isPreconvert": true
+        "isPreconvert": false
     },
     {
         "currencyid": "iDetLA1snrDVhCCk42rdWfqmJcYCMcEFry",
         "ticker": "Bankroll.CHIPS",
-        "rpc": "https://rpc.chips.komodefi.com",
+        "rpc": "",
         "reservecurrencies": "",
         "supply": "",
         "bestheight": "",
@@ -304,7 +188,7 @@
         "website": "",
         "marketnote": "",
         "explorer": "",
-        "isPreconvert": true
+        "isPreconvert": false
     },
     {
         "currencyid": "iAik7rePReFq2t7LZMZhHCJ52fT5pisJ5C",
@@ -314,24 +198,10 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-            {
-                "link": "https://vyield.sg1.verus.trading/view/iAik7rePReFq2t7LZMZhHCJ52fT5pisJ5C",
-                "title": "SG1"
-            },
-            {
-                "link": "https://vyield.us1.verus.trading/view/iAik7rePReFq2t7LZMZhHCJ52fT5pisJ5C",
-                "title": "US1"
-            }
+
         ],
         "recenttransfers": [
-            {
-                "link": "https://vyield.sg1.verus.trading/transfers/iAik7rePReFq2t7LZMZhHCJ52fT5pisJ5C",
-                "title": "SG1"
-            },
-            {
-                "link": "https://vyield.us1.verus.trading/transfers/iAik7rePReFq2t7LZMZhHCJ52fT5pisJ5C",
-                "title": "US1"
-            }
+
         ],
         "website": "",
         "marketnote": "",
@@ -346,24 +216,10 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-            {
-                "link": "https://kaiju.sg1.verus.trading/view/i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb",
-                "title": "SG1"
-            },
-            {
-                "link": "https://kaiju.us1.verus.trading/view/i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb",
-                "title": "US1"
-            }
+
         ],
         "recenttransfers": [
-            {
-                "link": "https://kaiju.sg1.verus.trading/transfers/i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb",
-                "title": "SG1"
-            },
-            {
-                "link": "https://kaiju.us1.verus.trading/transfers/i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb",
-                "title": "US1"
-            }
+
         ],
         "website": "",
         "marketnote": "",
@@ -378,16 +234,10 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-            {
-                "link": "https://switch.us1.verus.trading/view/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc",
-                "title": "US1"
-            }
+
         ],
         "recenttransfers": [
-            {
-                "link": "https://switch.us1.verus.trading/transfers/i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc",
-                "title": "US1"
-            }
+
         ],
         "website": "",
         "marketnote": "",
@@ -402,24 +252,10 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-            {
-                "link": "https://kekfrog.sg1.verus.trading/view/iCDjBN71SbSppgsNTpwwMBT69399DpV4hA",
-                "title": "SG1"
-            },
-            {
-                "link": "https://kekfrog.us1.verus.trading/view/iCDjBN71SbSppgsNTpwwMBT69399DpV4hA",
-                "title": "US1"
-            }
+
         ],
         "recenttransfers": [
-            {
-                "link": "https://kekfrog.sg1.verus.trading/transfers/iCDjBN71SbSppgsNTpwwMBT69399DpV4hA",
-                "title": "SG1"
-            },
-            {
-                "link": "https://kekfrog.us1.verus.trading/transfers/iCDjBN71SbSppgsNTpwwMBT69399DpV4hA",
-                "title": "US1"
-            }
+
         ],
         "website": "",
         "marketnote": "",
@@ -434,12 +270,8 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-            {"link": "https://cybermoney.sg1.verus.trading/view/i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "title": "SG1"},
-            {"link": "https://cybermoney.us1.verus.trading/view/i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "title": "US1"}
           ],
         "recenttransfers": [
-            {"link": "https://cybermoney.sg1.verus.trading/transfers/i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "title": "SG1"},
-            {"link": "https://cybermoney.us1.verus.trading/transfers/i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX", "title": "US1"}
           ],
         "website": "",
         "marketnote": "Cybermoney contains junk-meme token named bitcoins, not real bitcoins, however, this is still useful for cheap VerusIDs like verustrading.bitcoins@",
