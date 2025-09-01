@@ -1,0 +1,345 @@
+[
+    {
+        "currencyid": "iFrFn9b6ctse7XBzcWkRbpYMAHoKjbYKqG",
+        "ticker": "SUPER🛒",
+        "rpc": "https://rpc.vrsc.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [],
+        "recenttransfers": [
+        ],
+        "website": "https://verus.io/eth-bridge",
+        "marketnote": "First 8 reserve currency basket",
+        "explorer": "https://insight.verus.io",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx",
+        "ticker": "Bridge.vETH",
+        "rpc": "https://rpc.vrsc.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+
+        ],
+        "recenttransfers": [
+
+        ],
+        "website": "https://verus.io/eth-bridge",
+        "marketnote": "DAI savings rate accrues in Bridge.vETH reserves from all DAI bridged network-wide $$",
+        "explorer": "https://insight.verus.io",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "i6j1rzjgrDhSmUYiTtp21J8Msiudv5hgt9",
+        "ticker": "Bridge.vDEX",
+        "rpc": "",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+
+        ],
+        "recenttransfers": [
+
+        ],
+        "website": "",
+        "marketnote": "",
+        "explorer": "https://explorer.vdex.to",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "iD5WRg7jdQM1uuoVHsBCAEKfJCKGs1U3TB",
+        "ticker": "Bridge.vARRR",
+        "rpc": "",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+
+        ],
+        "recenttransfers": [
+
+        ],
+        "website": "",
+        "marketnote": "",
+        "explorer": "https://varrrexplorer.piratechain.com",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "i3nokiCTVevZMLpR3VmZ7YDfCqA5juUqqH",
+        "ticker": "Bridge.CHIPS",
+        "rpc": "",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+
+        ],
+        "recenttransfers": [
+
+        ],
+        "website": "https://bridge.chips.cash",
+        "marketnote": "",
+        "explorer": "https://explorer.chips.cash",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "iHax5qYQGbcMGqJKKrPorpzUBX2oFFXGnY",
+        "ticker": "Pure",
+        "rpc": "https://rpc.vrsc.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+
+        ],
+        "recenttransfers": [
+
+        ],
+        "website": "",
+        "marketnote": "",
+        "explorer": "https://insight.verus.io",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "iH37kRsdfoHtHK5TottP1Yfq8hBSHz9btw",
+        "ticker": "NATI🦉",
+        "rpc": "https://rpc.vrsc.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+
+        ],
+        "recenttransfers": [
+
+        ],
+        "website": "",
+        "marketnote": "",
+        "explorer": "",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "iRt7tpLewArQnRddBVFARGKJStK6w5pDmC",
+        "ticker": "NATI",
+        "rpc": "https://rpc.vrsc.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+
+        ],
+        "recenttransfers": [
+
+        ],
+        "website": "",
+        "marketnote": "NATI.vETH = 10k IlluminatiCoin on Eth, tinfoil costs extra!!",
+        "explorer": "",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "iHnYAmrS45Hb8GVgyzy7nVQtZ5vttJ9N3X",
+        "ticker": "SUPERVRSC",
+        "rpc": "https://rpc.vrsc.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+
+        ],
+        "recenttransfers": [
+
+        ],
+        "website": "",
+        "marketnote": "",
+        "explorer": "",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "iNLBYPcNM3c5mzRdtfjd9Hk86WPijQfZhW",
+        "ticker": "Highroller.CHIPS",
+        "rpc": "",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+        ],
+        "recenttransfers": [
+        ],
+        "website": "",
+        "marketnote": "",
+        "explorer": "",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "iDetLA1snrDVhCCk42rdWfqmJcYCMcEFry",
+        "ticker": "Bankroll.CHIPS",
+        "rpc": "",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+        ],
+        "recenttransfers": [
+        ],
+        "website": "",
+        "marketnote": "",
+        "explorer": "",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "iAik7rePReFq2t7LZMZhHCJ52fT5pisJ5C",
+        "ticker": "vYIELD",
+        "rpc": "https://rpc.vrsc.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+
+        ],
+        "recenttransfers": [
+
+        ],
+        "website": "",
+        "marketnote": "",
+        "explorer": "",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "i9kVWKU2VwARALpbXn4RS9zvrhvNRaUibb",
+        "ticker": "Kaiju",
+        "rpc": "https://rpc.vrsc.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+
+        ],
+        "recenttransfers": [
+
+        ],
+        "website": "",
+        "marketnote": "",
+        "explorer": "",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "i4Xr5TAMrDTD99H69EemhjDxJ4ktNskUtc",
+        "ticker": "Switch",
+        "rpc": "https://rpc.vrsc.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+
+        ],
+        "recenttransfers": [
+
+        ],
+        "website": "",
+        "marketnote": "",
+        "explorer": "",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "iCDjBN71SbSppgsNTpwwMBT69399DpV4hA",
+        "ticker": "KEK🐸",
+        "rpc": "https://rpc.vrsc.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+
+        ],
+        "recenttransfers": [
+
+        ],
+        "website": "",
+        "marketnote": "",
+        "explorer": "",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "i9bBvuJijJeHcqFsDzAwW7f5wTBThULuhX",
+        "ticker": "cybermoney",
+        "rpc": "https://rpc.vrsc.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+          ],
+        "recenttransfers": [
+          ],
+        "website": "",
+        "marketnote": "Cybermoney contains junk-meme token named bitcoins, not real bitcoins, however, this is still useful for cheap VerusIDs like verustrading.bitcoins@",
+        "explorer": "",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "i7neKkvaZPnvfL6bcCnpe32vim4kaMDbWQ",
+        "ticker": "PUMP.vDEX",
+        "rpc": "",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+          ],
+        "recenttransfers": [
+          ],
+        "website": "",
+        "marketnote": "Meme-ish basket? Cheap VerusIDs",
+        "explorer": "",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "iFdEiScb9tKbLH1rDq925r9Zo9oKqCM4Zt",
+        "ticker": "AI.vDEX",
+        "rpc": "",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+          ],
+        "recenttransfers": [
+          ],
+        "website": "",
+        "marketnote": "Meme-ish basket? Cheap VerusIDs",
+        "explorer": "",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "iH9HFQeKRNVWguokGLLaiVYqy9u8VuFWMe",
+        "ticker": "Agents",
+        "rpc": "",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+          ],
+        "recenttransfers": [
+          ],
+        "website": "",
+        "marketnote": "Meme-ish basket? Cheap VerusIDs",
+        "explorer": "",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "iNhWVCyWgtbgM8HFMCp8zJb1U9yxYydnG7",
+        "ticker": "Traders",
+        "rpc": "https://rpc.vrsc.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+          ],
+        "recenttransfers": [
+          ],
+        "website": "",
+        "marketnote": "Cheap Traders VerusId: Bears/Bulls 78.6 approx 0.0003 VRSC, Traders 161.8 for a *.Traders@ ID!",
+        "explorer": "",
+        "isPreconvert": false
+    }
+]

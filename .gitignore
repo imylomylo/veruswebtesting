@@ -9,9 +9,9 @@ lerna-debug.log*
 
 node_modules
 dist
+public/*
 !public/currencies.json
 !public/baskets.json
-public
 build
 dist-ssr
 *.local
