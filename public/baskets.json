@@ -290,7 +290,7 @@
         "recenttransfers": [
           ],
         "website": "",
-        "marketnote": "Meme-ish basket? Cheap VerusIDs",
+        "marketnote": "Meme-ish basket? Cheap VerusIDs: 7.77 PUMP.vDEX",
         "explorer": "",
         "isPreconvert": false
     },
@@ -306,14 +306,14 @@
         "recenttransfers": [
           ],
         "website": "",
-        "marketnote": "Meme-ish basket? Cheap VerusIDs",
+        "marketnote": "Meme-ish basket? Cheap VerusIDs: 4.44 AI.vDEX",
         "explorer": "",
         "isPreconvert": false
     },
     {
         "currencyid": "iH9HFQeKRNVWguokGLLaiVYqy9u8VuFWMe",
         "ticker": "Agents",
-        "rpc": "",
+        "rpc": "https://rpc.vrsc.komodefi.com",
         "reservecurrencies": "",
         "supply": "",
         "bestheight": "",
@@ -322,7 +322,7 @@
         "recenttransfers": [
           ],
         "website": "",
-        "marketnote": "Meme-ish basket? Cheap VerusIDs",
+        "marketnote": "Meme-ish basket? Cheap VerusIDs: 2.71828182 AGENTS",
         "explorer": "",
         "isPreconvert": false
     },
@@ -339,6 +339,22 @@
           ],
         "website": "",
         "marketnote": "Cheap Traders VerusId: Bears/Bulls 78.6 approx 0.0003 VRSC, Traders 161.8 for a *.Traders@ ID!",
+        "explorer": "",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "iHw7tENEBkJo6thCwvoeAYsEyh3ZK57szS",
+        "ticker": "STACK.CHIPS",
+        "rpc": "",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+          ],
+        "recenttransfers": [
+          ],
+        "website": "",
+        "marketnote": "Memes on CHIPS? *.STACK.CHIPS@ IDs for sale, 7.77 STACK.CHIPS. Not as premium as Highroller.CHIPS!",
         "explorer": "",
         "isPreconvert": false
     }
