@@ -140,6 +140,24 @@
         "explorer": "",
         "isPreconvert": false
     },
+        {
+        "currencyid": "iKaSEU4KPrKahpemwHLoQVLPUof6fSE1uk",
+        "ticker": "letter A",
+        "rpc": "https://rpc.vrsc.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+
+        ],
+        "recenttransfers": [
+
+        ],
+        "website": "",
+        "marketnote": "",
+        "explorer": "https://insight.verus.io",
+        "isPreconvert": false
+    },
     {
         "currencyid": "iHnYAmrS45Hb8GVgyzy7nVQtZ5vttJ9N3X",
         "ticker": "SUPERVRSC",
