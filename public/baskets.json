@@ -6,8 +6,17 @@
         "reservecurrencies": "",
         "supply": "",
         "bestheight": "",
-        "chart": [],
+        "chart": [
+          {
+            "link": "https://conversions.verus.trading/superbasket",
+            "title": "CVT1"
+          }
+        ],
         "recenttransfers": [
+          {
+            "link": "https://conversions.verus.trading/superbasket/transfers",
+            "title": "CVT1"
+          }
         ],
         "website": "https://verus.io/eth-bridge",
         "marketnote": "First 8 reserve currency basket",
@@ -22,10 +31,16 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-
+          {
+            "link": "https://conversions.verus.trading/bridge.veth",
+            "title": "CVT1"
+          }
         ],
         "recenttransfers": [
-
+          {
+            "link": "https://conversions.verus.trading/bridge.veth/transfers",
+            "title": "CVT1"
+          }
         ],
         "website": "https://verus.io/eth-bridge",
         "marketnote": "DAI savings rate accrues in Bridge.vETH reserves from all DAI bridged network-wide $$",
@@ -40,10 +55,16 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-
+          {
+            "link": "https://conversions.verus.trading/bridge.vdex",
+            "title": "CVT1"
+          }
         ],
         "recenttransfers": [
-
+          {
+            "link": "https://conversions.verus.trading/bridge.vdex/transfers",
+            "title": "CVT1"
+          }
         ],
         "website": "",
         "marketnote": "",
@@ -58,10 +79,16 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-
+          {
+            "link": "https://conversions.verus.trading/bridge.varrr",
+            "title": "CVT1"
+          }
         ],
         "recenttransfers": [
-
+          {
+            "link": "https://conversions.verus.trading/bridge.varrr/transfers",
+            "title": "CVT1"
+          }
         ],
         "website": "",
         "marketnote": "",
@@ -76,10 +103,16 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-
+          {
+            "link": "https://conversions.verus.trading/bridge.chips",
+            "title": "CVT1"
+          }
         ],
         "recenttransfers": [
-
+          {
+            "link": "https://conversions.verus.trading/bridge.chips/transfers",
+            "title": "CVT1"
+          }
         ],
         "website": "https://bridge.chips.cash",
         "marketnote": "",
@@ -94,10 +127,16 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-
+          {
+            "link": "https://conversions.verus.trading/pure",
+            "title": "CVT1"
+          }
         ],
         "recenttransfers": [
-
+          {
+            "link": "https://conversions.verus.trading/pure/transfers",
+            "title": "CVT1"
+          }
         ],
         "website": "",
         "marketnote": "",
@@ -112,10 +151,16 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-
+          {
+            "link": "https://conversions.verus.trading/nati.owl",
+            "title": "CVT1"
+          }
         ],
         "recenttransfers": [
-
+          {
+            "link": "https://conversions.verus.trading/nati.owl/transfers",
+            "title": "CVT1"
+          }
         ],
         "website": "",
         "marketnote": "",
@@ -130,10 +175,16 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-
+          {
+            "link": "https://conversions.verus.trading/nati",
+            "title": "CVT1"
+          }
         ],
         "recenttransfers": [
-
+          {
+            "link": "https://conversions.verus.trading/nati/transfers",
+            "title": "CVT1"
+          }
         ],
         "website": "",
         "marketnote": "NATI.vETH = 10k IlluminatiCoin on Eth, tinfoil costs extra!!",
@@ -142,16 +193,22 @@
     },
         {
         "currencyid": "iKaSEU4KPrKahpemwHLoQVLPUof6fSE1uk",
-        "ticker": "letter A",
+        "ticker": "Ⓐ",
         "rpc": "https://rpc.vrsc.komodefi.com",
         "reservecurrencies": "",
         "supply": "",
         "bestheight": "",
         "chart": [
-
+          {
+            "link": "https://conversions.verus.trading/a.circle",
+            "title": "CVT1"
+          }
         ],
         "recenttransfers": [
-
+          {
+            "link": "https://conversions.verus.trading/a.circle/transfers",
+            "title": "CVT1"
+          }
         ],
         "website": "",
         "marketnote": "",
@@ -166,10 +223,16 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-
+          {
+            "link": "https://conversions.verus.trading/supervrsc",
+            "title": "CVT1"
+          }
         ],
         "recenttransfers": [
-
+          {
+            "link": "https://conversions.verus.trading/supervrsc/transfers",
+            "title": "CVT1"
+          }
         ],
         "website": "",
         "marketnote": "",
@@ -184,8 +247,16 @@
         "supply": "",
         "bestheight": "",
         "chart": [
+          {
+            "link": "https://conversions.verus.trading/highroller.chips",
+            "title": "CVT1"
+          }
         ],
         "recenttransfers": [
+          {
+            "link": "https://conversions.verus.trading/highroller.chips/transfers",
+            "title": "CVT1"
+          }
         ],
         "website": "",
         "marketnote": "",
@@ -200,8 +271,16 @@
         "supply": "",
         "bestheight": "",
         "chart": [
+          {
+            "link": "https://conversions.verus.trading/bankroll.chips",
+            "title": "CVT1"
+          }
         ],
         "recenttransfers": [
+          {
+            "link": "https://conversions.verus.trading/bankroll.chips/transfers",
+            "title": "CVT1"
+          }
         ],
         "website": "",
         "marketnote": "",
@@ -216,10 +295,16 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-
+          {
+            "link": "https://conversions.verus.trading/vyield",
+            "title": "CVT1"
+          }
         ],
         "recenttransfers": [
-
+          {
+            "link": "https://conversions.verus.trading/vyield/transfers",
+            "title": "CVT1"
+          }
         ],
         "website": "",
         "marketnote": "",
@@ -234,10 +319,16 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-
+          {
+            "link": "https://conversions.verus.trading/kaiju",
+            "title": "CVT1"
+          }
         ],
         "recenttransfers": [
-
+          {
+            "link": "https://conversions.verus.trading/kaiju/transfers",
+            "title": "CVT1"
+          }
         ],
         "website": "",
         "marketnote": "",
@@ -252,10 +343,16 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-
+          {
+            "link": "https://conversions.verus.trading/switch",
+            "title": "CVT1"
+          }
         ],
         "recenttransfers": [
-
+          {
+            "link": "https://conversions.verus.trading/switch/transfers",
+            "title": "CVT1"
+          }
         ],
         "website": "",
         "marketnote": "",
@@ -368,9 +465,17 @@
         "supply": "",
         "bestheight": "",
         "chart": [
-          ],
+          {
+            "link": "https://conversions.verus.trading/stack.chips",
+            "title": "CVT1"
+          }
+        ],
         "recenttransfers": [
-          ],
+          {
+            "link": "https://conversions.verus.trading/stack.chips/transfers",
+            "title": "CVT1"
+          }
+        ],
         "website": "",
         "marketnote": "Memes on CHIPS? *.STACK.CHIPS@ IDs for sale, 7.77 STACK.CHIPS. Not as premium as Highroller.CHIPS!",
         "explorer": "",

@@ -3,15 +3,21 @@
   <div class="p-2">
     Dark/Light <input type="checkbox" value="garden" class="toggle theme-controller" />
   </div>
-  <div class="p-2">Binance prices: BTCUSD: {{ parseFloat(binance_btcusd).toFixed(2) }} , ETHUSD: {{
-    parseFloat(binance_ethusd).toFixed(2) }} , MKRUSD: {{ parseFloat(binance_mkrusd).toFixed(2) }} , ETHBTC: {{
-      parseFloat(binance_ethbtc).toFixed(6) }} , MKRBTC: {{ parseFloat(binance_mkrbtc).toFixed(6) }}</div>
-  <div class="p-2">Donations: <a class="link link-info" target="_blank"
+  <div class="p-2">
+    These are the raw tables of Verus Trading (<a class="link link-info" target="_blank" href="https://hopiumbuilders.com/docs/recent-projects/verustrading/raw">About RVT by Hopium Builders</a>).
+  </div>
+  <div class="p-2">Donations Always Appreciated: <a class="link link-info" target="_blank"
       href="https://insight.verus.io/address/VERUSTRADING@">VERUSTRADING@</a> and <a class="link link-info"
       target="_blank" href="https://insight.verus.io/address/verus%20coin%20foundation@">Verus Coin Foundation@</a>
     Staking =>
     <span v-for="chain in chains">{{ chain.toUpperCase() }}: {{ stakingsupply[chain] }} || </span>
   </div>
+  <div class="p-2">ARB Markets [BETA]
+    <a class="link link-info" target="_blank" href="https://markets.verus.trading">https://markets.verus.trading</a>
+  </div>
+  <div class="p-2">Binance prices: BTCUSD: {{ parseFloat(binance_btcusd).toFixed(2) }} , ETHUSD: {{
+    parseFloat(binance_ethusd).toFixed(2) }} , ETHBTC: {{
+      parseFloat(binance_ethbtc).toFixed(6) }}</div>
 
   <div class="tabs tabs-border">
     <input type="radio" name="my_tabs_2" class="tab" aria-label="Mainnet" checked="checked" />
