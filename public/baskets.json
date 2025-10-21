@@ -24,6 +24,30 @@
         "isPreconvert": false
     },
     {
+        "currencyid": "i3d4vSCbXYEC3u6TzwohMvdghHkhBrXWpE",
+        "ticker": "Floralis",
+        "rpc": "https://rpc.vrsc.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+          {
+            "link": "https://conversions.verus.trading/floralis",
+            "title": "CVT1"
+          }
+        ],
+        "recenttransfers": [
+          {
+            "link": "https://conversions.verus.trading/floralis/transfers",
+            "title": "CVT1"
+          }
+        ],
+        "website": "https://verus.io/eth-bridge",
+        "marketnote": "First 8 reserve currency basket",
+        "explorer": "https://insight.verus.io",
+        "isPreconvert": false
+    },
+    {
         "currencyid": "i3f7tSctFkiPpiedY8QR5Tep9p4qDVebDx",
         "ticker": "Bridge.vETH",
         "rpc": "https://rpc.vrsc.komodefi.com",
