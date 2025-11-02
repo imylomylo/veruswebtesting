@@ -312,6 +312,54 @@
         "isPreconvert": false
     },
     {
+        "currencyid": "i8Rar9Z64hDXtpBRJBhK9b6S6dMV1EttiS",
+        "ticker": "VerusIDX",
+        "rpc": "https://rpc.vrsc.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+          {
+            "link": "https://conversions.verus.trading/verusidx",
+            "title": "CVT1"
+          }
+        ],
+        "recenttransfers": [
+          {
+            "link": "https://conversions.verus.trading/verusidx/transfers",
+            "title": "CVT1"
+          }
+        ],
+        "website": "",
+        "marketnote": "",
+        "explorer": "",
+        "isPreconvert": false
+    },
+    {
+        "currencyid": "i8Rar9Z64hDXtpBRJBhK9b6S6dMV1EttiS",
+        "ticker": "Trillium",
+        "rpc": "https://rpc.vrsc.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+          {
+            "link": "https://conversions.verus.trading/trillium",
+            "title": "CVT1"
+          }
+        ],
+        "recenttransfers": [
+          {
+            "link": "https://conversions.verus.trading/trillium/transfers",
+            "title": "CVT1"
+          }
+        ],
+        "website": "",
+        "marketnote": "",
+        "explorer": "",
+        "isPreconvert": false
+    },
+    {
         "currencyid": "iAik7rePReFq2t7LZMZhHCJ52fT5pisJ5C",
         "ticker": "vYIELD",
         "rpc": "https://rpc.vrsc.komodefi.com",
