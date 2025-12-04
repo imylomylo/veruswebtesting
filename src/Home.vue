@@ -71,7 +71,8 @@ export default {
   },
   data() {
     return {
-      chains: ['vrsc', 'varrr', 'vdex', 'chips'],
+      chains: ['vrsc'],
+      // chains: ['vrsc', 'varrr', 'vdex', 'chips'],
       explorertx: "https://insight.verus.io/tx/",
       veruslatestblock: ref(),
       veruslongestchain: ref(),
@@ -308,86 +309,222 @@ export default {
         headers: headers,
         data: data
       });
+    },
+    async listCurrencies(rpcUrl, params = []) {
+      const requestData = {
+        method: 'post',
+        url: rpcUrl,
+        headers: { 'Content-Type': 'application/json' },
+        data: {
+          method: 'listcurrencies',
+          params: params,
+          id: 1
+        }
+      };
+      const response = await this.sendRequestRPC(requestData);
+      const result = response.data.result;
+      
+      // Convert object to array if needed
+      // listcurrencies returns an object where keys are currency IDs
+      if (result && typeof result === 'object' && !Array.isArray(result)) {
+        return Object.values(result);
+      }
+      
+      return result;
+    },
+    async listCurrenciesFromExternalSystem(rpcUrl, systemName) {
+      try {
+        console.log(`Fetching currencies from external system: ${systemName}`);
+        const params = [{ fromsystem: systemName }];
+        const currencies = await this.listCurrencies(rpcUrl, params);
+        console.log(`Fetched ${currencies.length} currencies from ${systemName}`);
+        return currencies;
+      } catch (error) {
+        console.error(`Error fetching currencies from ${systemName}:`, error);
+        return [];
+      }
+    },
+    isBasket(currency) {
+      // Check if options has bitmask 1 (options & 1 === 1)
+      // and supply is greater than 0
+      // Note: options is inside currencydefinition
+      const hasCurrencyDef = currency.currencydefinition !== undefined && currency.currencydefinition !== null;
+      const hasOptions = hasCurrencyDef && currency.currencydefinition.options !== undefined;
+      const hasBitmask1 = hasOptions && (currency.currencydefinition.options & 1) === 1;
+      const hasBestCurrencyState = currency.bestcurrencystate !== undefined && currency.bestcurrencystate !== null;
+      const hasSupply = hasBestCurrencyState && currency.bestcurrencystate.supply > 0;
+      
+      return hasCurrencyDef && hasOptions && hasBitmask1 && hasBestCurrencyState && hasSupply;
+    },
+    async fetchCurrenciesFromRPC(rpcUrl) {
+      try {
+        const currencies = await this.listCurrencies(rpcUrl);
+        
+        console.log('Raw currencies from RPC:', currencies);
+        console.log('Total currencies:', Array.isArray(currencies) ? currencies.length : 'Not an array');
+        
+        // Ensure currencies is an array
+        if (!Array.isArray(currencies)) {
+          console.error('Currencies is not an array:', typeof currencies);
+          throw new Error('Invalid currencies data structure');
+        }
+        
+        // Fetch currencies from external systems
+        const externalSystems = ['vETH', 'CHIPS', 'VDEX', 'VARRR'];
+        const externalCurrenciesPromises = externalSystems.map(system => 
+          this.listCurrenciesFromExternalSystem(rpcUrl, system)
+        );
+        
+        const externalCurrenciesArrays = await Promise.all(externalCurrenciesPromises);
+        
+        // Merge all currencies
+        const allCurrencies = [...currencies];
+        externalCurrenciesArrays.forEach((externalCurrencies, index) => {
+          console.log(`Adding ${externalCurrencies.length} currencies from ${externalSystems[index]}`);
+          allCurrencies.push(...externalCurrencies);
+        });
+        
+        console.log('Total currencies after merging external systems:', allCurrencies.length);
+        
+        // Log first currency structure
+        if (currencies.length > 0) {
+          console.log('Sample currency structure:', currencies[0]);
+          console.log('Sample currency keys:', Object.keys(currencies[0]));
+        }
+        
+        // Build currency dictionary (all currencies including external)
+        const currencyDict = allCurrencies
+          .filter(currency => currency.currencydefinition) // Only include currencies with valid definitions
+          .map(currency => ({
+            currencyid: currency.currencydefinition.currencyid,
+            ticker: currency.currencydefinition.fullyqualifiedname || currency.currencydefinition.name,
+            name: currency.currencydefinition.name
+          }));
+        
+        console.log('Currency dictionary size:', currencyDict.length);
+        
+        // Filter for baskets (only from main system, not external)
+        const baskets = currencies
+          .filter(currency => {
+            const result = this.isBasket(currency);
+            if (result) {
+              console.log('Found basket:', currency.currencydefinition?.name || currency.currencydefinition?.fullyqualifiedname);
+            }
+            return result;
+          })
+          .map(currency => ({
+            currencyid: currency.currencydefinition.currencyid,
+            ticker: currency.currencydefinition.fullyqualifiedname || currency.currencydefinition.name,
+            rpc: rpcUrl,
+            reservecurrencies: currency.bestcurrencystate.reservecurrencies,
+            supply: currency.bestcurrencystate.supply,
+            bestheight: currency.bestheight || 0,
+            chart: [],
+            recenttransfers: [],
+            website: '',
+            marketnote: '',
+            explorer: 'https://insight.verus.io',
+            isPreconvert: false
+          }));
+        
+        console.log('Filtered baskets:', baskets.length);
+        
+        return { currencyDict, baskets };
+      } catch (error) {
+        console.error('Error fetching currencies from RPC:', error);
+        throw error;
+      }
     }
 
   },
   async created() {
     try {
-      const [response1, response2, response3, response4] = await Promise.all([
-        fetch('/currencies.json'),
-        fetch('/baskets.json'),
-        fetch('/vrsctest_currencies.json'),
-        fetch('/vrsctest_baskets.json')
-      ]);
-
-      const data1 = await response1.json()
-      const data2 = await response2.json()
-      const data3 = await response3.json()
-      const data4 = await response4.json()
-
-
-      this.currencyDictionary = data1
-      this.baskets = data2
-      this.vrsctest_currencyDictionary = data3
-      this.vrsctest_baskets = data4
+      // Try to fetch currencies from RPC first
+      console.log('Fetching currencies from RPC server...');
+      const mainnetData = await this.fetchCurrenciesFromRPC('https://rpc.vrsc.komodefi.com');
+      
+      this.currencyDictionary = mainnetData.currencyDict;
+      this.baskets = mainnetData.baskets;
+      
+      console.log(`Loaded ${this.baskets.length} baskets from RPC`);
+      
     } catch (error) {
-      console.log(error)
+      console.error('Failed to fetch from RPC, falling back to config files:', error);
+      
+      // // Fallback to config files
+      // try {
+      //   const [response1, response2] = await Promise.all([
+      //     fetch('/currencies.json'),
+      //     fetch('/baskets.json')
+      //   ]);
+
+      //   const data1 = await response1.json();
+      //   const data2 = await response2.json();
+
+      //   this.currencyDictionary = data1;
+      //   this.baskets = data2;
+        
+      //   // Fetch details for each basket from config
+      //   const fetchPromises = this.baskets.map(async (basket, index) => {
+      //     let useRpc = true;
+      //     if(basket.rpc === ''){
+      //       useRpc = false;
+      //     }
+      //     const details = await this.getCurrencyDetails(basket.rpc, basket.currencyid, useRpc);
+      //     if (details) {
+      //       console.log(`Updating basket ${basket.ticker} with:`, details);
+      //       this.baskets[index] = {
+      //         ...basket,
+      //         reservecurrencies: details.reservecurrencies,
+      //         supply: details.supply,
+      //         bestheight: details.bestheight,
+      //       };
+      //     }
+      //     else {
+      //       console.warn(`No details fetch for ${basket.currencyid}`);
+      //     }
+      //   });
+
+      //   await Promise.all(fetchPromises);
+      // } catch (fallbackError) {
+      //   console.error('Error loading config files:', fallbackError);
+      // }
     }
 
-    try {
-      // Fetch details for each basket and update the array
-      const fetchPromises = this.baskets.map(async (basket, index) => {
-        let useRpc = true;
-        if(basket.rpc==''){
-          useRpc = false
-        }
-        const details = await this.getCurrencyDetails(basket.rpc, basket.currencyid, useRpc);
-        if (details) {
-          console.log(`Updating basket ${basket.ticker} with:`, details);
-          // Update the basket in place
-          this.baskets[index] = {
-            ...basket,
-            reservecurrencies: details.reservecurrencies,
-            supply: details.supply,
-            bestheight: details.bestheight,
-          }
-        }
-        else {
-          console.warn(`No details fetch for ${basket.currencyid}`);
-        }
-      })
+    // Load VRSCTEST data
+    // try {
+    //   const [response3, response4] = await Promise.all([
+    //     fetch('/vrsctest_currencies.json'),
+    //     fetch('/vrsctest_baskets.json')
+    //   ]);
 
-      // Wait for all fetches to complete
-      await Promise.all(fetchPromises);
-    } catch (error) {
-      console.error('Error loading JSON files or fetching details:', error);
-    }
+    //   const data3 = await response3.json();
+    //   const data4 = await response4.json();
 
+    //   this.vrsctest_currencyDictionary = data3;
+    //   this.vrsctest_baskets = data4;
+      
+    //   // Fetch details for each VRSCTEST basket
+    //   const fetchPromises = this.vrsctest_baskets.map(async (basket, index) => {
+    //     const details = await this.getCurrencyDetails(basket.rpc, basket.currencyid);
+    //     if (details) {
+    //       console.log(`Updating basket ${basket.ticker} with:`, details);
+    //       this.vrsctest_baskets[index] = {
+    //         ...basket,
+    //         reservecurrencies: details.reservecurrencies,
+    //         supply: details.supply,
+    //         bestheight: details.bestheight,
+    //       };
+    //     }
+    //     else {
+    //       console.warn(`No details fetch for ${basket.currencyid}`);
+    //     }
+    //   });
 
-    try {
-      // Fetch details for each basket and update the array
-      const fetchPromises = this.vrsctest_baskets.map(async (basket, index) => {
-        const details = await this.getCurrencyDetails(basket.rpc, basket.currencyid);
-        if (details) {
-          console.log(`Updating basket ${basket.ticker} with:`, details);
-          // Update the basket in place
-          this.vrsctest_baskets[index] = {
-            ...basket,
-            reservecurrencies: details.reservecurrencies,
-            supply: details.supply,
-            bestheight: details.bestheight,
-          }
-        }
-        else {
-          console.warn(`No details fetch for ${basket.currencyid}`);
-        }
-      })
-
-      // Wait for all fetches to complete
-      await Promise.all(fetchPromises);
-    } catch (error) {
-      console.error('Error loading JSON files or fetching details:', error);
-    }
+    //   await Promise.all(fetchPromises);
+    // } catch (error) {
+    //   console.error('Error loading VRSCTEST data:', error);
+    // }
 
   },
   async mounted() {

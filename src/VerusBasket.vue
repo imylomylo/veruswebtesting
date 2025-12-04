@@ -207,10 +207,12 @@ export default {
             return parseFloat(priceInVrsc / this.pureBasketPriceTbtcVrsc).toFixed(8)
         },
         getCurrencyTicker(currency) {
-            return this.currencyDictionary.find(item => item.currencyid === currency.currencyid).ticker
+            const found = this.currencyDictionary.find(item => item.currencyid === currency.currencyid);
+            return found ? found.ticker : currency.currencyid.substring(0, 8) + '...';
         },
         getCurrencyIdByTicker(ticker) {
-            return this.currencyDictionary.find(item => item.ticker === ticker).currencyid
+            const found = this.currencyDictionary.find(item => item.ticker === ticker);
+            return found ? found.currencyid : null;
         },
         getTickerByCurrencyId(currencyId) {
             const currency = this.currencyDictionary.find(item => item.currencyid === currencyId);
