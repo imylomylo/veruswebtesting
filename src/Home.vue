@@ -22,7 +22,16 @@
   <div class="tabs tabs-border">
     <input type="radio" name="my_tabs_2" class="tab" aria-label="Mainnet" checked="checked" />
     <div class="tab-content border-base-300 bg-base-100 p-10">
-      <VerusBasket v-for="basket of baskets" v-bind:fullyQualifiedName="basket.ticker" v-bind:webLink="basket.website"
+      <div class="mb-4">
+        <BasketSettings 
+          :baskets="baskets" 
+          :currentSettings="basketSettings"
+          @settings-changed="handleSettingsChanged"
+        />
+      </div>
+      
+      <VerusBasket v-for="basket of filteredAndOrderedBaskets" :key="basket.currencyid"
+        v-bind:fullyQualifiedName="basket.ticker" v-bind:webLink="basket.website"
         v-bind:chartLink="basket.chart" v-bind:recentTransfersLink="basket.recenttransfers"
         v-bind:marketNote="basket.marketnote" v-bind:explorerLink="basket.explorer" v-bind:supply="basket.supply"
         v-bind:bestHeight="basket.bestheight" v-bind:reserveCurrencies="basket.reservecurrencies"
@@ -62,12 +71,14 @@ import axios from 'axios';
 import { ref } from 'vue';
 import VerusBasket from './VerusBasket.vue'
 import PriceInTbtc from './PriceInTbtc.vue'
+import BasketSettings from './BasketSettings.vue'
 
 
 export default {
   components: {
     VerusBasket,
-    PriceInTbtc
+    PriceInTbtc,
+    BasketSettings
   },
   data() {
     return {
@@ -94,9 +105,35 @@ export default {
       chips_staking: ref(),
       currencyDictionary: [],
       baskets: ref([]),
+      basketSettings: {},
       vrsctest_currencyDictionary: [],
       vrsctest_baskets: ref([])
     };
+  },
+  computed: {
+    filteredAndOrderedBaskets() {
+      // Apply settings: filter out hidden baskets and sort by order
+      const settingsArray = Object.entries(this.basketSettings).map(([currencyid, setting]) => ({
+        currencyid,
+        ...setting
+      }));
+
+      // Create a map for quick lookup
+      const settingsMap = new Map(settingsArray.map(s => [s.currencyid, s]));
+
+      return this.baskets
+        .filter(basket => {
+          const setting = settingsMap.get(basket.currencyid);
+          return setting ? setting.visible !== false : true; // Default to visible
+        })
+        .sort((a, b) => {
+          const settingA = settingsMap.get(a.currencyid);
+          const settingB = settingsMap.get(b.currencyid);
+          const orderA = settingA?.order !== undefined ? settingA.order : 999;
+          const orderB = settingB?.order !== undefined ? settingB.order : 999;
+          return orderA - orderB;
+        });
+    }
   },
   methods: {
     isExtras() {
@@ -259,6 +296,75 @@ export default {
         }
       }
     },
+    async getFreshCurrencyData(rpcUrl, currencyid) {
+      try {
+        const requestData = {
+          method: 'post',
+          url: rpcUrl,
+          headers: { 'Content-Type': 'application/json' },
+          data: {
+            method: 'getcurrency',
+            params: [currencyid],
+            id: 1
+          }
+        };
+        const response = await this.sendRequestRPC(requestData);
+        const result = response.data.result;
+        
+        // Validate the result has required fields
+        if (!result) {
+          console.error(`No result for currency ${currencyid}`);
+          return null;
+        }
+        
+        if (!result.bestcurrencystate) {
+          console.error(`Currency ${currencyid} has no bestcurrencystate:`, result);
+          return null;
+        }
+        
+        // getcurrency returns the currency definition fields at the root level
+        // We need to restructure it to match the listcurrencies format
+        // which has currencydefinition as a nested object
+        return {
+          currencydefinition: {
+            version: result.version,
+            options: result.options,
+            name: result.name,
+            currencyid: result.currencyid,
+            parent: result.parent,
+            systemid: result.systemid,
+            notarizationprotocol: result.notarizationprotocol,
+            proofprotocol: result.proofprotocol,
+            idregistrationprice: result.idregistrationprice,
+            idreferrallevels: result.idreferrallevels,
+            idimportfees: result.idimportfees,
+            currencies: result.currencies,
+            conversions: result.conversions,
+            initialsupply: result.initialsupply,
+            prelaunchcarveout: result.prelaunchcarveout,
+            initialcontributions: result.initialcontributions,
+            idregistrationfees: result.idregistrationfees,
+            idsignatureminimum: result.idsignatureminimum,
+            minnotariesconfirm: result.minnotariesconfirm,
+            billingperiod: result.billingperiod,
+            notarizationreward: result.notarizationreward,
+            startblock: result.startblock,
+            endblock: result.endblock,
+            fullyqualifiedname: result.fullyqualifiedname,
+            currencynames: result.currencynames,
+            definitiontxid: result.definitiontxid,
+            definitiontxout: result.definitiontxout
+          },
+          bestcurrencystate: result.bestcurrencystate,
+          bestheight: result.bestheight,
+          besttxid: result.besttxid,
+          besttxout: result.besttxout
+        };
+      } catch (error) {
+        console.error(`Error fetching fresh data for ${currencyid}:`, error.message || error);
+        return null;
+      }
+    },
     // getPureCurrency() {
     //   const requestData = {
     //     method: 'post',
@@ -310,6 +416,97 @@ export default {
         data: data
       });
     },
+    loadBasketSettings() {
+      try {
+        const saved = localStorage.getItem('verusBasketSettings');
+        if (saved) {
+          this.basketSettings = JSON.parse(saved);
+          console.log('Loaded basket settings from localStorage');
+        }
+      } catch (error) {
+        console.error('Error loading basket settings:', error);
+      }
+    },
+    saveBasketSettings() {
+      try {
+        localStorage.setItem('verusBasketSettings', JSON.stringify(this.basketSettings));
+        console.log('Saved basket settings to localStorage');
+      } catch (error) {
+        console.error('Error saving basket settings:', error);
+      }
+    },
+    handleSettingsChanged(newSettings) {
+      this.basketSettings = newSettings;
+      this.saveBasketSettings();
+    },
+    async loadCurrenciesFromFiles(existingCurrencyIds) {
+      const loadedCurrencies = [];
+      
+      if (!existingCurrencyIds || existingCurrencyIds.length === 0) {
+        console.log('No currency IDs provided to load from files');
+        return loadedCurrencies;
+      }
+      
+      console.log(`Attempting to load ${existingCurrencyIds.length} currency files...`);
+      
+      // Try each file individually - continue even if some files fail
+      for (const currencyId of existingCurrencyIds) {
+        try {
+          console.log(`Attempting to fetch /files/${currencyId}.json`);
+          const response = await fetch(`/files/${currencyId}.json`);
+          
+          if (!response.ok) {
+            console.warn(`File not found or error loading ${currencyId}.json: ${response.status}`);
+            continue; // Skip this file, try the next one
+          }
+          
+          const data = await response.json();
+          
+          // Check if data has the expected structure
+          // Some files might have currencydefinition at root level instead of nested
+          let normalizedData = data;
+          
+          if (!data.currencydefinition && data.bestcurrencystate) {
+            // File is structured like getcurrency response (currency definition at root)
+            // Need to separate currency definition from state data
+            const { bestcurrencystate, bestheight, besttxid, besttxout, lastconfirmedheight, lastconfirmedcurrencystate, ...currencyDefinitionFields } = data;
+            
+            normalizedData = {
+              currencydefinition: currencyDefinitionFields,
+              bestcurrencystate: bestcurrencystate,
+              bestheight: bestheight,
+              besttxid: besttxid,
+              besttxout: besttxout
+            };
+          }
+          
+          // Validate that this is a currency object and matches the currency ID
+          if (normalizedData.currencydefinition && 
+              normalizedData.bestcurrencystate && 
+              normalizedData.currencydefinition.currencyid === currencyId) {
+            loadedCurrencies.push(normalizedData);
+            console.log(`✓ Successfully loaded ${normalizedData.currencydefinition.name || currencyId} from file (height: ${normalizedData.bestheight})`);
+          } else {
+            console.warn(`✗ File ${currencyId}.json has invalid structure or mismatched ID`);
+          }
+        } catch (error) {
+          // File doesn't exist or is invalid, skip it and continue with next file
+          console.warn(`✗ Failed to load ${currencyId}.json: ${error.message}`);
+        }
+      }
+
+      console.log(`Successfully loaded ${loadedCurrencies.length} out of ${existingCurrencyIds.length} currency files`);
+      return loadedCurrencies;
+    },
+    mergeCurrencyData(existingCurrency, fileCurrency) {
+      // Update existing currency with more recent data from file
+      return {
+        ...existingCurrency,
+        reservecurrencies: fileCurrency.bestcurrencystate?.reservecurrencies || existingCurrency.reservecurrencies,
+        supply: fileCurrency.bestcurrencystate?.supply || existingCurrency.supply,
+        bestheight: fileCurrency.bestheight || existingCurrency.bestheight,
+      };
+    },
     async listCurrencies(rpcUrl, params = []) {
       const requestData = {
         method: 'post',
@@ -358,18 +555,16 @@ export default {
     },
     async fetchCurrenciesFromRPC(rpcUrl) {
       try {
+        // Step 1: Use listcurrencies to build currency dictionary only
+        console.log('Step 1: Fetching all currencies for dictionary...');
         const currencies = await this.listCurrencies(rpcUrl);
         
-        console.log('Raw currencies from RPC:', currencies);
-        console.log('Total currencies:', Array.isArray(currencies) ? currencies.length : 'Not an array');
-        
-        // Ensure currencies is an array
         if (!Array.isArray(currencies)) {
           console.error('Currencies is not an array:', typeof currencies);
           throw new Error('Invalid currencies data structure');
         }
         
-        // Fetch currencies from external systems
+        // Fetch currencies from external systems for dictionary
         const externalSystems = ['vETH', 'CHIPS', 'VDEX', 'VARRR'];
         const externalCurrenciesPromises = externalSystems.map(system => 
           this.listCurrenciesFromExternalSystem(rpcUrl, system)
@@ -377,57 +572,135 @@ export default {
         
         const externalCurrenciesArrays = await Promise.all(externalCurrenciesPromises);
         
-        // Merge all currencies
-        const allCurrencies = [...currencies];
+        // Merge all currencies for dictionary
+        const allCurrenciesForDict = [...currencies];
         externalCurrenciesArrays.forEach((externalCurrencies, index) => {
-          console.log(`Adding ${externalCurrencies.length} currencies from ${externalSystems[index]}`);
-          allCurrencies.push(...externalCurrencies);
+          console.log(`Adding ${externalCurrencies.length} currencies from ${externalSystems[index]} to dictionary`);
+          allCurrenciesForDict.push(...externalCurrencies);
         });
         
-        console.log('Total currencies after merging external systems:', allCurrencies.length);
+        console.log('Total currencies for dictionary:', allCurrenciesForDict.length);
         
-        // Log first currency structure
-        if (currencies.length > 0) {
-          console.log('Sample currency structure:', currencies[0]);
-          console.log('Sample currency keys:', Object.keys(currencies[0]));
-        }
-        
-        // Build currency dictionary (all currencies including external)
-        const currencyDict = allCurrencies
-          .filter(currency => currency.currencydefinition) // Only include currencies with valid definitions
+        // Build currency dictionary from listcurrencies response
+        const currencyDict = allCurrenciesForDict
+          .filter(currency => currency.currencydefinition)
           .map(currency => ({
             currencyid: currency.currencydefinition.currencyid,
             ticker: currency.currencydefinition.fullyqualifiedname || currency.currencydefinition.name,
             name: currency.currencydefinition.name
           }));
         
-        console.log('Currency dictionary size:', currencyDict.length);
+        console.log('Currency dictionary built with', currencyDict.length, 'entries');
         
-        // Filter for baskets (only from main system, not external)
-        const baskets = currencies
-          .filter(currency => {
-            const result = this.isBasket(currency);
-            if (result) {
-              console.log('Found basket:', currency.currencydefinition?.name || currency.currencydefinition?.fullyqualifiedname);
+        // Step 2: Check for manifest.json
+        console.log('Step 2: Checking for manifest.json...');
+        let manifestCurrencyIds = null;
+        
+        try {
+          const manifestResponse = await fetch('/files/manifest.json');
+          if (manifestResponse.ok) {
+            const manifest = await manifestResponse.json();
+            const manifestFiles = manifest.files || manifest;
+            // Extract currency IDs from manifest (remove .json extension)
+            manifestCurrencyIds = new Set(
+              manifestFiles.map(file => file.replace('.json', ''))
+            );
+            console.log(`Manifest found with ${manifestCurrencyIds.size} currency files - will use files for these, RPC for others`);
+          } else {
+            console.log('No manifest.json found - will use RPC data for all baskets');
+          }
+        } catch (manifestError) {
+          console.log('No manifest.json found - will use RPC data for all baskets');
+        }
+        
+        // Step 3: Identify all basket currency IDs from listcurrencies
+        console.log('Step 3: Identifying basket currencies...');
+        const basketCurrencyIds = allCurrenciesForDict
+          .filter(currency => this.isBasket(currency))
+          .map(currency => currency.currencydefinition.currencyid);
+        
+        console.log(`Found ${basketCurrencyIds.length} basket currencies from RPC`);
+        
+        // Step 4: Load currency data from files
+        // If manifest exists, only load currencies that are in the manifest
+        // Otherwise, we won't try to load any files (use RPC for all)
+        console.log('Step 4: Loading basket data from files...');
+        
+        let fileCurrenciesToLoad = [];
+        if (manifestCurrencyIds && manifestCurrencyIds.size > 0) {
+          // Filter basket currencies to only those in manifest
+          fileCurrenciesToLoad = basketCurrencyIds.filter(id => manifestCurrencyIds.has(id));
+          console.log(`Manifest lists ${manifestCurrencyIds.size} currencies, ${fileCurrenciesToLoad.length} are baskets that will be loaded from files`);
+        } else {
+          console.log('No manifest found - will use RPC for all baskets');
+        }
+        
+        const fileCurrencies = await this.loadCurrenciesFromFiles(fileCurrenciesToLoad);
+        
+        // Create a map of file data
+        const fileDataMap = new Map(
+          fileCurrencies.map(fc => [fc.currencydefinition?.currencyid, fc])
+        );
+        
+        console.log(`File data map contains ${fileDataMap.size} successfully loaded currencies`);
+        
+        // Step 5: Build baskets array
+        // - If currency is in manifest: use file data (or skip if file failed)
+        // - If currency is NOT in manifest: use RPC data
+        const baskets = [];
+        
+        for (const currencyid of basketCurrencyIds) {
+          const isInManifest = manifestCurrencyIds && manifestCurrencyIds.has(currencyid);
+          const fileData = fileDataMap.get(currencyid);
+          
+          if (isInManifest) {
+            // Currency is in manifest - MUST use file data or show nothing
+            if (fileData) {
+              console.log(`Using file data for ${fileData.currencydefinition.name}`);
+              baskets.push({
+                currencyid: currencyid,
+                ticker: fileData.currencydefinition.fullyqualifiedname || fileData.currencydefinition.name,
+                rpc: rpcUrl,
+                reservecurrencies: fileData.bestcurrencystate.reservecurrencies,
+                supply: fileData.bestcurrencystate.supply,
+                bestheight: fileData.bestheight || 0,
+                chart: [],
+                recenttransfers: [],
+                website: '',
+                marketnote: '',
+                explorer: 'https://insight.verus.io',
+                isPreconvert: false
+              });
+            } else {
+              console.warn(`Skipping ${currencyid} - in manifest but file failed to load`);
             }
-            return result;
-          })
-          .map(currency => ({
-            currencyid: currency.currencydefinition.currencyid,
-            ticker: currency.currencydefinition.fullyqualifiedname || currency.currencydefinition.name,
-            rpc: rpcUrl,
-            reservecurrencies: currency.bestcurrencystate.reservecurrencies,
-            supply: currency.bestcurrencystate.supply,
-            bestheight: currency.bestheight || 0,
-            chart: [],
-            recenttransfers: [],
-            website: '',
-            marketnote: '',
-            explorer: 'https://insight.verus.io',
-            isPreconvert: false
-          }));
+          } else {
+            // Currency is NOT in manifest - use RPC data
+            console.log(`No manifest entry for ${currencyid}, fetching from RPC...`);
+            const rpcData = await this.getFreshCurrencyData(rpcUrl, currencyid);
+            
+            if (rpcData && rpcData.currencydefinition && rpcData.bestcurrencystate) {
+              baskets.push({
+                currencyid: currencyid,
+                ticker: rpcData.currencydefinition.fullyqualifiedname || rpcData.currencydefinition.name,
+                rpc: rpcUrl,
+                reservecurrencies: rpcData.bestcurrencystate.reservecurrencies,
+                supply: rpcData.bestcurrencystate.supply,
+                bestheight: rpcData.bestheight || 0,
+                chart: [],
+                recenttransfers: [],
+                website: '',
+                marketnote: '',
+                explorer: 'https://insight.verus.io',
+                isPreconvert: false
+              });
+            } else {
+              console.warn(`Failed to fetch RPC data for ${currencyid}`);
+            }
+          }
+        }
         
-        console.log('Filtered baskets:', baskets.length);
+        console.log(`Final result: ${baskets.length} baskets loaded`);
         
         return { currencyDict, baskets };
       } catch (error) {
@@ -438,6 +711,9 @@ export default {
 
   },
   async created() {
+    // Load saved basket settings from localStorage
+    this.loadBasketSettings();
+    
     try {
       // Try to fetch currencies from RPC first
       console.log('Fetching currencies from RPC server...');
