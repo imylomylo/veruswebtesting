@@ -46,8 +46,24 @@
             </label>
 
             <!-- Order Number -->
-            <div class="text-sm text-gray-500">
-              #{{ index + 1 }}
+            <div class="flex items-center gap-1 text-sm text-gray-500">
+              <button
+                type="button"
+                class="btn btn-ghost btn-xs"
+                @click.stop="moveUp(index)"
+                :aria-label="`Move ${basket.ticker} up`"
+              >
+                ▲
+              </button>
+              <div>#{{ index + 1 }}</div>
+              <button
+                type="button"
+                class="btn btn-ghost btn-xs"
+                @click.stop="moveDown(index)"
+                :aria-label="`Move ${basket.ticker} down`"
+              >
+                ▼
+              </button>
             </div>
           </div>
         </div>
@@ -131,6 +147,16 @@ export default {
       this.localBasketSettings.splice(dropIndex, 0, draggedItem);
       
       this.draggedIndex = null;
+    },
+    moveUp(index) {
+      if (index <= 0) return;
+      const item = this.localBasketSettings.splice(index, 1)[0];
+      this.localBasketSettings.splice(index - 1, 0, item);
+    },
+    moveDown(index) {
+      if (index >= this.localBasketSettings.length - 1) return;
+      const item = this.localBasketSettings.splice(index, 1)[0];
+      this.localBasketSettings.splice(index + 1, 0, item);
     },
     saveSettings() {
       // Update order based on current position
