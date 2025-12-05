@@ -30,23 +30,28 @@
         />
       </div>
       
-      <VerusBasket v-for="basket of filteredAndOrderedBaskets" :key="basket.currencyid" v-bind:fullyQualifiedName="basket.ticker" v-bind:webLink="basket.website"
-        v-bind:chartLink="basket.chart" v-bind:recentTransfersLink="basket.recenttransfers"
-        v-bind:marketNote="basket.marketnote" v-bind:explorerLink="basket.explorer" v-bind:supply="basket.supply"
-        v-bind:bestHeight="basket.bestheight" v-bind:reserveCurrencies="basket.reservecurrencies"
-        v-bind:currencyDictionary="currencyDictionary" v-bind:isExtrasOverride="false" v-bind:isPreconvert="basket.isPreconvert" />
+      <div class="flex flex-wrap gap-4">
+        <VerusBasket v-for="basket of filteredAndOrderedBaskets" :key="basket.currencyid" v-bind:fullyQualifiedName="basket.ticker" v-bind:webLink="basket.website"
+          v-bind:chartLink="basket.chart" v-bind:recentTransfersLink="basket.recenttransfers"
+          v-bind:marketNote="basket.marketnote" v-bind:explorerLink="basket.explorer" v-bind:supply="basket.supply"
+          v-bind:bestHeight="basket.bestheight" v-bind:reserveCurrencies="basket.reservecurrencies"
+          v-bind:currencyDictionary="currencyDictionary" v-bind:isExtrasOverride="false" v-bind:isPreconvert="basket.isPreconvert" 
+          :displaySettings="basketSettings[basket.currencyid]" />
+      </div>
 
 
     </div>
 
     <input type="radio" name="my_tabs_2" class="tab" aria-label="VRSCTEST" />
     <div class="tab-content border-base-300 bg-base-100 p-10">
-      <VerusBasket v-for="basket of vrsctest_baskets" v-bind:fullyQualifiedName="basket.ticker"
-        v-bind:webLink="basket.website" v-bind:chartLink="basket.chart"
-        v-bind:recentTransfersLink="basket.recenttransfers" v-bind:marketNote="basket.marketnote"
-        v-bind:explorerLink="basket.explorer" v-bind:supply="basket.supply" v-bind:bestHeight="basket.bestheight"
-        v-bind:reserveCurrencies="basket.reservecurrencies" v-bind:currencyDictionary="vrsctest_currencyDictionary"
-        v-bind:isExtrasOverride="false" />
+      <div class="flex flex-wrap gap-4">
+        <VerusBasket v-for="basket of vrsctest_baskets" v-bind:fullyQualifiedName="basket.ticker"
+          v-bind:webLink="basket.website" v-bind:chartLink="basket.chart"
+          v-bind:recentTransfersLink="basket.recenttransfers" v-bind:marketNote="basket.marketnote"
+          v-bind:explorerLink="basket.explorer" v-bind:supply="basket.supply" v-bind:bestHeight="basket.bestheight"
+          v-bind:reserveCurrencies="basket.reservecurrencies" v-bind:currencyDictionary="vrsctest_currencyDictionary"
+          v-bind:isExtrasOverride="false" :displaySettings="basketSettings[basket.currencyid]" />
+      </div>
     </div>
   </div>
 

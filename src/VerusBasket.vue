@@ -1,60 +1,62 @@
 <template>
-    <div class="p-2">
-        <h2 class="pb-1"> LP Basket: {{ fullyQualifiedName }}</h2>
-        <div v-if="marketNote">
-            <p class="pt-2 pb-2">
-                {{ marketNote }}
-            </p>
-        </div>
-        <div class="sm:text-sm"> Blocks:
-            <a class="link-info" v-if="explorerLink" :href="explorerLink" target="_blank">{{ bestHeight }}</a>
-            <span v-else>{{ bestHeight }}</span> |
-            Supply:
-            <a class="link-info" v-if="webLink" :href="webLink" target="_blank">{{ newSupply ? newSupply : supply }}</a>
-            <span v-else>{{ newSupply ? newSupply : supply }}</span>
-            
-            <span class="hidden sm:inline">|</span>
-            
-            <div class="block sm:inline">
-                <span v-if="chartLink.length != 0">Chart mirrors:
-                    <template v-for="mirror in chartLink">
-                        <div class="badge badge-lg badge-ghost"><a class="link-info" :href="mirror.link" target="_blank">{{
-                            mirror.title }}</a></div>
-                    </template>
-                </span>
-                <span v-else>Chart not available</span>
+    <div class="basket-card card bg-base-100 shadow-sm">
+        <div :class="cardBodyClasses">
+            <div class="flex flex-wrap items-start justify-between gap-4">
+                <div class="min-w-[240px] flex-1">
+                    <h2 class="pb-1 text-lg font-semibold">LP Basket: {{ fullyQualifiedName }}</h2>
+                    <div v-if="marketNote">
+                        <p class="pt-2 pb-2">
+                            {{ marketNote }}
+                        </p>
+                    </div>
+                    <div class="sm:text-sm"> Blocks:
+                        <a class="link-info" v-if="explorerLink" :href="explorerLink" target="_blank">{{ bestHeight }}</a>
+                        <span v-else>{{ bestHeight }}</span> |
+                        Supply:
+                        <a class="link-info" v-if="webLink" :href="webLink" target="_blank">{{ newSupply ? newSupply : supply }}</a>
+                        <span v-else>{{ newSupply ? newSupply : supply }}</span>
+                        
+                        <span class="hidden sm:inline">|</span>
+                        
+                        <div class="block sm:inline">
+                            <span v-if="chartLink.length != 0">Chart mirrors:
+                                <template v-for="mirror in chartLink">
+                                    <div class="badge badge-lg badge-ghost"><a class="link-info" :href="mirror.link" target="_blank">{{
+                                        mirror.title }}</a></div>
+                                </template>
+                            </span>
+                            <span v-else>Chart not available</span>
 
-                <span class="hidden sm:inline">|</span>
-            </div>
+                            <span class="hidden sm:inline">|</span>
+                        </div>
 
-            <div class="block sm:inline">
-                <span v-if="recentTransfersLink.length != 0">Recent transfers mirrors:
-                    <template v-for="mirror in recentTransfersLink">
-                        <div class="badge badge-lg badge-ghost"><a class="link-info" v-if="mirror.link" :href="mirror.link"
-                                target="_blank">{{ mirror.title }}</a></div>
-                    </template>
-                </span>
-                <span v-else>Recent conversions not available</span>
+                        <div class="block sm:inline">
+                            <span v-if="recentTransfersLink.length != 0">Recent transfers mirrors:
+                                <template v-for="mirror in recentTransfersLink">
+                                    <div class="badge badge-lg badge-ghost"><a class="link-info" v-if="mirror.link" :href="mirror.link"
+                                            target="_blank">{{ mirror.title }}</a></div>
+                                </template>
+                            </span>
+                            <span v-else>Recent conversions not available</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div v-if="pureBasketPriceTbtcVrsc" class="pt-1 pb-1">
-            Show Reserve/tBTC <input type="checkbox" value="showPriceTbtc" @change="togglePriceTbtc()" class="toggle" />
-            (relative to Pure Basket)
-        </div>
-        <div class="p-2 overflow-x-auto">
-            <table class="table table-xs sm:table-md">
+            <div class="p-2 overflow-x-auto" :class="{ 'condensed-table': condensed }">
+                <table :class="tableClasses">
                 <thead>
                     <tr>
                         <th>Reserve <span class="hidden sm:inline">Currency</span></th>
-                        <th v-if="showPriceTbtc">Reserve/tBTC</th>
-                        <th v-if="!isMobile" v-for="(currency, index) in reserveCurrencies" :class="{'hidden': index !== 0 && isMobile}">
-                            Reserve / <span :class="getCellClass(currency, fullyQualifiedName)">
-                                {{ getTickerByCurrencyId(currency.currencyid) }} </span>
-                        </th>
-                        <th v-else>Prices</th>
-                        <th>LP / Reserve</th>
-                        <th class="hidden sm:table-cell">Reserves</th>
-                        <th class="hidden sm:table-cell">Weight</th>
+                        <template v-if="columnVisibility.pairGrid">
+                            <th v-if="!isMobile" v-for="(currency, index) in reserveCurrencies" :class="{'hidden': index !== 0 && isMobile}">
+                                Reserve / <span :class="getCellClass(currency, fullyQualifiedName)">
+                                    {{ getTickerByCurrencyId(currency.currencyid) }} </span>
+                            </th>
+                            <th v-else>Prices</th>
+                        </template>
+                        <th v-if="columnVisibility.lpPerReserve">LP / Reserve</th>
+                        <th v-if="columnVisibility.reserves" class="hidden sm:table-cell">Reserves</th>
+                        <th v-if="columnVisibility.weight" class="hidden sm:table-cell">Weight</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -62,30 +64,32 @@
                         <td :class="getCellClass(currencyBase, fullyQualifiedName)">
                             {{ getCurrencyTicker(currencyBase) }}
                         </td>
-                        <td v-if="showPriceTbtc">{{ getPriceReserveTbtc(reserveCurrencies, currencyBase) }}</td>
-                        <td v-if="!isMobile" v-for="(currencyRel, colIndex) in reserveCurrencies" :key="colIndex" 
-                            :class="getCellClass(currencyBase, currencyRel)">
-                            {{ getReservePrice(reserveCurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
-                        </td>
-                        <td v-else>
-                            <div class="stacked-data">
-                                <div v-for="(currencyRel, colIndex) in reserveCurrencies" :key="colIndex" 
-                                    :class="getCellClass(currencyBase, currencyRel, null, forceHide=true)">
-                                    {{ getReservePrice(reserveCurrencies, currencyBase, currencyRel) }} {{ getTickerByCurrencyId(currencyRel.currencyid) }}
+                        <template v-if="columnVisibility.pairGrid">
+                            <td v-if="!isMobile" v-for="(currencyRel, colIndex) in reserveCurrencies" :key="colIndex" 
+                                :class="getCellClass(currencyBase, currencyRel)">
+                                {{ getReservePrice(reserveCurrencies, currencyBase, currencyRel) }} {{ currencyRel.ticker }}
+                            </td>
+                            <td v-else>
+                                <div class="stacked-data">
+                                    <div v-for="(currencyRel, colIndex) in reserveCurrencies" :key="colIndex" 
+                                        :class="getCellClass(currencyBase, currencyRel, null, forceHide=true)">
+                                        {{ getReservePrice(reserveCurrencies, currencyBase, currencyRel) }} {{ getTickerByCurrencyId(currencyRel.currencyid) }}
+                                    </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td>
+                            </td>
+                        </template>
+                        <td v-if="columnVisibility.lpPerReserve">
                         <!-- :class="getCellClass(currencyBase, fullyQualifiedName)"> -->
                             {{ newSupply ? parseFloat(currencyBase.reserves/newSupply * 1 / currencyBase.weight).toFixed(8) : parseFloat(currencyBase.priceinreserve.toFixed(8)) }}
 
                             {{ getTickerByCurrencyId(currencyBase.currencyid) }}
                         </td>
-                        <td class="hidden sm:table-cell">{{ parseFloat(currencyBase.reserves.toFixed(3)) }}</td>
-                        <td class="hidden sm:table-cell">{{ currencyBase.weight }}</td>
+                        <td v-if="columnVisibility.reserves" class="hidden sm:table-cell">{{ parseFloat(currencyBase.reserves.toFixed(3)) }}</td>
+                        <td v-if="columnVisibility.weight" class="hidden sm:table-cell">{{ currencyBase.weight }}</td>
                     </tr>
                 </tbody>
-            </table>
+                </table>
+            </div>
         </div>
         <div class="collapse collapse-plus">
             <input type="radio" name="whatif" />
@@ -149,7 +153,8 @@ export default {
         'currencyDictionary',
         'pureBasketPriceTbtcVrsc',
         'isExtrasOverride',
-        'isPreconvert'
+        'isPreconvert',
+        'displaySettings'
     ],
 
     setup(props) {
@@ -161,7 +166,6 @@ export default {
         const relativeOperationsBasketSend = ref([])
         const relativeOperationsBasketReceive = ref([])
         const receiveMessage = ref()
-        const showPriceTbtc = ref(false)
         const newSupply = ref(0)
         const newPriceInReserve = ref(0)
         // const isPreconvert = ref(false)
@@ -174,20 +178,58 @@ export default {
             relativeOperationsBasketSend,
             relativeOperationsBasketReceive,
             receiveMessage,
-            showPriceTbtc,
             newSupply,
             newPriceInReserve,
             // isExtrasOverride
         }
     },
-    data() {
-        return {
-            something: 'blah'
-        }
-    },
     computed: {
         isMobile() {
             return window.innerWidth < 640;
+        },
+        effectiveDisplaySettings() {
+            const defaults = {
+                condensed: false,
+                columns: {
+                    pairGrid: true,
+                    reserveToTbtc: false,
+                    lpPerReserve: true,
+                    reserves: true,
+                    weight: true
+                }
+            };
+            const provided = this.displaySettings || {};
+            return {
+                condensed: provided.condensed !== undefined ? provided.condensed : defaults.condensed,
+                columns: {
+                    ...defaults.columns,
+                    ...(provided.columns || {})
+                }
+            };
+        },
+        condensed() {
+            return this.effectiveDisplaySettings.condensed;
+        },
+        columnVisibility() {
+            return this.effectiveDisplaySettings.columns;
+        },
+        cardBodyClasses() {
+            return {
+                'card-body': true,
+                'gap-3': true,
+                'p-3': this.condensed,
+                'p-4': !this.condensed,
+                'text-sm': this.condensed
+            }
+        },
+        tableClasses() {
+            return {
+                table: true,
+                'table-xs': true,
+                'sm:table-md': !this.condensed,
+                'table-compact': this.condensed,
+                'text-xs': this.condensed
+            }
         }
     },
     methods: {
@@ -196,9 +238,6 @@ export default {
                 return false
             }
             return parseInt(import.meta.env.VITE_EXTRAS)
-        },
-        togglePriceTbtc() {
-            this.showPriceTbtc = !this.showPriceTbtc
         },
         getPriceReserveTbtc(reserveCurrencies, currency) {
             const vrscCurrencyId = this.getCurrencyIdByTicker("VRSC")
@@ -476,5 +515,26 @@ export default {
 
 .stacked-data div {
     @apply py-1; /* Add some padding for better spacing */
+}
+
+.basket-card {
+    flex: 0 1 auto;
+    margin: 0.5rem;
+}
+
+@media (max-width: 768px) {
+    .basket-card {
+        flex: 1 1 100%;
+    }
+}
+
+.condensed-table table :is(td, th) {
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+}
+
+.condensed-table .badge {
+    padding: 0.25rem 0.45rem;
+    font-size: 0.75rem;
 }
 </style>

@@ -6,10 +6,43 @@
     </button>
 
     <!-- Modal -->
-    <div v-if="showModal" class="modal modal-open">
+    <div v-if="showModal" class="modal modal-open" @click.self="cancelChanges">
       <div class="modal-box max-w-2xl">
         <h3 class="font-bold text-lg mb-4">Basket Display Settings</h3>
         
+        <!-- Global Display Controls -->
+        <div class="mb-6 p-4 bg-base-200 rounded-lg">
+          <div class="text-sm font-semibold mb-3">Display Options (apply to all baskets)</div>
+          <div class="flex flex-col gap-3">
+            <label class="flex items-center gap-2">
+              <input type="checkbox" class="checkbox checkbox-sm" v-model="globalSettings.condensed" />
+              <span>Condensed mode</span>
+            </label>
+            <div class="flex flex-wrap gap-4">
+              <label class="flex items-center gap-1">
+                <input type="checkbox" class="checkbox checkbox-xs" v-model="globalSettings.columns.pairGrid" />
+                <span>Pair grid</span>
+              </label>
+              <label class="flex items-center gap-1">
+                <input type="checkbox" class="checkbox checkbox-xs" v-model="globalSettings.columns.reserveToTbtc" />
+                <span>Reserve/tBTC column</span>
+              </label>
+              <label class="flex items-center gap-1">
+                <input type="checkbox" class="checkbox checkbox-xs" v-model="globalSettings.columns.lpPerReserve" />
+                <span>LP/Reserve</span>
+              </label>
+              <label class="flex items-center gap-1">
+                <input type="checkbox" class="checkbox checkbox-xs" v-model="globalSettings.columns.reserves" />
+                <span>Reserves</span>
+              </label>
+              <label class="flex items-center gap-1">
+                <input type="checkbox" class="checkbox checkbox-xs" v-model="globalSettings.columns.weight" />
+                <span>Weight</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
         <div class="mb-4 text-sm text-gray-600">
           Drag to reorder, toggle visibility, and click Save to keep your preferences.
         </div>
@@ -102,7 +135,17 @@ export default {
     return {
       showModal: false,
       localBasketSettings: [],
-      draggedIndex: null
+      draggedIndex: null,
+      globalSettings: {
+        condensed: false,
+        columns: {
+          pairGrid: true,
+          reserveToTbtc: true,
+          lpPerReserve: true,
+          reserves: true,
+          weight: true
+        }
+      }
     };
   },
   watch: {
@@ -120,7 +163,7 @@ export default {
   },
   methods: {
     initializeSettings() {
-      // Create settings for each basket
+      // Create settings for each basket (only order and visibility are per-basket)
       this.localBasketSettings = this.baskets.map((basket, index) => {
         const savedSetting = this.currentSettings[basket.currencyid];
         return {
@@ -130,6 +173,19 @@ export default {
           order: savedSetting?.order !== undefined ? savedSetting.order : index
         };
       });
+
+      // Load global display settings from first basket (they're the same for all)
+      const firstSettings = this.baskets.length > 0 ? this.currentSettings[this.baskets[0].currencyid] : null;
+      this.globalSettings = {
+        condensed: firstSettings?.condensed !== undefined ? firstSettings.condensed : false,
+        columns: {
+          pairGrid: firstSettings?.columns?.pairGrid !== undefined ? firstSettings.columns.pairGrid : true,
+          reserveToTbtc: firstSettings?.columns?.reserveToTbtc !== undefined ? firstSettings.columns.reserveToTbtc : true,
+          lpPerReserve: firstSettings?.columns?.lpPerReserve !== undefined ? firstSettings.columns.lpPerReserve : true,
+          reserves: firstSettings?.columns?.reserves !== undefined ? firstSettings.columns.reserves : true,
+          weight: firstSettings?.columns?.weight !== undefined ? firstSettings.columns.weight : true
+        }
+      };
 
       // Sort by saved order
       this.localBasketSettings.sort((a, b) => a.order - b.order);
@@ -159,12 +215,20 @@ export default {
       this.localBasketSettings.splice(index + 1, 0, item);
     },
     saveSettings() {
-      // Update order based on current position
+      // Update order and visibility (per-basket), apply global settings to all
       const settings = {};
       this.localBasketSettings.forEach((basket, index) => {
         settings[basket.currencyid] = {
           visible: basket.visible,
-          order: index
+          order: index,
+          condensed: this.globalSettings.condensed,
+          columns: {
+            pairGrid: this.globalSettings.columns.pairGrid,
+            reserveToTbtc: this.globalSettings.columns.reserveToTbtc,
+            lpPerReserve: this.globalSettings.columns.lpPerReserve,
+            reserves: this.globalSettings.columns.reserves,
+            weight: this.globalSettings.columns.weight
+          }
         };
       });
 
@@ -182,6 +246,16 @@ export default {
         visible: true,
         order: index
       }));
+      this.globalSettings = {
+        condensed: false,
+        columns: {
+          pairGrid: true,
+          reserveToTbtc: true,
+          lpPerReserve: true,
+          reserves: true,
+          weight: true
+        }
+      };
     }
   }
 };
