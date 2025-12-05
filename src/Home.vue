@@ -22,7 +22,15 @@
   <div class="tabs tabs-border">
     <input type="radio" name="my_tabs_2" class="tab" aria-label="Mainnet" checked="checked" />
     <div class="tab-content border-base-300 bg-base-100 p-10">
-      <VerusBasket v-for="basket of baskets" v-bind:fullyQualifiedName="basket.ticker" v-bind:webLink="basket.website"
+      <div class="mb-4">
+        <BasketSettings 
+          :baskets="baskets" 
+          :currentSettings="basketSettings"
+          @settings-changed="handleSettingsChanged"
+        />
+      </div>
+      
+      <VerusBasket v-for="basket of filteredAndOrderedBaskets" :key="basket.currencyid" v-bind:fullyQualifiedName="basket.ticker" v-bind:webLink="basket.website"
         v-bind:chartLink="basket.chart" v-bind:recentTransfersLink="basket.recenttransfers"
         v-bind:marketNote="basket.marketnote" v-bind:explorerLink="basket.explorer" v-bind:supply="basket.supply"
         v-bind:bestHeight="basket.bestheight" v-bind:reserveCurrencies="basket.reservecurrencies"
@@ -62,12 +70,14 @@ import axios from 'axios';
 import { ref } from 'vue';
 import VerusBasket from './VerusBasket.vue'
 import PriceInTbtc from './PriceInTbtc.vue'
+import BasketSettings from './BasketSettings.vue'
 
 
 export default {
   components: {
     VerusBasket,
-    PriceInTbtc
+    PriceInTbtc,
+    BasketSettings
   },
   data() {
     return {
@@ -93,9 +103,35 @@ export default {
       chips_staking: ref(),
       currencyDictionary: [],
       baskets: ref([]),
+      basketSettings: {},
       vrsctest_currencyDictionary: [],
       vrsctest_baskets: ref([])
     };
+  },
+  computed: {
+    filteredAndOrderedBaskets() {
+      // Apply settings: filter out hidden baskets and sort by order
+      const settingsArray = Object.entries(this.basketSettings).map(([currencyid, setting]) => ({
+        currencyid,
+        ...setting
+      }));
+
+      // Create a map for quick lookup
+      const settingsMap = new Map(settingsArray.map(s => [s.currencyid, s]));
+
+      return this.baskets
+        .filter(basket => {
+          const setting = settingsMap.get(basket.currencyid);
+          return setting ? setting.visible !== false : true; // Default to visible
+        })
+        .sort((a, b) => {
+          const settingA = settingsMap.get(a.currencyid);
+          const settingB = settingsMap.get(b.currencyid);
+          const orderA = settingA?.order !== undefined ? settingA.order : 999;
+          const orderB = settingB?.order !== undefined ? settingB.order : 999;
+          return orderA - orderB;
+        });
+    }
   },
   methods: {
     isExtras() {
@@ -308,10 +344,36 @@ export default {
         headers: headers,
         data: data
       });
+    },
+    loadBasketSettings() {
+      try {
+        const saved = localStorage.getItem('verusBasketSettings');
+        if (saved) {
+          this.basketSettings = JSON.parse(saved);
+          console.log('Loaded basket settings from localStorage');
+        }
+      } catch (error) {
+        console.error('Error loading basket settings:', error);
+      }
+    },
+    saveBasketSettings() {
+      try {
+        localStorage.setItem('verusBasketSettings', JSON.stringify(this.basketSettings));
+        console.log('Saved basket settings to localStorage');
+      } catch (error) {
+        console.error('Error saving basket settings:', error);
+      }
+    },
+    handleSettingsChanged(newSettings) {
+      this.basketSettings = newSettings;
+      this.saveBasketSettings();
     }
 
   },
   async created() {
+    // Load saved basket settings from localStorage
+    this.loadBasketSettings();
+    
     try {
       const [response1, response2, response3, response4] = await Promise.all([
         fetch('/currencies.json'),
