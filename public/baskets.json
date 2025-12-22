@@ -432,6 +432,24 @@
         "isPreconvert": false
     },
     {
+        "currencyid": "iMLmoaN3SS8KdJwb7fG4WZxJMFrjJxHBfj",
+        "ticker": "vlotto",
+        "rpc": "https://rpc.vrsc.komodefi.com",
+        "reservecurrencies": "",
+        "supply": "",
+        "bestheight": "",
+        "chart": [
+
+        ],
+        "recenttransfers": [
+
+        ],
+        "website": "",
+        "marketnote": "",
+        "explorer": "",
+        "isPreconvert": false
+    },
+    {
         "currencyid": "iCDjBN71SbSppgsNTpwwMBT69399DpV4hA",
         "ticker": "KEK🐸",
         "rpc": "https://rpc.vrsc.komodefi.com",
