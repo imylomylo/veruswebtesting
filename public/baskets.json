@@ -442,7 +442,10 @@
 
         ],
         "recenttransfers": [
-
+	  {
+		  "link": "https://conversions.verus.trading/vlotto/transfers",
+		  "title": "CVT1"
+	  }
         ],
         "website": "",
         "marketnote": "",
