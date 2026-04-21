@@ -45,5 +45,21 @@
     { "currencyid": "iKaSEU4KPrKahpemwHLoQVLPUof6fSE1uk", "ticker": "Ⓐ"},
     { "currencyid": "i3d4vSCbXYEC3u6TzwohMvdghHkhBrXWpE", "ticker": "Floralis"},
     { "currencyid": "iMLmoaN3SS8KdJwb7fG4WZxJMFrjJxHBfj", "ticker": "vlotto"},
-    { "currencyid": "i8Rar9Z64hDXtpBRJBhK9b6S6dMV1EttiS", "ticker": "VerusIDX"}
+    { "currencyid": "i8Rar9Z64hDXtpBRJBhK9b6S6dMV1EttiS", "ticker": "VerusIDX"},
+    { "currencyid": "VGC", "ticker": "VGC"},
+    { "currencyid": "Bridge1.VGC", "ticker": "Bridge1.VGC"},
+    { "currencyid": "Bridge2.VGC", "ticker": "Bridge2.VGC"},
+    { "currencyid": "Bridge3.VGC", "ticker": "Bridge3.VGC"},
+    { "currencyid": "Bridge4.VGC", "ticker": "Bridge4.VGC"},
+    { "currencyid": "Bridge5.VGC", "ticker": "Bridge5.VGC"},
+    { "currencyid": "Bridge6.VGC", "ticker": "Bridge6.VGC"},
+    { "currencyid": "Bridge7.VGC", "ticker": "Bridge7.VGC"},
+    { "currencyid": "Bridge8.VGC", "ticker": "Bridge8.VGC"},
+    { "currencyid": "Bridge9.VGC", "ticker": "Bridge9.VGC"},
+    { "currencyid": "Bridge10.VGC", "ticker": "Bridge10.VGC"},
+    { "currencyid": "Bridge11.VGC", "ticker": "Bridge11.VGC"},
+    { "currencyid": "Bridge12.VGC", "ticker": "Bridge12.VGC"},
+    { "currencyid": "Bridge13.VGC", "ticker": "Bridge13.VGC"},
+    { "currencyid": "Bridge14.VGC", "ticker": "Bridge14.VGC"},
+    { "currencyid": "Bridge15.VGC", "ticker": "Bridge15.VGC"}
   ]

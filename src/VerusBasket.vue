@@ -368,7 +368,7 @@ export default {
                 console.log(lpPriceInReserveReceiveCurrency)
                 if( this.sendCurrency == this.fullyQualifiedName){
                     amountReceived = lpPriceInReserveReceiveCurrency * generatedLP
-                    print(amountReceived)
+                    console.log(amountReceived)
                     let reservesRemove = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).reserves
                     let reserveWeight = this.reserveCurrencies.find(item => item.currencyid == this.receiveCurrency).weight
                     let reservesNewAmount = parseFloat(reservesRemove) - parseFloat(amountReceived)
