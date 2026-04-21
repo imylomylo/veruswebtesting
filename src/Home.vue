@@ -186,7 +186,7 @@ export default {
         return this.operationsSwitch[currencyRel.currencyid] === 'add' ? 'light-green' : this.operationsSwitch[currencyRel.currencyid] === 'remove' ? 'light-red' : ''
       }
     },
-    getStakingSupply(chain) {
+    getStakingSupply0(chain) {
       const requestData = {
         method: 'post',
         url: 'https://rpc.' + chain + '.komodefi.com',
@@ -218,10 +218,41 @@ export default {
           }
         })
     },
+    async getStakingSupply(chain) {
+      try {
+        const response = await fetch(`/files/${chain}.mininginfo.json`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch local data for ${chain}: ${response.statusText}`);
+        }
+        const data = await response.json();
+        this.stakingsupply[chain] = Math.trunc(data.stakingsupply);
+      } catch (fetchError) {
+        console.error(`Failed to fetch or parse local staking data for ${chain}:`, fetchError);
+        const requestData = {
+          method: 'post',
+          url: 'https://rpc.' + chain + '.syncproof.net',
+          headers: { 'Content-Type': 'application/json' },
+          data: {
+            method: 'getmininginfo',
+            params: [],
+            id: 999
+          }
+        }
+        this.sendRequestRPC(requestData)
+          .then((response) => {
+            this.stakingsupply[chain] = Math.trunc(response.data.result.stakingsupply)
+          })
+          .catch(async (error) => {
+            console.log(`RPC for ${chain} failed, falling back to local file: ${error.message}`);
+            this.stakingsupply[chain] = 'N/A';
+
+          })
+        }
+    },
     getLatestBlock() {
       const requestData = {
         method: 'post',
-        url: 'https://rpc.vrsc.komodefi.com',
+        url: 'https://rpc.vrsc.syncproof.net',
         headers: { 'Content-Type': 'application/json' },
         data: {
           method: 'getinfo',
